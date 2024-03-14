@@ -6,14 +6,15 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v7.0": {
-      "BoffToolkit/1.0.0": {
+      "BoffToolkit/1.0.2": {
         "dependencies": {
           "Microsoft.Extensions.Configuration": "7.0.0",
           "Microsoft.Extensions.Configuration.Json": "7.0.0",
           "Microsoft.Extensions.Logging": "7.0.0",
           "Microsoft.Extensions.Logging.Console": "7.0.0",
           "Newtonsoft.Json": "13.0.3",
-          "Newtonsoft.Json.Schema": "3.0.15"
+          "Newtonsoft.Json.Schema": "3.0.15",
+          "PreEmptive.Protection.Checks.Attributes": "2.0.0"
         },
         "runtime": {
           "BoffToolkit.dll": {}
@@ -244,6 +245,14 @@
           }
         }
       },
+      "PreEmptive.Protection.Checks.Attributes/2.0.0": {
+        "runtime": {
+          "lib/netstandard2.0/PreEmptive.Attributes.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "System.Text.Encodings.Web/7.0.0": {},
       "System.Text.Json/7.0.0": {
         "dependencies": {
@@ -253,7 +262,7 @@
     }
   },
   "libraries": {
-    "BoffToolkit/1.0.0": {
+    "BoffToolkit/1.0.2": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -390,6 +399,13 @@
       "sha512": "sha512-O/RBoXYm93pJy/JF3vRJxISALxup8CxKrBGXAyd/pFGrCa9hnSeHq/rQqkTnnpOcvtQwcEDfMZ+R5h871XEO5A==",
       "path": "newtonsoft.json.schema/3.0.15",
       "hashPath": "newtonsoft.json.schema.3.0.15.nupkg.sha512"
+    },
+    "PreEmptive.Protection.Checks.Attributes/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-eoWNPH6i0EDpopw9CyGgsYZQLDKwXhErliwqZltVDnz8bQJQVKggIBBwbFoIyCDeVoIyUDzV2opwnQ61zR5vAg==",
+      "path": "preemptive.protection.checks.attributes/2.0.0",
+      "hashPath": "preemptive.protection.checks.attributes.2.0.0.nupkg.sha512"
     },
     "System.Text.Encodings.Web/7.0.0": {
       "type": "package",

@@ -5,7 +5,7 @@
   },
   "projects": {
     "/Users/michelemezzina/Documents/GitHub/BoffToolkit/BoffToolkit.csproj": {
-      "version": "1.0.0",
+      "version": "1.0.3",
       "restore": {
         "projectUniqueName": "/Users/michelemezzina/Documents/GitHub/BoffToolkit/BoffToolkit.csproj",
         "projectName": "BoffToolkit",
@@ -40,6 +40,10 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "AutoFixture": {
+              "target": "Package",
+              "version": "[4.18.1, )"
+            },
             "Microsoft.Extensions.Configuration": {
               "target": "Package",
               "version": "[7.0.0, )"
@@ -63,6 +67,10 @@
             "Newtonsoft.Json.Schema": {
               "target": "Package",
               "version": "[3.0.15, )"
+            },
+            "PreEmptive.Protection.Checks.Attributes": {
+              "target": "Package",
+              "version": "[2.0.0, )"
             }
           },
           "imports": [

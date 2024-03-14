@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>BoffToolkit</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <authors>Nicola Boffoli</authors>
     <readme>readme.md</readme>
     <description>Toolkit supporting base activities: caching, pooling, configuration

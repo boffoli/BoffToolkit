@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using BoffToolkit.Configuration.JsonSettings.Core;
+using BoffToolkit.JsonValidator;
 using Microsoft.Extensions.Configuration;
 
 namespace BoffToolkit.Configuration.JsonSettings
@@ -141,7 +141,7 @@ namespace BoffToolkit.Configuration.JsonSettings
         {
             if (!string.IsNullOrEmpty(schemaContent))
             {
-                SchemaValidator.Validate(jsonContent, schemaContent);
+                SchemaValidator.ValidateStatic(jsonContent, schemaContent);
             }
         }
     }

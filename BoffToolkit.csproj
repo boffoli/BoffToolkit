@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.0.0</Version>
+    <Version>1.0.3</Version>
     <Authors>Nicola Boffoli</Authors>
     <Description>Toolkit supporting base activities: caching, pooling, configuration
                     exceptions, type loading</Description>
@@ -12,6 +12,10 @@
   <PropertyGroup>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="JsonValidator\" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="readme.md" Pack="true" PackagePath="" />
   </ItemGroup>
@@ -23,16 +27,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Configuration\" />
-    <None Remove="Exceptions\" />
-    <None Remove="Caching\" />
-    <None Remove="Pooling\" />
-    <None Remove="TypeLoading\" />
-    <None Remove="Configuration\JsonSettings\" />
-    <None Remove="Configuration\JsonSettings\Core\" />
-    <None Remove="Logging\" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Configuration\" />
     <Folder Include="Exceptions\" />
     <Folder Include="Caching\" />
@@ -41,7 +35,9 @@
     <Folder Include="Configuration\JsonSettings\" />
     <Folder Include="Configuration\JsonSettings\Core\" />
     <Folder Include="Logging\" />
+    <Folder Include="JsonValidator\" />
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
@@ -49,13 +45,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.15" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
+    <PackageReference Include="PreEmptive.Protection.Checks.Attributes" Version="2.0.0" />
+    <PackageReference Include="AutoFixture" Version="4.18.1" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Configuration\ConfigurationManager %28copia%29.cs" />
-    <Compile Remove="Configuration\AppsettingsManager %28copia%29.cs" />
-    <Compile Remove="Configuration\ConfigurationManager %28copia%29.cs" />
-    <Compile Remove="Configuration\AppsettingsManager.cs" />
-    <Compile Remove="Configuration\AppsettingsManager %28copia%29.cs" />
-    <Compile Remove="Logging\CentralLoggerFactory.cs" />
-  </ItemGroup>
+
 </Project>
