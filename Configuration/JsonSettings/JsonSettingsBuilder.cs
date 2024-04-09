@@ -141,7 +141,7 @@ namespace BoffToolkit.Configuration.JsonSettings
         {
             if (!string.IsNullOrEmpty(schemaContent))
             {
-                SchemaValidator.ValidateStatic(jsonContent, schemaContent);
+                SchemaValidator.Validate(jsonContent, schemaContent);
             }
         }
     }

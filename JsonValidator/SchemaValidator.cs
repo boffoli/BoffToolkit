@@ -1,149 +1,161 @@
-﻿using Newtonsoft.Json;
+﻿using AutoFixture;
+using AutoFixture.Kernel;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
-using AutoFixture;
-using AutoFixture.Kernel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BoffToolkit.JsonValidator
 {
     /// <summary>
-    /// Fornisce funzionalità per la validazione di contenuti JSON rispetto a uno schema JSON.
-    /// Supporta sia la validazione di stringhe JSON che la validazione di istanze di oggetti,
-    /// utilizzando uno schema JSON predefinito o specificato al momento della validazione.
+    /// Fornisce funzionalità per la validazione di contenuti JSON contro uno schema JSON.
     /// </summary>
-    internal class SchemaValidator
+    public class SchemaValidator
     {
-        private string? _jsonSchema;
+        private readonly string _jsonSchema;
         private static readonly Fixture _fixture = new Fixture();
 
         /// <summary>
-        /// Imposta lo schema JSON da utilizzare per le future validazioni.
+        /// Inizializza una nuova istanza della classe SchemaValidator con uno schema JSON specificato.
         /// </summary>
-        /// <param name="jsonSchema">La stringa che rappresenta lo schema JSON.</param>
-        public void SetSchema(string jsonSchema)
+        /// <param name="jsonSchema">Lo schema JSON da utilizzare per la validazione.</param>
+        public SchemaValidator(string jsonSchema)
         {
-            _jsonSchema = jsonSchema;
+            _jsonSchema = jsonSchema ?? throw new ArgumentNullException(nameof(jsonSchema), "Lo schema JSON è necessario.");
         }
 
         /// <summary>
-        /// Valida una stringa JSON rispetto a uno schema JSON specificato o a uno predefinito.
+        /// Valida una stringa JSON contro lo schema JSON fornito all'inizializzazione.
         /// </summary>
-        /// <param name="jsonContent">Il contenuto JSON da validare.</param>
-        /// <param name="jsonSchema">Lo schema JSON contro cui eseguire la validazione. Se null, verrà utilizzato lo schema predefinito.</param>
-        /// <exception cref="InvalidOperationException">Se lo schema JSON non è stato impostato né fornito.</exception>
-        /// <exception cref="JsonException">Se il contenuto JSON non è valido rispetto allo schema fornito.</exception>
-        public void Validate(string jsonContent, string? jsonSchema = null)
-        {
-            string schemaToUse = jsonSchema ?? _jsonSchema ?? throw new InvalidOperationException("Lo schema JSON non è stato impostato.");
-            PerformValidation(jsonContent, schemaToUse);
-        }
+        /// <param name="jsonContent">La stringa JSON da validare.</param>
+        public void Validate(string jsonContent) => Helper.Validate(jsonContent, _jsonSchema);
 
         /// <summary>
-        /// Valida un'istanza di oggetto convertendola in una stringa JSON e validandola rispetto a uno schema JSON specificato o predefinito.
+        /// Valida un oggetto serializzandolo in JSON e confrontandolo con lo schema JSON fornito all'inizializzazione.
+        /// </summary>
+        /// <param name="instance">L'istanza dell'oggetto da validare.</param>
+        public void Validate(object instance) => Helper.Validate(JsonConvert.SerializeObject(instance), _jsonSchema);
+
+        /// <summary>
+        /// Valida un tipo generando un'istanza e confrontando la sua serializzazione JSON con lo schema JSON fornito all'inizializzazione.
+        /// </summary>
+        /// <param name="type">Il tipo dell'oggetto da validare.</param>
+        public void Validate(Type type) => Helper.Validate(SerializeInstance(type), _jsonSchema);
+
+        /// <summary>
+        /// Prova a validare una stringa JSON contro lo schema JSON fornito, ritornando un oggetto ValidationResult.
+        /// </summary>
+        /// <param name="jsonContent">La stringa JSON da validare.</param>
+        /// <returns>Un oggetto ValidationResult che indica se la validazione è riuscita o meno.</returns>
+        public ValidationResult TryValidate(string jsonContent) => Helper.TryValidate(jsonContent, _jsonSchema);
+
+        /// <summary>
+        /// Prova a validare un'istanza di oggetto serializzandola in JSON e confrontandola con lo schema JSON fornito, ritornando un oggetto ValidationResult.
         /// </summary>
         /// <param name="instance">L'oggetto da validare.</param>
-        /// <param name="jsonSchema">Lo schema JSON contro cui eseguire la validazione. Se null, verrà utilizzato lo schema predefinito.</param>
-        /// <exception cref="InvalidOperationException">Se lo schema JSON non è stato impostato né fornito.</exception>
-        /// <exception cref="JsonException">Se l'istanza dell'oggetto convertita in JSON non è valida rispetto allo schema fornito.</exception>
-        public void Validate(object instance, string? jsonSchema = null)
-        {
-            Validate(instance.GetType(), jsonSchema);
-        }
+        /// <returns>Un oggetto ValidationResult che indica se la validazione è riuscita o meno.</returns>
+        public ValidationResult TryValidate(object instance) => Helper.TryValidate(JsonConvert.SerializeObject(instance), _jsonSchema);
 
         /// <summary>
-        /// Genera dinamicamente un'istanza di un dato tipo, la converte in una stringa JSON,
-        /// e la valida rispetto a uno schema JSON specificato o predefinito.
+        /// Prova a validare un tipo generando un'istanza e confrontando la sua serializzazione JSON con lo schema JSON fornito, ritornando un oggetto ValidationResult.
         /// </summary>
-        /// <param name="type">Il tipo dell'oggetto di cui generare un'istanza per la validazione.</param>
-        /// <param name="jsonSchema">Lo schema JSON contro cui eseguire la validazione. Se null, verrà utilizzato lo schema predefinito.</param>
-        /// <exception cref="InvalidOperationException">Se lo schema JSON non è stato impostato né fornito.</exception>
-        /// <exception cref="JsonException">Se l'istanza generata e convertita in JSON non è valida rispetto allo schema fornito.</exception>
-        public void Validate(Type type, string? jsonSchema = null)
+        /// <param name="type">Il tipo da validare.</param>
+        /// <returns>Un oggetto ValidationResult che indica se la validazione è riuscita o meno.</returns>
+        public ValidationResult TryValidate(Type type) => Helper.TryValidate(SerializeInstance(type), _jsonSchema);
+
+        // Metodi statici pubblici
+
+        /// <summary>
+        /// Valida una stringa JSON contro uno schema JSON specificato.
+        /// </summary>
+        /// <param name="jsonContent">La stringa JSON da validare.</param>
+        /// <param name="jsonSchema">Lo schema JSON contro cui effettuare la validazione.</param>
+        public static void Validate(string jsonContent, string jsonSchema) => Helper.Validate(jsonContent, jsonSchema);
+
+        /// <summary>
+        /// Valida un'istanza di oggetto serializzandola in JSON e confrontandola con uno schema JSON specificato.
+        /// </summary>
+        /// <param name="instance">L'oggetto da validare.</param>
+        /// <param name="jsonSchema">Lo schema JSON contro cui effettuare la validazione.</param>
+        public static void Validate(object instance, string jsonSchema) => Helper.Validate(JsonConvert.SerializeObject(instance), jsonSchema);
+
+        /// <summary>
+        /// Valida un tipo generando un'istanza e confrontando la sua serializzazione JSON con uno schema JSON specificato.
+        /// </summary>
+        /// <param name="type">Il tipo da validare.</param>
+        /// <param name="jsonSchema">Lo schema JSON contro cui effettuare la validazione.</param>
+        public static void Validate(Type type, string jsonSchema) => Helper.Validate(SerializeInstance(type), jsonSchema);
+
+        /// <summary>
+        /// Prova a validare una stringa JSON rispetto a uno schema JSON fornito.
+        /// </summary>
+        /// <param name="jsonContent">La stringa JSON da validare.</param>
+        /// <param name="jsonSchema">Lo schema JSON contro cui effettuare la validazione.</param>
+        /// <returns>Un oggetto <see cref="ValidationResult"/> che indica se la validazione è riuscita e contiene gli eventuali messaggi di errore.</returns>
+        public static ValidationResult TryValidate(string jsonContent, string jsonSchema) => Helper.TryValidate(jsonContent, jsonSchema);
+
+        /// <summary>
+        /// Prova a validare un'istanza di un oggetto rispetto a uno schema JSON fornito, convertendolo prima in una stringa JSON.
+        /// </summary>
+        /// <param name="instance">L'oggetto da validare.</param>
+        /// <param name="jsonSchema">Lo schema JSON contro cui effettuare la validazione.</param>
+        /// <returns>Un oggetto <see cref="ValidationResult"/> che indica se la validazione è riuscita e contiene gli eventuali messaggi di errore.</returns>
+        public static ValidationResult TryValidate(object instance, string jsonSchema) => Helper.TryValidate(JsonConvert.SerializeObject(instance), jsonSchema);
+
+        /// <summary>
+        /// Prova a validare un tipo generando un'istanza e convertendola in una stringa JSON rispetto a uno schema JSON fornito.
+        /// </summary>
+        /// <param name="type">Il tipo dell'oggetto da validare.</param>
+        /// <param name="jsonSchema">Lo schema JSON contro cui effettuare la validazione.</param>
+        /// <returns>Un oggetto <see cref="ValidationResult"/> che indica se la validazione è riuscita e contiene gli eventuali messaggi di errore.</returns>
+        public static ValidationResult TryValidate(Type type, string jsonSchema) => Helper.TryValidate(SerializeInstance(type), jsonSchema);
+
+        // Metodi privati statici
+        private static string SerializeInstance(Type type)
         {
-            string schemaToUse = jsonSchema ?? _jsonSchema ?? throw new InvalidOperationException("Lo schema JSON non è stato impostato.");
             var context = new SpecimenContext(_fixture as ISpecimenBuilder);
             object instance = context.Resolve(type);
-            if (instance == null)
+            return JsonConvert.SerializeObject(instance);
+        }
+
+        // Classe helper interna per la logica di validazione
+        private static class Helper
+        {
+            public static void Validate(string jsonContent, string jsonSchema)
             {
-                throw new InvalidOperationException($"Impossibile creare un'istanza del tipo {type.FullName}.");
+                var result = TryValidate(jsonContent, jsonSchema);
+                if (!result.IsValid)
+                {
+                    throw new JsonException($"Validazione fallita. Errori: {string.Join(", ", result.ErrorMessages)}");
+                }
             }
-            string instanceJson = JsonConvert.SerializeObject(instance);
-            PerformValidation(instanceJson, schemaToUse);
-        }
 
-        /// <summary>
-        /// Metodo statico per la validazione diretta di una stringa JSON rispetto a uno schema JSON fornito.
-        /// </summary>
-        /// <param name="jsonContent">Il contenuto JSON da validare.</param>
-        /// <param name="jsonSchema">Lo schema JSON contro cui eseguire la validazione.</param>
-        /// <exception cref="JsonException">Se il contenuto JSON non è valido rispetto allo schema fornito.</exception>
-        public static void ValidateStatic(string jsonContent, string jsonSchema)
-        {
-            PerformValidation(jsonContent, jsonSchema);
-        }
-
-        /// <summary>
-        /// Metodo statico per la validazione di un'istanza di oggetto rispetto a uno schema JSON fornito,
-        /// convertendo prima l'oggetto in una stringa JSON.
-        /// </summary>
-        /// <param name="instance">L'oggetto da validare.</param>
-        /// <param name="jsonSchema">Lo schema JSON contro cui eseguire la validazione.</param>
-        /// <exception cref="JsonException">Se l'istanza dell'oggetto convertita in JSON non è valida rispetto allo schema fornito.</exception>
-        public static void ValidateStatic(object instance, string jsonSchema)
-        {
-            string instanceJson = JsonConvert.SerializeObject(instance);
-            PerformValidation(instanceJson, jsonSchema);
-        }
-
-        /// <summary>
-        /// Metodo statico per la generazione dinamica di un'istanza di un dato tipo, la sua conversione in una stringa JSON,
-        /// e la validazione rispetto a uno schema JSON fornito.
-        /// </summary>
-        /// <param name="type">Il tipo dell'oggetto di cui generare un'istanza per la validazione.</param>
-        /// <param name="jsonSchema">Lo schema JSON contro cui eseguire la validazione.</param>
-        /// <exception cref="JsonException">Se l'istanza generata e convertita in JSON non è valida rispetto allo schema fornito.</exception>
-        public static void ValidateStatic(Type type, string jsonSchema)
-        {
-            object instance = CreateInstance(type);
-            string instanceJson = JsonConvert.SerializeObject(instance);
-            PerformValidation(instanceJson, jsonSchema);
-        }
-
-        /// <summary>
-        /// Esegue la validazione di una stringa JSON rispetto a uno schema JSON.
-        /// </summary>
-        /// <param name="json">La stringa JSON da validare.</param>
-        /// <param name="schemaJson">Lo schema JSON contro cui validare la stringa.</param>
-        /// <exception cref="JsonException">Se la stringa JSON non è valida rispetto allo schema fornito.</exception>
-        // Assicurati di avere l'ultima versione di Newtonsoft.Json.Schema
-        // e di riferire correttamente lo spazio dei nomi se usi ValidationError o altri tipi specifici.
-        private static void PerformValidation(string json, string schemaJson)
-        {
-            JSchema schema = JSchema.Parse(schemaJson);
-            JObject jsonObject = JObject.Parse(json);
-
-            // Qui specifico esplicitamente quale overload utilizzare
-            IList<ValidationError> validationErrors; // Assicurati di riferire lo spazio dei nomi corretto per ValidationError
-            bool isValid = jsonObject.IsValid(schema, out validationErrors);
-
-            if (!isValid)
+            public static ValidationResult TryValidate(string jsonContent, string jsonSchema)
             {
-                // Esempio di come potresti voler gestire o trasformare gli oggetti ValidationError in stringhe
-                var errorMessages = validationErrors.Select(e => e.Message);
-                throw new JsonException($"Validazione fallita. Errori: {string.Join(", ", errorMessages)}");
+                JSchema schema = JSchema.Parse(jsonSchema);
+                JToken token = JToken.Parse(jsonContent);
+                bool isValid = token.IsValid(schema, out IList<ValidationError> validationErrors);
+
+                var errorMessages = validationErrors.Select(e => e.Message).ToList();
+                return new ValidationResult(isValid, errorMessages);
             }
         }
+    }
 
+    /// <summary>
+    /// Rappresenta il risultato di una validazione, includendo lo stato di validità e gli eventuali messaggi di errore.
+    /// </summary>
+    public class ValidationResult
+    {
+        public bool IsValid { get; }
+        public IList<string> ErrorMessages { get; }
 
-        /// <summary>
-        /// Crea un'istanza di un dato tipo utilizzando AutoFixture.
-        /// </summary>
-        /// <param name="type">Il tipo per cui generare un'istanza.</param>
-        /// <returns>Un'istanza dell'oggetto del tipo specificato.</returns>
-        private static object CreateInstance(Type type)
+        public ValidationResult(bool isValid, IList<string> errorMessages)
         {
-            var context = new SpecimenContext(_fixture as ISpecimenBuilder);
-            return context.Resolve(type) ?? throw new InvalidOperationException($"Impossibile creare un'istanza del tipo {type.FullName}.");
+            IsValid = isValid;
+            ErrorMessages = errorMessages ?? throw new ArgumentNullException(nameof(errorMessages), "I messaggi di errore sono necessari.");
         }
     }
 }

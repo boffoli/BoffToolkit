@@ -6,20 +6,12 @@
           <Node name="BoffToolkit" selected="True" />
         </State>
       </Pad>
-      <Pad Id="MonoDevelop.Debugger.WatchPad">
-        <State>
-          <Value>!ReferenceEquals(TopicInfo.PairedTopicInfo.PairedTopicInfo, TopicInfo)</Value>
-          <Value>!TopicInfo.PairedTopicInfo.Equals(this)</Value>
-          <Value>obj</Value>
-          <Value>obj is InfoBaseSection&lt;E&gt; other &amp;&amp; Id == other.Id</Value>
-          <Value>IAkRequestHandler&lt;dynamic, dynamic&gt;</Value>
-          <Value>Assembly.GetCallingAssembly()</Value>
-        </State>
-      </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MultiItemStartupConfigurations />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.DebuggingService.Breakpoints />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
 </Properties>
