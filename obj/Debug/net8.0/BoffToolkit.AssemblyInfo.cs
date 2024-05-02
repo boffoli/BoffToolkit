@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyDescriptionAttribute("Toolkit supporting base activities: caching, pooling, configuration\r\n            " +
     "        exceptions, type loading")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.9.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.9+9ac321d437e8d53c87362336d7436ba4f17d5446")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.9+83b33ad08dbcb4318e50d63ab1d687600a1d70e0")]
 [assembly: System.Reflection.AssemblyProductAttribute("BoffToolkit")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BoffToolkit")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.9.0")]

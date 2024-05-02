@@ -10,9 +10,9 @@ public interface IPoolable<TPooledType> : IDisposable
     /// rimozione degli oggetti inattivi dal pool.
     /// </summary>
     DateTime LastUsedTime { get; }
-    
+
     /// <summary>
-    /// True se istanza già attiva, false altrimenti
+    /// Indica se l'oggetto è attivo o no. True se attivo, False altrimenti.
     /// </summary>
     bool IsActive { get; }
 
@@ -36,5 +36,5 @@ public interface IPoolable<TPooledType> : IDisposable
     /// il riutilizzo.
     /// </summary>
     void Deactivate();
-
+    
 }
