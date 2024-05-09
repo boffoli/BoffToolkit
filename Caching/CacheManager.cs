@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 
 namespace BoffToolkit.Caching
 {
@@ -14,6 +13,17 @@ namespace BoffToolkit.Caching
         private readonly ConcurrentDictionary<TKey, TValue?> _cache = new ConcurrentDictionary<TKey, TValue?>();
 
         /// <summary>
+        /// Prova a ottenere il valore dalla cache associato alla chiave specificata.
+        /// </summary>
+        /// <param name="key">La chiave del valore da cercare nella cache.</param>
+        /// <returns>Il valore associato alla chiave se presente, altrimenti default (null per i tipi di riferimento).</returns>
+        public TValue? TryGetValue(TKey key)
+        {
+            _cache.TryGetValue(key, out TValue? value);
+            return value;
+        }
+
+/// <summary>
         /// Ottiene o genera il valore associato alla chiave fornita.
         /// Se il valore non è presente nella cache, lo genera utilizzando la funzione valueProvider.
         /// </summary>
