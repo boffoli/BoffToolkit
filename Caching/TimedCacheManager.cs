@@ -1,15 +1,13 @@
 ﻿using System;
 
-namespace BoffToolkit.Caching
-{
+namespace BoffToolkit.Caching {
     /// <summary>
     /// Gestisce una cache di oggetti di tipo TValue indicizzata da chiavi di tipo TKey, con scadenza temporizzata.
     /// </summary>
     /// <typeparam name="TKey">Il tipo delle chiavi nella cache.</typeparam>
     /// <typeparam name="TValue">Il tipo degli oggetti memorizzati nella cache.</typeparam>
-    public class TimedCacheManager<TKey, TValue> : CacheManager<TKey, TValue> where TKey : notnull
-    {
-        private Timer _timer;
+    public class TimedCacheManager<TKey, TValue> : CacheManager<TKey, TValue> where TKey : notnull {
+        private readonly Timer _timer;
         private readonly TimeSpan _timerInterval;
         private readonly Action _timerAction;
 
@@ -20,8 +18,7 @@ namespace BoffToolkit.Caching
         /// <param name="timerAction">L'azione da eseguire quando scade il timer.</param>
         /// <exception cref="ArgumentException">Viene generata quando l'intervallo del timer è inferiore o uguale a zero.</exception>
         /// <exception cref="ArgumentNullException">Viene generata quando l'azione del timer è nulla.</exception>
-        public TimedCacheManager(TimeSpan timerInterval, Action timerAction) : base()
-        {
+        public TimedCacheManager(TimeSpan timerInterval, Action timerAction) : base() {
             // Accetto solo intervalli di tempo superiori a 0
             if (timerInterval <= TimeSpan.Zero)
                 throw new ArgumentException("L'intervallo del timer deve essere maggiore di zero.", nameof(timerInterval));
@@ -37,8 +34,7 @@ namespace BoffToolkit.Caching
         /// <summary>
         /// Rilascia le risorse utilizzate dalla cache temporizzata.
         /// </summary>
-        public void Dispose()
-        {
+        public void Dispose() {
             _timer?.Dispose();
         }
     }

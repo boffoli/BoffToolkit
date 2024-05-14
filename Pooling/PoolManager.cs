@@ -1,8 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using BoffToolkit.Logging;
 
-namespace BoffToolkit.Pooling
-{
+namespace BoffToolkit.Pooling {
     /// <summary>
     /// Gestisce un pool di oggetti per ogni chiave, riutilizzando gli oggetti anziché crearne di nuovi ogni volta.
     /// Questo aiuta a migliorare le prestazioni e a ridurre il sovraccarico della creazione di oggetti.
@@ -11,8 +10,7 @@ namespace BoffToolkit.Pooling
     /// <typeparam name="TValue">Il tipo degli oggetti memorizzati nei pool, che deve implementare IPoolable&lt;TValue&gt;.</typeparam>
     public class PoolManager<TKey, TValue>
         where TKey : notnull
-        where TValue : class, IPoolable<TValue>
-    {
+        where TValue : class, IPoolable<TValue> {
         private readonly ConcurrentDictionary<TKey, ConcurrentQueue<TValue>> _pool
                              = new ConcurrentDictionary<TKey, ConcurrentQueue<TValue>>();
         private readonly Func<TKey, TValue> _instanceCreator;
@@ -25,8 +23,7 @@ namespace BoffToolkit.Pooling
         /// <param name="instanceCreator">Una funzione che crea una nuova istanza dell'oggetto.</param>
         /// <param name="maxInstancesPerKey">Il numero massimo di istanze da mantenere nel pool per chiave, opzionale.</param>
         public PoolManager(Func<TKey, TValue> instanceCreator, int? maxInstancesPerKey = null,
-                    TimeSpan? cleanupInterval = null, TimeSpan? maxIdleTime = null)
-        {
+                    TimeSpan? cleanupInterval = null, TimeSpan? maxIdleTime = null) {
             _instanceCreator = instanceCreator ?? throw new ArgumentNullException(nameof(instanceCreator));
             _maxInstancesPerKey = maxInstancesPerKey;
 
@@ -41,26 +38,21 @@ namespace BoffToolkit.Pooling
         /// <param name="key">La chiave per cui recuperare o creare l'oggetto.</param>
         /// <param name="activationParams">Parametri opzionali utilizzati per configurare l'oggetto durante l'attivazione.</param>
         /// <returns>Un'istanza dell'oggetto per la chiave specificata, attivata e pronta all'uso.</returns>
-        public TValue GetOrCreate(TKey key, params object[] activationParams)
-        {
-            if (!_pool.TryGetValue(key, out var instances) || instances.IsEmpty)
-            {
+        public TValue GetOrCreate(TKey key, params object[] activationParams) {
+            if (!_pool.TryGetValue(key, out var instances) || instances.IsEmpty) {
                 CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Nessuna istanza disponibile nel pool, creazione di una nuova istanza per la chiave {key}.");
                 return CreateNewInstance(key, activationParams);
             }
 
-            while (instances.TryDequeue(out var instance))
-            {
+            while (instances.TryDequeue(out var instance)) {
                 instance.Activate(activationParams);
                 CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Istanza per la chiave {key}, è stata attivata.");
 
-                if (instance.Validate())
-                {
+                if (instance.Validate()) {
                     CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Istanza già attivata per la chiave {key}, è stata validata.");
                     return instance;
                 }
-                else
-                {
+                else {
                     CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Fallimento della validazione dell'istanza per la chiave {key}, inizio pulizia.");
                     instance.Dispose();
                 }
@@ -75,19 +67,16 @@ namespace BoffToolkit.Pooling
         /// </summary>
         /// <param name="key">La chiave associata all'istanza dell'oggetto.</param>
         /// <param name="instance">L'istanza dell'oggetto da rilasciare.</param>
-        public void Release(TKey key, TValue instance)
-        {
+        public void Release(TKey key, TValue instance) {
             instance.Deactivate();
             CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Istanza disattivata per la chiave {key}.");
 
             var instances = _pool.GetOrAdd(key, _ => new ConcurrentQueue<TValue>());
-            if (!_maxInstancesPerKey.HasValue || instances.Count < _maxInstancesPerKey.Value)
-            {
+            if (!_maxInstancesPerKey.HasValue || instances.Count < _maxInstancesPerKey.Value) {
                 instances.Enqueue(instance);
                 CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Istanza rimessa nel pool per la chiave {key}.");
             }
-            else
-            {
+            else {
                 CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Il pool per la chiave {key} è pieno, inizio pulizia dell'istanza.");
                 instance.Dispose();
             }
@@ -99,8 +88,7 @@ namespace BoffToolkit.Pooling
         /// <param name="key">La chiave per cui creare l'oggetto.</param>
         /// <param name="activationParams">Parametri opzionali utilizzati per configurare l'oggetto durante l'attivazione.</param>
         /// <returns>Una nuova istanza dell'oggetto, già attivata.</returns>
-        private TValue CreateNewInstance(TKey key, params object[] activationParams)
-        {
+        private TValue CreateNewInstance(TKey key, params object[] activationParams) {
             var newInstance = _instanceCreator(key);
             newInstance.Activate(activationParams);
             return newInstance;

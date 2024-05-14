@@ -488,19 +488,6 @@
           }
         }
       },
-      "PreEmptive.Protection.Checks.Attributes/2.0.0": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard2.0/PreEmptive.Attributes.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/PreEmptive.Attributes.dll": {
-            "related": ".xml"
-          }
-        }
-      },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
         "type": "package",
         "runtimeTargets": {
@@ -2539,21 +2526,6 @@
         "newtonsoft.json.schema.3.0.15.nupkg.sha512",
         "newtonsoft.json.schema.nuspec",
         "packageIcon.png"
-      ]
-    },
-    "PreEmptive.Protection.Checks.Attributes/2.0.0": {
-      "sha512": "eoWNPH6i0EDpopw9CyGgsYZQLDKwXhErliwqZltVDnz8bQJQVKggIBBwbFoIyCDeVoIyUDzV2opwnQ61zR5vAg==",
-      "type": "package",
-      "path": "preemptive.protection.checks.attributes/2.0.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "lib/net11/PreEmptive.Attributes.dll",
-        "lib/net11/PreEmptive.Attributes.xml",
-        "lib/netstandard2.0/PreEmptive.Attributes.dll",
-        "lib/netstandard2.0/PreEmptive.Attributes.xml",
-        "preemptive.protection.checks.attributes.2.0.0.nupkg.sha512",
-        "preemptive.protection.checks.attributes.nuspec"
       ]
     },
     "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
@@ -5994,20 +5966,16 @@
   "projectFileDependencyGroups": {
     "net8.0": [
       "AutoFixture >= 4.18.1",
-      "Microsoft.Extensions.Configuration >= 8.0.0",
       "Microsoft.Extensions.Configuration.Json >= 8.0.0",
-      "Microsoft.Extensions.Logging >= 8.0.0",
       "Microsoft.Extensions.Logging.Console >= 8.0.0",
-      "Newtonsoft.Json >= 13.0.3",
-      "Newtonsoft.Json.Schema >= 3.0.15",
-      "PreEmptive.Protection.Checks.Attributes >= 2.0.0"
+      "Newtonsoft.Json.Schema >= 3.0.15"
     ]
   },
   "packageFolders": {
     "/Users/michelemezzina/.nuget/packages/": {}
   },
   "project": {
-    "version": "1.0.9",
+    "version": "1.1.2",
     "restore": {
       "projectUniqueName": "/Users/michelemezzina/Documents/GitHub/BoffToolkit/BoffToolkit.csproj",
       "projectName": "BoffToolkit",
@@ -6051,15 +6019,7 @@
             "target": "Package",
             "version": "[4.18.1, )"
           },
-          "Microsoft.Extensions.Configuration": {
-            "target": "Package",
-            "version": "[8.0.0, )"
-          },
           "Microsoft.Extensions.Configuration.Json": {
-            "target": "Package",
-            "version": "[8.0.0, )"
-          },
-          "Microsoft.Extensions.Logging": {
             "target": "Package",
             "version": "[8.0.0, )"
           },
@@ -6067,17 +6027,9 @@
             "target": "Package",
             "version": "[8.0.0, )"
           },
-          "Newtonsoft.Json": {
-            "target": "Package",
-            "version": "[13.0.3, )"
-          },
           "Newtonsoft.Json.Schema": {
             "target": "Package",
             "version": "[3.0.15, )"
-          },
-          "PreEmptive.Protection.Checks.Attributes": {
-            "target": "Package",
-            "version": "[2.0.0, )"
           }
         },
         "imports": [

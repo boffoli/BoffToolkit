@@ -4,13 +4,11 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 
-namespace BoffToolkit.JsonValidator
-{
+namespace BoffToolkit.JsonValidator {
     /// <summary>
     /// Fornisce funzionalità per la validazione di contenuti JSON contro uno schema JSON.
     /// </summary>
-    public class SchemaValidator
-    {
+    public class SchemaValidator {
         private readonly string _jsonSchema;
         private static readonly Fixture _fixture = new Fixture();
 
@@ -18,8 +16,7 @@ namespace BoffToolkit.JsonValidator
         /// Inizializza una nuova istanza della classe SchemaValidator con uno schema JSON specificato.
         /// </summary>
         /// <param name="jsonSchema">Lo schema JSON da utilizzare per la validazione.</param>
-        public SchemaValidator(string jsonSchema)
-        {
+        public SchemaValidator(string jsonSchema) {
             _jsonSchema = jsonSchema ?? throw new ArgumentNullException(nameof(jsonSchema), "Lo schema JSON è necessario.");
         }
 
@@ -110,27 +107,22 @@ namespace BoffToolkit.JsonValidator
         public static ValidationResult TryValidate(Type type, string jsonSchema) => Helper.TryValidate(SerializeInstance(type), jsonSchema);
 
         // Metodi privati statici
-        private static string SerializeInstance(Type type)
-        {
+        private static string SerializeInstance(Type type) {
             var context = new SpecimenContext(_fixture as ISpecimenBuilder);
             object instance = context.Resolve(type);
             return JsonConvert.SerializeObject(instance);
         }
 
         // Classe helper interna per la logica di validazione
-        private static class Helper
-        {
-            public static void Validate(string jsonContent, string jsonSchema)
-            {
+        private static class Helper {
+            public static void Validate(string jsonContent, string jsonSchema) {
                 var result = TryValidate(jsonContent, jsonSchema);
-                if (!result.IsValid)
-                {
+                if (!result.IsValid) {
                     throw new JsonException($"Validazione fallita. Errori: {string.Join(", ", result.ErrorMessages)}");
                 }
             }
 
-            public static ValidationResult TryValidate(string jsonContent, string jsonSchema)
-            {
+            public static ValidationResult TryValidate(string jsonContent, string jsonSchema) {
                 JSchema schema = JSchema.Parse(jsonSchema);
                 JToken token = JToken.Parse(jsonContent);
                 bool isValid = token.IsValid(schema, out IList<ValidationError> validationErrors);
@@ -144,13 +136,11 @@ namespace BoffToolkit.JsonValidator
     /// <summary>
     /// Rappresenta il risultato di una validazione, includendo lo stato di validità e gli eventuali messaggi di errore.
     /// </summary>
-    public class ValidationResult
-    {
+    public class ValidationResult {
         public bool IsValid { get; }
         public IList<string> ErrorMessages { get; }
 
-        public ValidationResult(bool isValid, IList<string> errorMessages)
-        {
+        public ValidationResult(bool isValid, IList<string> errorMessages) {
             IsValid = isValid;
             ErrorMessages = errorMessages ?? throw new ArgumentNullException(nameof(errorMessages), "I messaggi di errore sono necessari.");
         }

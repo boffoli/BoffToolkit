@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.0.9</Version>
+    <Version>1.1.2</Version>
     <Authors>Nicola Boffoli</Authors>
     <Description>Toolkit supporting base activities: caching, pooling, configuration
                     exceptions, type loading</Description>
@@ -14,9 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="JsonValidator\" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="readme.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
@@ -28,13 +25,9 @@
 
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.15" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
-    <PackageReference Include="PreEmptive.Protection.Checks.Attributes" Version="2.0.0" />
     <PackageReference Include="AutoFixture" Version="4.18.1" />
   </ItemGroup>
 

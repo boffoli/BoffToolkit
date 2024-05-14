@@ -1,20 +1,17 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace BoffToolkit.Exceptions
-{
+namespace BoffToolkit.Exceptions {
     /// <summary>
     /// Fornisce funzionalità per registrare eccezioni utilizzando un logger.
     /// </summary>
-    public class ExceptionLogger
-    {
+    public class ExceptionLogger {
         private readonly ILogger? _logger;
 
         /// <summary>
         /// Inizializza una nuova istanza della classe ExceptionLogger.
         /// </summary>
         /// <param name="logger">Il logger da utilizzare per registrare le eccezioni.</param>
-        public ExceptionLogger(ILogger logger)
-        {
+        public ExceptionLogger(ILogger logger) {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger), "Il logger non può essere null.");
         }
 
@@ -22,10 +19,8 @@ namespace BoffToolkit.Exceptions
         /// Registra un'eccezione utilizzando il logger configurato.
         /// </summary>
         /// <param name="ex">L'eccezione da registrare.</param>
-        public void LogException(Exception ex)
-        {
-            if (ex == null)
-            {
+        public void LogException(Exception ex) {
+            if (ex == null) {
                 throw new ArgumentNullException(nameof(ex), "L'eccezione non può essere null.");
             }
 

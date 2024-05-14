@@ -5,7 +5,7 @@
   },
   "projects": {
     "/Users/michelemezzina/Documents/GitHub/BoffToolkit/BoffToolkit.csproj": {
-      "version": "1.0.9",
+      "version": "1.1.2",
       "restore": {
         "projectUniqueName": "/Users/michelemezzina/Documents/GitHub/BoffToolkit/BoffToolkit.csproj",
         "projectName": "BoffToolkit",
@@ -49,15 +49,7 @@
               "target": "Package",
               "version": "[4.18.1, )"
             },
-            "Microsoft.Extensions.Configuration": {
-              "target": "Package",
-              "version": "[8.0.0, )"
-            },
             "Microsoft.Extensions.Configuration.Json": {
-              "target": "Package",
-              "version": "[8.0.0, )"
-            },
-            "Microsoft.Extensions.Logging": {
               "target": "Package",
               "version": "[8.0.0, )"
             },
@@ -65,17 +57,9 @@
               "target": "Package",
               "version": "[8.0.0, )"
             },
-            "Newtonsoft.Json": {
-              "target": "Package",
-              "version": "[13.0.3, )"
-            },
             "Newtonsoft.Json.Schema": {
               "target": "Package",
               "version": "[3.0.15, )"
-            },
-            "PreEmptive.Protection.Checks.Attributes": {
-              "target": "Package",
-              "version": "[2.0.0, )"
             }
           },
           "imports": [
