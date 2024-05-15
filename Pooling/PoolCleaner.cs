@@ -14,10 +14,17 @@ namespace BoffToolkit.Pooling {
         private TimeSpan _maxIdleTime;
         private readonly Timer _cleanupTimer;
 
-        public PoolCleaner(ConcurrentDictionary<TKey, ConcurrentQueue<TValue>> pool, TimeSpan? cleanupInterval, TimeSpan? maxIdleTime) {
+        /// <summary>
+        /// Inizializza una nuova istanza della classe <see cref="PoolCleaner{TKey, TValue}"/> con le impostazioni specificate.
+        /// </summary>
+        /// <param name="pool">Il dizionario contenente i pool di oggetti da pulire.</param>
+        /// <param name="cleanupInterval">L'intervallo di tempo tra le pulizie periodiche.</param>
+        /// <param name="maxIdleTime">Il tempo massimo di inattività prima che un oggetto venga rimosso.</param>
+        /// <exception cref="ArgumentNullException">Sollevata se <paramref name="pool"/>, <paramref name="cleanupInterval"/> o <paramref name="maxIdleTime"/> è null o zero.</exception>
+        public PoolCleaner(ConcurrentDictionary<TKey, ConcurrentQueue<TValue>> pool, TimeSpan cleanupInterval, TimeSpan maxIdleTime) {
             _pool = pool ?? throw new ArgumentNullException(nameof(pool));
-            _cleanupInterval = cleanupInterval ?? TimeSpan.FromMinutes(30);
-            _maxIdleTime = maxIdleTime ?? TimeSpan.FromHours(1);
+            _cleanupInterval = cleanupInterval == TimeSpan.Zero ? throw new ArgumentNullException(nameof(cleanupInterval)) : cleanupInterval;
+            _maxIdleTime = maxIdleTime == TimeSpan.Zero ? throw new ArgumentNullException(nameof(maxIdleTime)) : maxIdleTime;
 
             _cleanupTimer = new Timer(CleanupPool, null, _cleanupInterval, _cleanupInterval);
         }
@@ -27,14 +34,33 @@ namespace BoffToolkit.Pooling {
         /// </summary>
         /// <param name="newCleanupInterval">Il nuovo intervallo di tempo tra le pulizie periodiche.</param>
         /// <param name="newMaxIdleTime">Il nuovo tempo massimo di inattività prima che un oggetto venga rimosso.</param>
+        /// <exception cref="ArgumentNullException">Sollevata se <paramref name="newCleanupInterval"/> o <paramref name="newMaxIdleTime"/> è null o zero.</exception>
         public void UpdateSettings(TimeSpan newCleanupInterval, TimeSpan newMaxIdleTime) {
-            _cleanupInterval = newCleanupInterval;
-            _maxIdleTime = newMaxIdleTime;
+            _cleanupInterval = newCleanupInterval == TimeSpan.Zero ? throw new ArgumentNullException(nameof(newCleanupInterval)) : newCleanupInterval;
+            _maxIdleTime = newMaxIdleTime == TimeSpan.Zero ? throw new ArgumentNullException(nameof(newMaxIdleTime)) : newMaxIdleTime;
 
             // Aggiorna il timer per usare il nuovo intervallo di pulizia
             _cleanupTimer.Change(_cleanupInterval, _cleanupInterval);
         }
 
+        /// <summary>
+        /// Avvia il processo di pulizia manuale.
+        /// </summary>
+        public void StartCleaning() {
+            _cleanupTimer.Change(TimeSpan.Zero, _cleanupInterval);
+        }
+
+        /// <summary>
+        /// Ferma il processo di pulizia manuale.
+        /// </summary>
+        public void StopCleaning() {
+            _cleanupTimer.Change(Timeout.Infinite, Timeout.Infinite);
+        }
+
+        /// <summary>
+        /// Esegue la pulizia del pool di oggetti rimuovendo gli elementi che hanno superato il tempo massimo di inattività.
+        /// </summary>
+        /// <param name="state">Stato dell'oggetto passato dal timer.</param>
         private void CleanupPool(object? state) {
             var currentTime = DateTime.UtcNow;
 
@@ -50,25 +76,11 @@ namespace BoffToolkit.Pooling {
 
                     while (!itemsToRemove.IsEmpty) {
                         if (itemsToRemove.TryDequeue(out var removedItem)) {
-                            removedItem.Dispose(); // Assicurati che Cleanup() sia implementato correttamente
+                            removedItem.DisposeAsync().AsTask().Wait(); // Assicurati che Cleanup() sia implementato correttamente
                         }
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Avvia il processo di pulizia manuale.
-        /// </summary>
-        public void StartCleaning() {
-            _cleanupTimer.Change(TimeSpan.Zero, _cleanupInterval);
-        }
-
-        /// <summary>
-        /// Ferma il processo di pulizia manuale.
-        /// </summary>
-        public void StopCleaning() {
-            _cleanupTimer.Change(Timeout.Infinite, Timeout.Infinite);
         }
     }
 }
