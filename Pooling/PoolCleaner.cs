@@ -67,13 +67,21 @@ namespace BoffToolkit.Pooling {
             foreach (var key in _pool.Keys) {
                 if (_pool.TryGetValue(key, out var queue)) {
                     var itemsToRemove = new ConcurrentQueue<TValue>();
+                    var itemsToKeep = new ConcurrentQueue<TValue>();
 
-                    foreach (var instance in queue) {
+                    while (queue.TryDequeue(out var instance)) {
                         if (currentTime - instance.LastUsedTime > _maxIdleTime) {
                             itemsToRemove.Enqueue(instance);
                         }
+                        else {
+                            itemsToKeep.Enqueue(instance);
+                        }
                     }
 
+                    // Sostituisci la coda originale con la nuova coda che contiene solo gli elementi non scaduti
+                    _pool[key] = itemsToKeep;
+
+                    // Dispone gli elementi scaduti
                     while (!itemsToRemove.IsEmpty) {
                         if (itemsToRemove.TryDequeue(out var removedItem)) {
                             removedItem.DisposeAsync().AsTask().Wait(); // Assicurati che Cleanup() sia implementato correttamente
@@ -82,5 +90,6 @@ namespace BoffToolkit.Pooling {
                 }
             }
         }
+
     }
 }
