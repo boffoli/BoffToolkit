@@ -8,7 +8,7 @@ namespace BoffToolkit.Caching {
     /// <typeparam name="TValue">Il tipo degli oggetti memorizzati nella cache.</typeparam>
     public class CacheManager<TKey, TValue> where TKey : notnull {
         // Cache interna che memorizza coppie chiave-valore.
-        private readonly ConcurrentDictionary<TKey, TValue?> _cache = new ConcurrentDictionary<TKey, TValue?>();
+        private readonly ConcurrentDictionary<TKey, TValue?> _cache = new();
 
         /// <summary>
         /// Prova a ottenere il valore dalla cache associato alla chiave specificata.
@@ -16,7 +16,7 @@ namespace BoffToolkit.Caching {
         /// <param name="key">La chiave del valore da cercare nella cache.</param>
         /// <returns>Il valore associato alla chiave se presente, altrimenti default (null per i tipi di riferimento).</returns>
         public TValue? TryGetValue(TKey key) {
-            _cache.TryGetValue(key, out TValue? value);
+            _cache.TryGetValue(key, out var value);
             return value;
         }
 
@@ -30,12 +30,12 @@ namespace BoffToolkit.Caching {
         /// <returns>Il valore associato alla chiave fornita, può essere null.</returns>
         public TValue? GetOrProvide(TKey key, Func<TKey, TValue?> valueProvider, bool allowNullValues = true) {
             // Prova a ottenere il valore dalla cache.
-            if (!_cache.TryGetValue(key, out TValue? cachedValue)) {
+            if (!_cache.TryGetValue(key, out var cachedValue)) {
                 // Genera il valore se non presente nella cache.
                 var value = valueProvider(key);
 
                 // Aggiunge il valore alla cache se non è null o se i valori null sono consentiti.
-                if (value != null || allowNullValues) {
+                if (!Equals(value, default) || allowNullValues) {
                     _cache.TryAdd(key, value);
                 }
 
@@ -56,12 +56,12 @@ namespace BoffToolkit.Caching {
         /// <returns>Il valore associato alla chiave fornita, può essere null.</returns>
         public TValue? GetOrProvide(TKey key, Func<TValue?> valueProvider, bool allowNullValues = false) {
             // Prova a ottenere il valore dalla cache.
-            if (!_cache.TryGetValue(key, out TValue? cachedValue)) {
+            if (!_cache.TryGetValue(key, out var cachedValue)) {
                 // Genera il valore se non presente nella cache.
                 var value = valueProvider();
 
                 // Aggiunge il valore alla cache se non è null o se i valori null sono consentiti.
-                if (value != null || allowNullValues) {
+                if (Equals(value, default) || allowNullValues) {
                     _cache.TryAdd(key, value);
                 }
 

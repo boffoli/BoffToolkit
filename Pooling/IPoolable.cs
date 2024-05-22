@@ -4,7 +4,7 @@ namespace BoffToolkit.Pooling {
     /// deattivare e pulire l'oggetto per garantire il riutilizzo efficiente e sicuro.
     /// </summary>
     /// <typeparam name="TPooledType">Il tipo dell'oggetto stesso.</typeparam>
-    public interface IPoolable<TPooledType> : IAsyncDisposable {
+    public interface IPoolable : IAsyncDisposable {
         /// <summary>
         /// Ottiene o imposta il timestamp dell'ultimo utilizzo dell'oggetto. Usato per tracciare l'attività e gestire la
         /// rimozione degli oggetti inattivi dal pool.

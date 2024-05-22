@@ -4,7 +4,7 @@ namespace BoffToolkit.TypeLoading {
     /// <summary>
     /// Fornisce un meccanismo per caricare e manipolare tipi da assembly.
     /// </summary>
-    public class DynamicTypeLoader {
+    public static class DynamicTypeLoader {
         /// <summary>
         /// Carica un tipo da un nome completo qualificato.
         /// </summary>
@@ -22,7 +22,8 @@ namespace BoffToolkit.TypeLoading {
 
             // Carica il tipo dall'assembly specificato se viene fornito un percorso.
             if (!string.IsNullOrEmpty(assemblyPath)) {
-                Assembly assembly = Assembly.LoadFrom(assemblyPath);
+                var an = AssemblyName.GetAssemblyName(assemblyPath);
+                var assembly = Assembly.Load(an);
                 type = assembly.GetType(fullyQualifiedName, throwOnError: false);
             }
 
@@ -38,13 +39,5 @@ namespace BoffToolkit.TypeLoading {
 
             return type;
         }
-
-        // Il metodo BindGenericParameters è stato commentato nell'implementazione originale.
-        // Se desideri includerlo, decommentalo e documentalo come gli altri metodi.
-
-        /*public static Type BindGenericParameters(Type genericType, Type[] typeSpecifiers)
-        {
-            // Implementazione del metodo
-        }*/
     }
 }

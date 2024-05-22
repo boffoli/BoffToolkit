@@ -7,15 +7,15 @@ namespace BoffToolkit.Configuration.JsonSettings {
     /// Rappresenta una risorsa, includendo sia file di configurazione che schemi JSON.
     /// </summary>
     public struct Resource {
-        public string Name;
-        public Assembly Assembly;
+        public string Name { get; set; }
+        public Assembly Assembly { get; set; }
     }
 
     /// <summary>
     /// Fornisce funzionalità per costruire e configurare un oggetto di configurazione basato su JSON.
     /// </summary>
     public class JsonSettingsBuilder {
-        private readonly Core.ConfigurationManager _configManager = new Core.ConfigurationManager();
+        private readonly Core.ConfigurationManager _configManager = new();
 
         /// <summary>
         /// Carica la configurazione JSON da una risorsa incorporata e la valida opzionalmente contro uno schema JSON incorporato.
@@ -25,8 +25,8 @@ namespace BoffToolkit.Configuration.JsonSettings {
         /// <param name="schemaResource">La risorsa di schema opzionale.</param>
         /// <returns>L'istanza corrente per chaining di configurazione.</returns>
         public JsonSettingsBuilder WithConfiguration(Resource configResource, Resource? schemaResource = null) {
-            string jsonContent = ReadJsonContentFromResource(configResource.Assembly, configResource.Name);
-            string schemaContent = schemaResource.HasValue
+            var jsonContent = ReadJsonContentFromResource(configResource.Assembly, configResource.Name);
+            var schemaContent = schemaResource.HasValue
                 ? ReadSchemaFromResource(schemaResource.Value.Name, schemaResource.Value.Assembly)
                 : string.Empty;
             ValidateJson(jsonContent, schemaContent);
@@ -42,8 +42,8 @@ namespace BoffToolkit.Configuration.JsonSettings {
         /// <param name="schemaFilePath">Percorso del file dello schema JSON. Se "" o null, la validazione dello schema non viene eseguita.</param>
         /// <returns>L'istanza corrente per chaining di configurazione.</returns>
         public JsonSettingsBuilder WithConfiguration(string configFilePath, string schemaFilePath) {
-            string jsonContent = ReadJsonContentFromFile(configFilePath);
-            string schemaContent = !string.IsNullOrEmpty(schemaFilePath) ? ReadSchemaFromFile(schemaFilePath) : string.Empty;
+            var jsonContent = ReadJsonContentFromFile(configFilePath);
+            var schemaContent = !string.IsNullOrEmpty(schemaFilePath) ? ReadSchemaFromFile(schemaFilePath) : string.Empty;
             if (!string.IsNullOrEmpty(schemaContent)) {
                 ValidateJson(jsonContent, schemaContent);
             }
@@ -59,8 +59,8 @@ namespace BoffToolkit.Configuration.JsonSettings {
         /// <param name="schemaFilePath">Percorso del file dello schema JSON. Se "" o null, la validazione dello schema non viene eseguita.</param>
         /// <returns>L'istanza corrente per chaining di configurazione.</returns>
         public JsonSettingsBuilder WithConfiguration(Resource configResource, string schemaFilePath) {
-            string jsonContent = ReadJsonContentFromResource(configResource.Assembly, configResource.Name);
-            string schemaContent = !string.IsNullOrEmpty(schemaFilePath) ? ReadSchemaFromFile(schemaFilePath) : string.Empty;
+            var jsonContent = ReadJsonContentFromResource(configResource.Assembly, configResource.Name);
+            var schemaContent = !string.IsNullOrEmpty(schemaFilePath) ? ReadSchemaFromFile(schemaFilePath) : string.Empty;
             if (!string.IsNullOrEmpty(schemaContent)) {
                 ValidateJson(jsonContent, schemaContent);
             }
@@ -75,8 +75,8 @@ namespace BoffToolkit.Configuration.JsonSettings {
         /// <param name="schemaResource">La risorsa dello schema JSON per la validazione.</param>
         /// <returns>L'istanza corrente per chaining di configurazione.</returns>
         public JsonSettingsBuilder WithConfiguration(string configFilePath, Resource schemaResource) {
-            string jsonContent = ReadJsonContentFromFile(configFilePath);
-            string schemaContent = ReadSchemaFromResource(schemaResource.Name, schemaResource.Assembly);
+            var jsonContent = ReadJsonContentFromFile(configFilePath);
+            var schemaContent = ReadSchemaFromResource(schemaResource.Name, schemaResource.Assembly);
             ValidateJson(jsonContent, schemaContent);
             _configManager.AddJsonFile(configFilePath);
             return this;

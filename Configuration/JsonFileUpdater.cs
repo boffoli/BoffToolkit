@@ -22,19 +22,14 @@ namespace BoffToolkit.Configuration {
             }
 
             // Carica il contenuto JSON dal file
-            string jsonContent = File.ReadAllText(configFilePath);
-            var jsonObject = JsonConvert.DeserializeObject<JObject>(jsonContent);
-
-            // Verifica che il contenuto sia un JSON valido
-            if (jsonObject == null) {
-                throw new JsonException("Il contenuto del file non è un JSON valido.");
-            }
+            var jsonContent = File.ReadAllText(configFilePath);
+            var jsonObject = JsonConvert.DeserializeObject<JObject>(jsonContent) ?? throw new JsonException("Il contenuto del file non è un JSON valido.");
 
             // Imposta il nuovo valore per la chiave specificata
             SetJsonValue(jsonObject, keyPath, newValue);
 
             // Salva il JSON aggiornato nel file
-            string updatedJsonContent = JsonConvert.SerializeObject(jsonObject, Formatting.Indented);
+            var updatedJsonContent = JsonConvert.SerializeObject(jsonObject, Formatting.Indented);
             File.WriteAllText(configFilePath, updatedJsonContent);
         }
 
@@ -52,12 +47,12 @@ namespace BoffToolkit.Configuration {
             }
 
             // Naviga attraverso le sezioni del JSON
-            JObject currentObject = jsonObject;
+            var currentObject = jsonObject;
             foreach (var part in pathParts.Take(pathParts.Length - 1).SelectMany(section => section.Split('.'))) {
                 Object? currentObjectPart = currentObject[part];
 
                 currentObject = currentObjectPart != null ? (JObject)currentObjectPart : throw new InvalidOperationException("currentObject non può essere null.");
-                currentObject = currentObject != null ? currentObject : throw new ArgumentException("Il percorso della chiave non corrisponde alla struttura del JSON");
+                currentObject = currentObject ?? throw new ArgumentException("Il percorso della chiave non corrisponde alla struttura del JSON");
             }
 
 

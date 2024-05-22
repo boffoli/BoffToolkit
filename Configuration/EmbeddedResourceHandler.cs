@@ -13,15 +13,10 @@ namespace BoffToolkit.Configuration {
         /// <returns>Il contenuto della risorsa come stringa.</returns>
         public static string ReadResourceAsString(Assembly assembly, string resourceNamePath) {
             // Legge la risorsa come stringa
-            using (Stream? stream = assembly.GetManifestResourceStream(resourceNamePath)) {
-                if (stream == null) {
-                    throw new InvalidOperationException($"La risorsa {resourceNamePath} non è stata trovata nell'assembly.");
-                }
+            using var stream = assembly.GetManifestResourceStream(resourceNamePath) ?? throw new InvalidOperationException($"La risorsa {resourceNamePath} non è stata trovata nell'assembly.");
 
-                using (StreamReader reader = new StreamReader(stream)) {
-                    return reader.ReadToEnd();
-                }
-            }
+            using var reader = new StreamReader(stream);
+            return reader.ReadToEnd();
         }
 
         /// <summary>
@@ -33,18 +28,14 @@ namespace BoffToolkit.Configuration {
         /// <returns>Il percorso del file estratto.</returns>
         public static string ExtractResourceToFile(Assembly assembly, string resourceNamePath, bool createTemporaryFile = false) {
             // Estrae la risorsa in un file
-            using (Stream? stream = assembly.GetManifestResourceStream(resourceNamePath)) {
-                if (stream == null) {
-                    throw new InvalidOperationException($"La risorsa {resourceNamePath} non è stata trovata nell'assembly.");
-                }
+            using var stream = assembly.GetManifestResourceStream(resourceNamePath) ?? throw new InvalidOperationException($"La risorsa {resourceNamePath} non è stata trovata nell'assembly.");
 
-                string filePath = createTemporaryFile ? Path.GetTempFileName() : $"{Path.GetTempPath()}{resourceNamePath}";
-                using (var fileStream = File.Create(filePath)) {
-                    stream.CopyTo(fileStream);
-                }
-
-                return filePath;
+            var filePath = createTemporaryFile ? Path.GetTempFileName() : $"{Path.GetTempPath()}{resourceNamePath}";
+            using (var fileStream = File.Create(filePath)) {
+                stream.CopyTo(fileStream);
             }
+
+            return filePath;
         }
     }
 }

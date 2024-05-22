@@ -7,15 +7,15 @@ namespace BoffToolkit.Pooling {
     /// Questo aiuta a migliorare le prestazioni e a ridurre il sovraccarico della creazione di oggetti.
     /// </summary>
     /// <typeparam name="TKey">Il tipo della chiave utilizzata per identificare ogni pool.</typeparam>
-    /// <typeparam name="TValue">Il tipo degli oggetti memorizzati nei pool, che deve implementare IPoolable&lt;TValue&gt;.</typeparam>
-    public class PoolManager<TKey, TValue>
+    /// <typeparam name="TValue">Il tipo degli oggetti memorizzati nei pool, che deve implementare IPoolable.</typeparam>
+    public class PoolManager<TKey, TValue> : IAsyncDisposable
         where TKey : notnull
-        where TValue : class, IPoolable<TValue> {
-        private readonly ConcurrentDictionary<TKey, ConcurrentQueue<TValue>> _pool
-                             = new ConcurrentDictionary<TKey, ConcurrentQueue<TValue>>();
+        where TValue : class, IPoolable {
+        private readonly ConcurrentDictionary<TKey, ConcurrentQueue<TValue>> _pool = new();
         private readonly Func<TKey, TValue> _instanceCreator;
         private readonly int? _maxInstancesPerKey;
         private readonly PoolCleaner<TKey, TValue> _poolCleaner;
+        private bool _disposed = false;
 
         /// <summary>
         /// Inizializza una nuova istanza della classe PoolManager con i parametri specificati.
@@ -69,7 +69,7 @@ namespace BoffToolkit.Pooling {
         /// </summary>
         /// <param name="key">La chiave associata all'istanza dell'oggetto.</param>
         /// <param name="instance">L'istanza dell'oggetto da rilasciare.</param>
-        public async void ReleaseAsync(TKey key, TValue instance) {
+        public async Task ReleaseAsync(TKey key, TValue instance) {
             await instance.DeactivateAsync();
             CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Istanza disattivata per la chiave {key}.");
 
@@ -95,5 +95,22 @@ namespace BoffToolkit.Pooling {
             await newInstance.ActivateAsync(activationParams);
             return newInstance;
         }
+
+        /// <summary>
+        /// Rilascia le risorse utilizzate dalla cache temporizzata.
+        /// </summary>
+        public async ValueTask DisposeAsync() {
+            await DisposeAsyncCore();
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual ValueTask DisposeAsyncCore() {
+            if (!_disposed) {
+                _poolCleaner?.StopCleaning();
+                _disposed = true;
+            }
+            return ValueTask.CompletedTask;
+        }
+
     }
 }

@@ -8,7 +8,7 @@ namespace BoffToolkit.Pooling {
     /// <typeparam name="TValue">Il tipo degli oggetti memorizzati nei pool.</typeparam>
     internal class PoolCleaner<TKey, TValue>
         where TKey : notnull
-        where TValue : class, IPoolable<TValue> {
+        where TValue : class, IPoolable {
         private readonly ConcurrentDictionary<TKey, ConcurrentQueue<TValue>> _pool;
         private TimeSpan _cleanupInterval;
         private TimeSpan _maxIdleTime;
@@ -66,12 +66,11 @@ namespace BoffToolkit.Pooling {
 
             foreach (var key in _pool.Keys) {
                 if (_pool.TryGetValue(key, out var queue)) {
-                    var itemsToRemove = new ConcurrentQueue<TValue>();
                     var itemsToKeep = new ConcurrentQueue<TValue>();
 
                     while (queue.TryDequeue(out var instance)) {
                         if (currentTime - instance.LastUsedTime > _maxIdleTime) {
-                            itemsToRemove.Enqueue(instance);
+                            instance.DisposeAsync().AsTask().Wait();
                         }
                         else {
                             itemsToKeep.Enqueue(instance);
@@ -80,13 +79,6 @@ namespace BoffToolkit.Pooling {
 
                     // Sostituisci la coda originale con la nuova coda che contiene solo gli elementi non scaduti
                     _pool[key] = itemsToKeep;
-
-                    // Dispone gli elementi scaduti
-                    while (!itemsToRemove.IsEmpty) {
-                        if (itemsToRemove.TryDequeue(out var removedItem)) {
-                            removedItem.DisposeAsync().AsTask().Wait(); // Assicurati che Cleanup() sia implementato correttamente
-                        }
-                    }
                 }
             }
         }

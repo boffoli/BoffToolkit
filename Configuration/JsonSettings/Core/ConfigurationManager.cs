@@ -7,7 +7,7 @@ namespace BoffToolkit.Configuration.JsonSettings.Core {
     /// Gestisce la configurazione basata su file JSON.
     /// </summary>
     internal class ConfigurationManager {
-        private readonly ConfigurationBuilder _builder = new ConfigurationBuilder();
+        private readonly ConfigurationBuilder _builder = new();
         private IConfiguration? _cachedConfiguration;
 
         /// <summary>
@@ -31,9 +31,7 @@ namespace BoffToolkit.Configuration.JsonSettings.Core {
         /// </summary>
         /// <returns>La configurazione costruita.</returns>
         public IConfiguration Build() {
-            if (_cachedConfiguration == null) {
-                _cachedConfiguration = _builder.Build();
-            }
+            _cachedConfiguration ??= _builder.Build();
             return _cachedConfiguration;
         }
 
@@ -53,7 +51,7 @@ namespace BoffToolkit.Configuration.JsonSettings.Core {
                 }
             }
 
-            string json = JsonConvert.SerializeObject(configData, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(configData, Formatting.Indented);
             Console.WriteLine(json);
         }
     }

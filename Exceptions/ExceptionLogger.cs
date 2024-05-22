@@ -5,7 +5,7 @@ namespace BoffToolkit.Exceptions {
     /// Fornisce funzionalità per registrare eccezioni utilizzando un logger.
     /// </summary>
     public class ExceptionLogger {
-        private readonly ILogger? _logger;
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Inizializza una nuova istanza della classe ExceptionLogger.
@@ -31,8 +31,9 @@ namespace BoffToolkit.Exceptions {
             var innerMessage = ex.InnerException?.Message;
             var innerStackTrace = ex.InnerException?.StackTrace;
 
-            // Registra le informazioni dell'eccezione utilizzando il logger
-            _logger?.LogError($"Exception Type: {exceptionType}\nMessage: {errorMessage}\nStackTrace: {stackTrace}\nInnerException Message: {innerMessage}\nInnerException StackTrace: {innerStackTrace}");
+            // Registra le informazioni dell'eccezione utilizzando il logger senza usare l'interpolazione di stringhe
+            _logger.LogError("Exception Type: {ExceptionType}\nMessage: {ErrorMessage}\nStackTrace: {StackTrace}\nInnerException Message: {InnerMessage}\nInnerException StackTrace: {InnerStackTrace}",
+                             exceptionType, errorMessage, stackTrace, innerMessage, innerStackTrace);
         }
     }
 }
