@@ -29,21 +29,7 @@ namespace BoffToolkit.Caching {
         /// <param name="allowNullValues">Specifica se i valori null devono essere accettati nella cache.</param>
         /// <returns>Il valore associato alla chiave fornita, può essere null.</returns>
         public TValue? GetOrProvide(TKey key, Func<TKey, TValue?> valueProvider, bool allowNullValues = true) {
-            // Prova a ottenere il valore dalla cache.
-            if (!_cache.TryGetValue(key, out var cachedValue)) {
-                // Genera il valore se non presente nella cache.
-                var value = valueProvider(key);
-
-                // Aggiunge il valore alla cache se non è null o se i valori null sono consentiti.
-                if (!Equals(value, default) || allowNullValues) {
-                    _cache.TryAdd(key, value);
-                }
-
-                return value;
-            }
-
-            // Restituisce il valore dalla cache se già presente.
-            return cachedValue;
+            return GetOrProvideInternal(key, () => valueProvider(key), allowNullValues);
         }
 
         /// <summary>
@@ -55,21 +41,7 @@ namespace BoffToolkit.Caching {
         /// <param name="allowNullValues">Specifica se i valori null devono essere accettati nella cache.</param>
         /// <returns>Il valore associato alla chiave fornita, può essere null.</returns>
         public TValue? GetOrProvide(TKey key, Func<TValue?> valueProvider, bool allowNullValues = false) {
-            // Prova a ottenere il valore dalla cache.
-            if (!_cache.TryGetValue(key, out var cachedValue)) {
-                // Genera il valore se non presente nella cache.
-                var value = valueProvider();
-
-                // Aggiunge il valore alla cache se non è null o se i valori null sono consentiti.
-                if (Equals(value, default) || allowNullValues) {
-                    _cache.TryAdd(key, value);
-                }
-
-                return value;
-            }
-
-            // Restituisce il valore dalla cache se già presente.
-            return cachedValue;
+            return GetOrProvideInternal(key, valueProvider, allowNullValues);
         }
 
         /// <summary>
@@ -79,6 +51,27 @@ namespace BoffToolkit.Caching {
         /// <returns>true se l'elemento è stato rimosso correttamente; in caso contrario, false.</returns>
         public bool Remove(TKey key) {
             return _cache.TryRemove(key, out _);
+        }
+
+        /// <summary>
+        /// Logica interna per ottenere o generare il valore associato alla chiave fornita.
+        /// </summary>
+        /// <param name="key">La chiave per accedere o generare il valore nella cache.</param>
+        /// <param name="valueProvider">La funzione che genera il valore se non è presente nella cache.</param>
+        /// <param name="allowNullValues">Specifica se i valori null devono essere accettati nella cache.</param>
+        /// <returns>Il valore associato alla chiave fornita, può essere null.</returns>
+        private TValue? GetOrProvideInternal(TKey key, Func<TValue?> valueProvider, bool allowNullValues) {
+            if (!_cache.TryGetValue(key, out var cachedValue)) {
+                var value = valueProvider();
+
+                if (!Equals(value, default) || allowNullValues) {
+                    _cache.TryAdd(key, value);
+                }
+
+                return value;
+            }
+
+            return cachedValue;
         }
     }
 }
