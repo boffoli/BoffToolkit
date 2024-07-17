@@ -9,12 +9,12 @@ namespace BoffToolkit.Pooling {
         /// Ottiene o imposta il timestamp dell'ultimo utilizzo dell'oggetto. Usato per tracciare l'attività e gestire la
         /// rimozione degli oggetti inattivi dal pool.
         /// </summary>
-        DateTime LastUsedTime { get; }
+        DateTime LastUsedTime { get; internal set; }
 
         /// <summary>
         /// Indica se l'oggetto è attivo o no. True se attivo, False altrimenti.
         /// </summary>
-        bool IsActive { get; }
+        bool IsActive { get; internal set; }
 
         /// <summary>
         /// Attiva l'oggetto, preparandolo per l'uso. Questo metodo può configurare lo stato iniziale dell'oggetto
