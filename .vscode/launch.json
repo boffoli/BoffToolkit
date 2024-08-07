@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug TestRunner",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-testrunner",
+      "program": "${workspaceFolder}/test/TestRunner/bin/Debug/net8.0/TestRunner.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/test/TestRunner",
+      "stopAtEntry": false,
+      "console": "internalConsole",
+      "logging": {
+        "diagnosticsLog.protocolMessages": true,
+        "trace": true,
+        "justMyCode": false
+      },
+      "internalConsoleOptions": "openOnSessionStart"
+    }
+  ]
+}
