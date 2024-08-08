@@ -13,6 +13,21 @@ namespace BoffToolkit.Scheduling.PeriodRules
         /// <summary>
         /// Crea una nuova istanza di <see cref="DailyPeriodRule"/> per un evento giornaliero.
         /// </summary>
+        /// <param name="timeOfDay">L'ora del giorno.</param>
+        public DailyPeriodRule(DateTime timeOfDay)
+            : this(timeOfDay.TimeOfDay, null) { }
+
+        /// <summary>
+        /// Crea una nuova istanza di <see cref="DailyPeriodRule"/> per un evento che si verifica ogni n giorni.
+        /// </summary>
+        /// <param name="timeOfDay">L'ora del giorno.</param>
+        /// <param name="daysInterval">L'intervallo di giorni tra le occorrenze.</param>
+        public DailyPeriodRule(DateTime timeOfDay, int daysInterval)
+            : this(timeOfDay.TimeOfDay, daysInterval) { }
+
+        /// <summary>
+        /// Crea una nuova istanza di <see cref="DailyPeriodRule"/> per un evento giornaliero.
+        /// </summary>
         /// <param name="timeOfDay">L'orario del giorno.</param>
         public DailyPeriodRule(TimeSpan timeOfDay)
             : this(timeOfDay, null) { }

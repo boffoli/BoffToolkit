@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 using BoffToolkit.Logging;
 
 namespace BoffToolkit.Pooling {
@@ -109,7 +111,11 @@ namespace BoffToolkit.Pooling {
                 _poolCleaner?.StopCleaning();
                 _disposed = true;
             }
-            return ValueTask.CompletedTask;
+#if NET8_0
+            return ValueTask.CompletedTask; // Restituisce ValueTask per .NET 8.0
+#else
+            return new ValueTask(Task.CompletedTask); // Converti Task in ValueTask per .NET Framework 4.7.1
+#endif
         }
 
     }
