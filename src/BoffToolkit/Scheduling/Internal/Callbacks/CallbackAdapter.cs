@@ -1,9 +1,10 @@
 using System;
 using System.Threading.Tasks;
+using BoffToolkit.Scheduling.HttpCalls;
 
 namespace BoffToolkit.Scheduling.Internal.Callbacks {
     /// <summary>
-    /// Adattatore per la gestione di diversi tipi di callback.
+    /// Adattatore per la gestione di diversi tipi di callback, inclusa l'esecuzione di chiamate API.
     /// </summary>
     /// <typeparam name="TResult">Il tipo di risultato del callback.</typeparam>
     /// <typeparam name="TParam">Il tipo del parametro del callback.</typeparam>
@@ -52,6 +53,10 @@ namespace BoffToolkit.Scheduling.Internal.Callbacks {
         private CallbackAdapter(ISchedulable<TParam, TResult> schedulableWithParam, TParam param) {
             _schedulableWithParam = schedulableWithParam ?? throw new ArgumentNullException(nameof(schedulableWithParam), "Il schedulable con parametro non può essere null.");
             _param = param;
+        }
+
+        private CallbackAdapter(IHttpCall<TResult> httpCall) {
+            _schedulable = httpCall ?? throw new ArgumentNullException(nameof(httpCall), "L'oggetto HttpCall non può essere null.");
         }
 
         /// <summary>
@@ -114,6 +119,13 @@ namespace BoffToolkit.Scheduling.Internal.Callbacks {
         /// <returns>Una nuova istanza di <see cref="CallbackAdapter{TResult, TParam}"/>.</returns>
         public static CallbackAdapter<TResult, TParam> Create(ISchedulable<TParam, TResult> schedulableWithParam, TParam param) => new(schedulableWithParam, param);
 
+        /// <summary>
+        /// Crea un'istanza di <see cref="CallbackAdapter{TResult, TParam}"/> per una chiamata HTTP.
+        /// </summary>
+        /// <param name="httpCall">L'oggetto <see cref="IHttpCall{TResult}"/> che rappresenta la chiamata HTTP da eseguire.</param>
+        /// <returns>Una nuova istanza di <see cref="CallbackAdapter{TResult, TParam}"/>.</returns>
+        public static CallbackAdapter<TResult, TParam> Create(IHttpCall<TResult> httpCall) => new(httpCall);
+
         /// <inheritdoc />
         public event EventHandler<CallbackCompletedEventArgs>? CallbackCompleted;
 
@@ -123,24 +135,31 @@ namespace BoffToolkit.Scheduling.Internal.Callbacks {
 
             if (_action != null) {
                 _action();
-            } else if (_actionWithParam != null) {
+            }
+            else if (_actionWithParam != null) {
                 _actionWithParam(_param!);
-            } else if (_taskFunc != null) {
+            }
+            else if (_taskFunc != null) {
                 result = await _taskFunc();
-            } else if (_taskFuncWithParam != null) {
+            }
+            else if (_taskFuncWithParam != null) {
                 result = await _taskFuncWithParam(_param!);
-            } else if (_func != null) {
+            }
+            else if (_func != null) {
                 result = _func();
-            } else if (_funcWithParam != null) {
+            }
+            else if (_funcWithParam != null) {
                 result = _funcWithParam(_param!);
-            } else if (_schedulable != null) {
+            }
+            else if (_schedulable != null) {
                 result = _schedulable.Execute();
-            } else if (_schedulableWithParam != null) {
+            }
+            else if (_schedulableWithParam != null) {
                 result = _schedulableWithParam.Execute(_param!);
-            } else {
+            }
+            else {
                 throw new InvalidOperationException("Nessun callback valido trovato.");
             }
-
             // Solleva l'evento di completamento
             CallbackCompleted?.Invoke(this, new CallbackCompletedEventArgs(result));
         }

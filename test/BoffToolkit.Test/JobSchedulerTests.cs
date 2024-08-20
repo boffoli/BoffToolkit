@@ -1,4 +1,5 @@
 using BoffToolkit.Scheduling;
+using BoffToolkit.Scheduling.HttpCalls;
 using BoffToolkit.Scheduling.PeriodRules;
 using System;
 using System.Threading.Tasks;
@@ -185,6 +186,100 @@ namespace BoffToolkit.Test {
             // Assert
             WaitForNextOccurrence(periodRule);
             Assert.Equal(expectedResult, schedulable.Result);
+        }
+
+[Fact]
+        public void JobScheduler_Should_Invoke_HttpGetCall() {
+            // Arrange
+            var url = "https://send.araneacloud.it/mail/sendemailtest.php";
+            var periodRule = new TimeSpanPeriodRule(TimeSpan.FromSeconds(1));
+
+            var scheduler = JobSchedulerBuilder
+                .SetStartTime(DateTime.Now.AddSeconds(1))
+                .SetPeriod(periodRule)
+                .SetCallback(HttpCallFactory.CreateGetCall<string>(url))
+                .RunInBackground(false)
+                .SetCallbackCompleted((sender, args) => {
+                    Console.WriteLine($"{DateTime.Now}: GET Callback Completed with Result: " + args.Result);
+                })
+                .Build();
+
+            // Act
+            scheduler.Start();
+
+            // Assert
+            WaitForNextOccurrence(periodRule);
+        }
+
+        [Fact]
+        public void JobScheduler_Should_Invoke_HttpPostCall() {
+            // Arrange
+            var url = "https://jsonplaceholder.typicode.com/posts";
+            var data = new { title = "foo", body = "bar", userId = 1 };
+            var periodRule = new TimeSpanPeriodRule(TimeSpan.FromSeconds(1));
+
+            var scheduler = JobSchedulerBuilder
+                .SetStartTime(DateTime.Now.AddSeconds(1))
+                .SetPeriod(periodRule)
+                .SetCallback(HttpCallFactory.CreatePostCall<object, object>(url, data))
+                .RunInBackground(false)
+                .SetCallbackCompleted((sender, args) => {
+                    Console.WriteLine($"{DateTime.Now}: POST Callback Completed with Result: " + args.Result);
+                })
+                .Build();
+
+            // Act
+            scheduler.Start();
+
+            // Assert
+            WaitForNextOccurrence(periodRule);
+        }
+
+        [Fact]
+        public void JobScheduler_Should_Invoke_HttpPutCall() {
+            // Arrange
+            var url = "https://jsonplaceholder.typicode.com/posts/1";
+            var data = new { id = 1, title = "foo", body = "bar", userId = 1 };
+            var periodRule = new TimeSpanPeriodRule(TimeSpan.FromSeconds(1));
+
+            var scheduler = JobSchedulerBuilder
+                .SetStartTime(DateTime.Now.AddSeconds(1))
+                .SetPeriod(periodRule)
+                .SetCallback(HttpCallFactory.CreatePutCall<object, object>(url, data))
+                .RunInBackground(false)
+                .SetCallbackCompleted((sender, args) => {
+                    Console.WriteLine($"{DateTime.Now}: PUT Callback Completed with Result: " + args.Result);
+                })
+                .Build();
+
+            // Act
+            scheduler.Start();
+
+            // Assert
+            WaitForNextOccurrence(periodRule);
+        }
+
+        [Fact]
+        public void JobScheduler_Should_Invoke_HttpDeleteCall() {
+            // Arrange
+            var url = "https://jsonplaceholder.typicode.com/posts/1";
+            var periodRule = new TimeSpanPeriodRule(TimeSpan.FromSeconds(1));
+
+            var scheduler = JobSchedulerBuilder
+                .SetStartTime(DateTime.Now.AddSeconds(1))
+                .SetPeriod(periodRule)
+                .SetCallback(HttpCallFactory.CreateDeleteCall<object>(url))
+                .RunInBackground(false)
+                .SetCallbackCompleted((sender, args) => {
+                    Console.WriteLine($"{DateTime.Now}: DELETE Callback Completed with Result: " + args.Result);
+                })
+                .Build();
+
+            // Act
+            scheduler.Start();
+
+            // Assert
+            WaitForNextOccurrence(periodRule);
         }
 
         private static void WaitForNextOccurrence(IPeriodRule periodRule) {
