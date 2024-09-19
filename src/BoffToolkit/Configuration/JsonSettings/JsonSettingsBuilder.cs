@@ -95,7 +95,7 @@ namespace BoffToolkit.Configuration.JsonSettings {
         // Aggiunge la configurazione JSON e la valida opzionalmente contro uno schema JSON.
         private void AddConfiguration(string jsonContent, string? schemaContent = "") {
             if (!string.IsNullOrEmpty(schemaContent)) {
-                ValidateJson(jsonContent, schemaContent);
+                ValidateJson(jsonContent, schemaContent!);
             }
             _configManager.AddJsonStream(jsonContent);
         }

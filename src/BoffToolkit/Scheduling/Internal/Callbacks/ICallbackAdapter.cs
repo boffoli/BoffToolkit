@@ -5,19 +5,16 @@ namespace BoffToolkit.Scheduling.Internal.Callbacks {
     /// <summary>
     /// Classe per gli argomenti dell'evento di completamento del callback.
     /// </summary>
-    public class CallbackCompletedEventArgs : EventArgs {
-        /// <summary>
-        /// Inizializza una nuova istanza della classe <see cref="CallbackCompletedEventArgs"/>.
-        /// </summary>
-        /// <param name="result">Il risultato del callback.</param>
-        public CallbackCompletedEventArgs(object? result) {
-            Result = result;
-        }
+    /// <remarks>
+    /// Inizializza una nuova istanza della classe <see cref="CallbackCompletedEventArgs"/>.
+    /// </remarks>
+    /// <param name="result">Il risultato del callback.</param>
+    public class CallbackCompletedEventArgs(object? result) : EventArgs {
 
         /// <summary>
         /// Ottiene il risultato del callback, se disponibile.
         /// </summary>
-        public object? Result { get; }
+        public object? Result { get; } = result;
     }
 
     /// <summary>

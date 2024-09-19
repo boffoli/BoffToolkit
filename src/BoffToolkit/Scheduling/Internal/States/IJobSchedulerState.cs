@@ -1,10 +1,13 @@
-using System.Threading.Tasks;
-
 namespace BoffToolkit.Scheduling.Internal.States {
     /// <summary>
     /// Interfaccia che definisce lo stato di un task scheduler.
     /// </summary>
     internal interface IJobSchedulerState {
+        /// <summary>
+        /// Nome dello stato corrente.
+        /// </summary>
+        string Name { get; }
+
         /// <summary>
         /// Metodo chiamato quando uno stato diventa attivo. 
         /// Esegue le operazioni specifiche dello stato, come l'avvio, la pausa o l'arresto di un task.

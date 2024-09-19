@@ -1,12 +1,10 @@
 using System;
 
-namespace BoffToolkit.Scheduling.PeriodRules
-{
+namespace BoffToolkit.Scheduling.PeriodRules {
     /// <summary>
     /// Interfaccia che definisce una regola per determinare la prossima occorrenza di un periodo.
     /// </summary>
-    public interface IPeriodRule
-    {
+    public interface IPeriodRule {
         /// <summary>
         /// Restituisce la prossima occorrenza del periodo a partire da un momento specifico.
         /// </summary>

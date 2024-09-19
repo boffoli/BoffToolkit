@@ -1,14 +1,17 @@
 using System;
 
-namespace BoffToolkit.Scheduling.PeriodRules
-{
+namespace BoffToolkit.Scheduling.PeriodRules {
     /// <summary>
     /// Implementa una regola di periodo settimanale, con possibilità di specificare un intervallo di settimane.
     /// </summary>
-    public class WeeklyPeriodRule : IPeriodRule
-    {
+    public class WeeklyPeriodRule : IPeriodRule {
         private readonly DayOfWeek _dayOfWeek;
         private readonly int? _weeksInterval;
+
+        // Costanti per i messaggi di errore
+        private const string InvalidDayOfWeekErrorMessage = "Il giorno della settimana non è valido.";
+        private const string InvalidWeeksIntervalErrorMessage = "L'intervallo deve essere maggiore di zero.";
+        private const string InvalidFromTimeErrorMessage = "L'orario di partenza non può essere il valore predefinito.";
 
         /// <summary>
         /// Crea una nuova istanza di <see cref="WeeklyPeriodRule"/> per un evento settimanale.
@@ -26,44 +29,36 @@ namespace BoffToolkit.Scheduling.PeriodRules
             : this(dayOfWeek, (int?)weeksInterval) { }
 
         // Costruttore privato per gestire l'inizializzazione.
-        private WeeklyPeriodRule(DayOfWeek dayOfWeek, int? weeksInterval)
-        {
-            if (!Enum.IsDefined(typeof(DayOfWeek), dayOfWeek))
-                throw new ArgumentException("Il giorno della settimana non è valido.", nameof(dayOfWeek));
-            if (weeksInterval.HasValue && weeksInterval.Value <= 0)
-                throw new ArgumentException("L'intervallo deve essere maggiore di zero.", nameof(weeksInterval));
+        private WeeklyPeriodRule(DayOfWeek dayOfWeek, int? weeksInterval) {
+            if (!Enum.IsDefined(typeof(DayOfWeek), dayOfWeek)) {
+                throw new ArgumentException(InvalidDayOfWeekErrorMessage, nameof(dayOfWeek));
+            }
+
+            if (weeksInterval.HasValue && weeksInterval.Value <= 0) {
+                throw new ArgumentException(InvalidWeeksIntervalErrorMessage, nameof(weeksInterval));
+            }
 
             _dayOfWeek = dayOfWeek;
             _weeksInterval = weeksInterval;
         }
 
         /// <inheritdoc />
-        public DateTime GetNextOccurrence(DateTime fromTime)
-        {
-            if (fromTime == default)
-                throw new ArgumentException("L'orario di partenza non può essere il valore predefinito.", nameof(fromTime));
+        public DateTime GetNextOccurrence(DateTime fromTime) {
+            if (fromTime == default) {
+                throw new ArgumentException(InvalidFromTimeErrorMessage, nameof(fromTime));
+            }
 
-            DateTime nextDate = fromTime.Date;
-            while (nextDate.DayOfWeek != _dayOfWeek)
-            {
+            var nextDate = fromTime.Date;
+            while (nextDate.DayOfWeek != _dayOfWeek) {
                 nextDate = nextDate.AddDays(1);
             }
 
-            if (_weeksInterval.HasValue)
-            {
-                // Caso: Ogni n settimane
-                if (nextDate <= fromTime)
-                {
-                    nextDate = nextDate.AddDays(7 * _weeksInterval.Value);
-                }
+            // Estrazione della logica ternaria in istruzioni indipendenti
+            if (_weeksInterval.HasValue && nextDate <= fromTime) {
+                nextDate = nextDate.AddDays(7 * _weeksInterval.Value);
             }
-            else
-            {
-                // Caso: Ogni settimana
-                if (nextDate <= fromTime)
-                {
-                    nextDate = nextDate.AddDays(7);
-                }
+            else if (nextDate <= fromTime) {
+                nextDate = nextDate.AddDays(7);
             }
 
             return nextDate;

@@ -3,9 +3,7 @@ using AutoFixture.Kernel;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+
 
 namespace BoffToolkit.JsonValidator {
     /// <summary>
@@ -151,13 +149,8 @@ namespace BoffToolkit.JsonValidator {
     /// <summary>
     /// Rappresenta il risultato di una validazione, includendo lo stato di validità e gli eventuali messaggi di errore.
     /// </summary>
-    public class ValidationResult {
-        public bool IsValid { get; }
-        public IList<string> ErrorMessages { get; }
-
-        public ValidationResult(bool isValid, IList<string> errorMessages) {
-            IsValid = isValid;
-            ErrorMessages = errorMessages ?? throw new ArgumentNullException(nameof(errorMessages), "I messaggi di errore sono necessari.");
-        }
+    public class ValidationResult(bool isValid, IList<string> errorMessages) {
+        public bool IsValid { get; } = isValid;
+        public IList<string> ErrorMessages { get; } = errorMessages ?? throw new ArgumentNullException(nameof(errorMessages), "I messaggi di errore sono necessari.");
     }
 }

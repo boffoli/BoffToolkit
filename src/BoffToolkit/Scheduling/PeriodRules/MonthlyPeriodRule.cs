@@ -8,6 +8,11 @@ namespace BoffToolkit.Scheduling.PeriodRules {
         private readonly int _dayOfMonth;
         private readonly int? _monthsInterval;
 
+        // Definizione delle costanti per i messaggi di errore
+        private const string InvalidDayOfMonthErrorMessage = "Il giorno del mese deve essere tra 1 e 31.";
+        private const string InvalidMonthsIntervalErrorMessage = "L'intervallo deve essere maggiore di zero.";
+        private const string InvalidFromTimeErrorMessage = "La data di partenza deve essere una data valida.";
+
         /// <summary>
         /// Crea una nuova istanza di <see cref="MonthlyPeriodRule"/> per un evento mensile.
         /// </summary>
@@ -25,21 +30,22 @@ namespace BoffToolkit.Scheduling.PeriodRules {
 
         // Costruttore privato per gestire l'inizializzazione.
         private MonthlyPeriodRule(int dayOfMonth, int? monthsInterval) {
-            if (dayOfMonth < 1 || dayOfMonth > 31)
-                throw new ArgumentException("Il giorno del mese deve essere tra 1 e 31.", nameof(dayOfMonth));
-            if (monthsInterval.HasValue && monthsInterval.Value <= 0)
-                throw new ArgumentException("L'intervallo deve essere maggiore di zero.", nameof(monthsInterval));
+            _dayOfMonth = (dayOfMonth >= 1 && dayOfMonth <= 31)
+                ? dayOfMonth
+                : throw new ArgumentException(InvalidDayOfMonthErrorMessage, nameof(dayOfMonth));
 
-            _dayOfMonth = dayOfMonth;
-            _monthsInterval = monthsInterval;
+            _monthsInterval = (monthsInterval.HasValue && monthsInterval.Value > 0)
+                ? monthsInterval
+                : throw new ArgumentException(InvalidMonthsIntervalErrorMessage, nameof(monthsInterval));
         }
 
         /// <inheritdoc />
         public DateTime GetNextOccurrence(DateTime fromTime) {
-            if (fromTime == default)
-                throw new ArgumentException("La data di partenza deve essere una data valida.", nameof(fromTime));
+            if (fromTime == default) {
+                throw new ArgumentException(InvalidFromTimeErrorMessage, nameof(fromTime));
+            }
 
-            DateTime nextDate = CalculateNextDate(fromTime);
+            var nextDate = CalculateNextDate(fromTime);
 
             // Se la prossima data è minore o uguale a fromTime, avanzare di un intervallo di mesi
             if (nextDate <= fromTime) {
@@ -50,21 +56,22 @@ namespace BoffToolkit.Scheduling.PeriodRules {
             return nextDate;
         }
 
-        // Metodo per calcolare la data successiva
+        // Metodo per calcolare la data successiva, mantenendo il DateTimeKind
         private DateTime CalculateNextDate(DateTime fromTime) {
-            DateTime nextDate = new DateTime(fromTime.Year, fromTime.Month, _dayOfMonth);
+            // Calcola il numero massimo di giorni nel mese corrente
+            var maxDaysInMonth = DateTime.DaysInMonth(fromTime.Year, fromTime.Month);
 
-            // Se il giorno specificato non esiste nel mese successivo, usa l'ultimo giorno del mese
-            if (nextDate.Month != fromTime.Month) {
-                nextDate = new DateTime(nextDate.Year, nextDate.Month, 1).AddMonths(1).AddDays(-1);
+            // Usa Math.Min per assicurarsi che il giorno non superi il numero massimo di giorni nel mese
+            var day = Math.Min(_dayOfMonth, maxDaysInMonth);
+
+            // Preserva il DateTimeKind e gestisce eventuali ArgumentOutOfRangeException
+            try {
+                var nextDate = new DateTime(fromTime.Year, fromTime.Month, day, 0, 0, 0, fromTime.Kind);
+                return nextDate;
             }
-
-            // Gestisci il caso in cui il giorno del mese specificato è oltre l'ultimo giorno del mese successivo
-            if (nextDate.Day > DateTime.DaysInMonth(nextDate.Year, nextDate.Month)) {
-                nextDate = new DateTime(nextDate.Year, nextDate.Month, DateTime.DaysInMonth(nextDate.Year, nextDate.Month));
+            catch (ArgumentOutOfRangeException ex) {
+                throw new InvalidOperationException("Errore nel calcolo della data successiva: la combinazione di anno, mese e giorno non è valida.", ex);
             }
-
-            return nextDate;
         }
     }
 }

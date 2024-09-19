@@ -1,6 +1,4 @@
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using BoffToolkit.Scheduling.HttpCalls;
 using Newtonsoft.Json;
 
@@ -26,8 +24,9 @@ namespace BoffToolkit.Scheduling.Internal.HttpCalls {
         /// <param name="url">L'URL dell'endpoint API.</param>
         /// <exception cref="ArgumentNullException">Sollevata se l'URL è null.</exception>
         protected HttpCallBase(string url) {
-            if (string.IsNullOrWhiteSpace(url))
+            if (string.IsNullOrWhiteSpace(url)) {
                 throw new ArgumentNullException(nameof(url), "L'URL non può essere null o vuoto.");
+            }
 
             HttpClient = new HttpClient();
             Url = url;
@@ -46,14 +45,16 @@ namespace BoffToolkit.Scheduling.Internal.HttpCalls {
         /// <returns>Il risultato deserializzato dalla risposta HTTP.</returns>
         /// <exception cref="InvalidOperationException">Sollevata se la risposta non può essere deserializzata nel tipo specificato o è null.</exception>
         private static async Task<TResult> HandleResponseAsync(HttpResponseMessage response) {
-            if (response == null)
+            if (response == null) {
                 throw new ArgumentNullException(nameof(response), "La risposta HTTP non può essere null.");
+            }
 
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
 
-            if (string.IsNullOrWhiteSpace(content))
+            if (string.IsNullOrWhiteSpace(content)) {
                 throw new InvalidOperationException("Il contenuto della risposta è vuoto.");
+            }
 
             if (typeof(TResult) == typeof(string)) {
                 // Se TResult è string, restituisci il contenuto direttamente
@@ -66,12 +67,8 @@ namespace BoffToolkit.Scheduling.Internal.HttpCalls {
                 Console.WriteLine(content);
 
                 // Deserializza il contenuto
-                var result = JsonConvert.DeserializeObject<TResult>(content);
-
-                // Solleva un'eccezione se il risultato è null
-                if (result == null) {
-                    throw new InvalidOperationException("La risposta non può essere deserializzata nel tipo specificato o è null.");
-                }
+                var result = JsonConvert.DeserializeObject<TResult>(content)
+                    ?? throw new InvalidOperationException("La risposta non può essere deserializzata nel tipo specificato o è null.");
 
                 return result;
             }

@@ -6,7 +6,7 @@ namespace BoffToolkit.Scheduling.Internal {
     /// <summary>
     /// Contesto del JobScheduler che mantiene le informazioni necessarie per la schedulazione.
     /// </summary>
-    internal class JobSchedulerContext  {
+    internal class JobSchedulerContext {
         /// <summary>
         /// Tempo di inizio del job.
         /// </summary>
@@ -35,9 +35,10 @@ namespace BoffToolkit.Scheduling.Internal {
         /// <param name="callbackAdapter">L'adattatore di callback.</param>
         /// <param name="isBackground">Indica se il job deve essere eseguito in background.</param>
         public JobSchedulerContext(DateTime startTime, IPeriodRule periodRule, ICallbackAdapter callbackAdapter, bool isBackground) {
-            if (startTime == default)
+            if (startTime == default) {
                 throw new ArgumentException("Il tempo di inizio deve essere una data valida.", nameof(startTime));
-            
+            }
+
             PeriodRule = periodRule ?? throw new ArgumentNullException(nameof(periodRule), "La regola del periodo non può essere null.");
             CallbackAdapter = callbackAdapter ?? throw new ArgumentNullException(nameof(callbackAdapter), "L'adattatore di callback non può essere null.");
             StartTime = startTime;

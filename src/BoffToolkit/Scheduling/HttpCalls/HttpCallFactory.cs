@@ -1,12 +1,14 @@
 using BoffToolkit.Scheduling.Internal.HttpCalls;
 
-namespace BoffToolkit.Scheduling.HttpCalls
-{
+namespace BoffToolkit.Scheduling.HttpCalls {
     /// <summary>
     /// Classe factory per la creazione di istanze di chiamate HTTP.
     /// </summary>
-    public static class HttpCallFactory
-    {
+    public static class HttpCallFactory {
+        // Costanti per i messaggi di errore
+        private const string UrlNullOrEmptyErrorMessage = "L'URL non può essere null o vuoto.";
+        private const string DataNullErrorMessage = "I dati non possono essere null.";
+
         /// <summary>
         /// Crea un'istanza di <see cref="HttpGetCall{TResult}"/>.
         /// </summary>
@@ -14,11 +16,9 @@ namespace BoffToolkit.Scheduling.HttpCalls
         /// <param name="url">L'URL dell'endpoint API.</param>
         /// <returns>Un'istanza di <see cref="IHttpCall{TResult}"/> che rappresenta la richiesta GET.</returns>
         /// <exception cref="ArgumentNullException">Se l'URL è null o vuoto.</exception>
-        public static IHttpCall<TResult> CreateGetCall<TResult>(string url)
-        {
-            if (string.IsNullOrWhiteSpace(url))
-            {
-                throw new ArgumentNullException(nameof(url), "L'URL non può essere null o vuoto.");
+        public static IHttpCall<TResult> CreateGetCall<TResult>(string url) {
+            if (string.IsNullOrWhiteSpace(url)) {
+                throw new ArgumentNullException(nameof(url), UrlNullOrEmptyErrorMessage);
             }
             return new HttpGetCall<TResult>(url);
         }
@@ -32,15 +32,12 @@ namespace BoffToolkit.Scheduling.HttpCalls
         /// <param name="data">I dati da inviare nel corpo della richiesta.</param>
         /// <returns>Un'istanza di <see cref="IHttpCall{TResult}"/> che rappresenta la richiesta POST.</returns>
         /// <exception cref="ArgumentNullException">Se l'URL è null o vuoto, o se i dati sono null.</exception>
-        public static IHttpCall<TResult> CreatePostCall<TParam, TResult>(string url, TParam data)
-        {
-            if (string.IsNullOrWhiteSpace(url))
-            {
-                throw new ArgumentNullException(nameof(url), "L'URL non può essere null o vuoto.");
+        public static IHttpCall<TResult> CreatePostCall<TParam, TResult>(string url, TParam data) {
+            if (string.IsNullOrWhiteSpace(url)) {
+                throw new ArgumentNullException(nameof(url), UrlNullOrEmptyErrorMessage);
             }
-            if (data == null)
-            {
-                throw new ArgumentNullException(nameof(data), "I dati non possono essere null.");
+            if (object.Equals(data, default(TParam))) {
+                throw new ArgumentNullException(nameof(data), DataNullErrorMessage);
             }
             return new HttpPostCall<TParam, TResult>(url, data);
         }
@@ -54,15 +51,12 @@ namespace BoffToolkit.Scheduling.HttpCalls
         /// <param name="data">I dati da inviare nel corpo della richiesta.</param>
         /// <returns>Un'istanza di <see cref="IHttpCall{TResult}"/> che rappresenta la richiesta PUT.</returns>
         /// <exception cref="ArgumentNullException">Se l'URL è null o vuoto, o se i dati sono null.</exception>
-        public static IHttpCall<TResult> CreatePutCall<TParam, TResult>(string url, TParam data)
-        {
-            if (string.IsNullOrWhiteSpace(url))
-            {
-                throw new ArgumentNullException(nameof(url), "L'URL non può essere null o vuoto.");
+        public static IHttpCall<TResult> CreatePutCall<TParam, TResult>(string url, TParam data) where TParam : class {
+            if (string.IsNullOrWhiteSpace(url)) {
+                throw new ArgumentNullException(nameof(url), DataNullErrorMessage);
             }
-            if (data == null)
-            {
-                throw new ArgumentNullException(nameof(data), "I dati non possono essere null.");
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data), DataNullErrorMessage);
             }
             return new HttpPutCall<TParam, TResult>(url, data);
         }
@@ -74,11 +68,9 @@ namespace BoffToolkit.Scheduling.HttpCalls
         /// <param name="url">L'URL dell'endpoint API.</param>
         /// <returns>Un'istanza di <see cref="IHttpCall{TResult}"/> che rappresenta la richiesta DELETE.</returns>
         /// <exception cref="ArgumentNullException">Se l'URL è null o vuoto.</exception>
-        public static IHttpCall<TResult> CreateDeleteCall<TResult>(string url)
-        {
-            if (string.IsNullOrWhiteSpace(url))
-            {
-                throw new ArgumentNullException(nameof(url), "L'URL non può essere null o vuoto.");
+        public static IHttpCall<TResult> CreateDeleteCall<TResult>(string url) {
+            if (string.IsNullOrWhiteSpace(url)) {
+                throw new ArgumentNullException(nameof(url), UrlNullOrEmptyErrorMessage);
             }
             return new HttpDeleteCall<TResult>(url);
         }

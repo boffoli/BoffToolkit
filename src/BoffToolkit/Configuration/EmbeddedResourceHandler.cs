@@ -30,7 +30,10 @@ namespace BoffToolkit.Configuration {
             // Estrae la risorsa in un file
             using var stream = assembly.GetManifestResourceStream(resourceNamePath) ?? throw new InvalidOperationException($"La risorsa {resourceNamePath} non è stata trovata nell'assembly.");
 
-            var filePath = createTemporaryFile ? Path.GetTempFileName() : $"{Path.GetTempPath()}{resourceNamePath}";
+            var filePath = createTemporaryFile
+                    ? Path.Combine(Path.GetTempPath(), Path.GetRandomFileName())
+                    : Path.Combine(Path.GetTempPath(), resourceNamePath);
+
             using (var fileStream = File.Create(filePath)) {
                 stream.CopyTo(fileStream);
             }

@@ -1,4 +1,3 @@
-using System.Net.Http;
 
 namespace BoffToolkit.Scheduling.HttpCalls {
     /// <summary>

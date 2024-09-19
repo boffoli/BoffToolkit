@@ -21,7 +21,7 @@
 
   <!-- Configurazione specifica per net471 -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net471'">
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 

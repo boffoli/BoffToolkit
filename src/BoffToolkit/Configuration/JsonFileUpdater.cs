@@ -5,7 +5,7 @@ namespace BoffToolkit.Configuration {
     /// <summary>
     /// Fornisce funzionalità per aggiornare un file JSON.
     /// </summary>
-    public class JsonFileUpdater {
+    public static class JsonFileUpdater {
         /// <summary>
         /// Aggiorna un valore specifico in un contenuto JSON.
         /// </summary>

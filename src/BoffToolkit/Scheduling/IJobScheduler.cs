@@ -1,10 +1,4 @@
-using System;
-using BoffToolkit.Scheduling.Internal.Callbacks;
-
 namespace BoffToolkit.Scheduling {
-    /// <summary>
-    /// Interfaccia che definisce le operazioni di base per un job scheduler.
-    /// </summary>
     public interface IJobScheduler {
         /// <summary>
         /// Avvia l'esecuzione dei task schedulati.
@@ -25,5 +19,10 @@ namespace BoffToolkit.Scheduling {
         /// Riprende l'esecuzione dei task schedulati.
         /// </summary>
         void Resume();
+
+        /// <summary>
+        /// Restituisce il nome dello stato corrente.
+        /// </summary>
+        string CurrentStateName { get; }
     }
 }

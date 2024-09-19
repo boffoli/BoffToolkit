@@ -1,8 +1,6 @@
 using BoffToolkit.Scheduling.Internal.Callbacks;
 using BoffToolkit.Scheduling.Internal.States;
 using BoffToolkit.Scheduling.PeriodRules;
-using BoffToolkit.Scheduling;
-using System;
 
 namespace BoffToolkit.Scheduling.Internal {
     /// <summary>
@@ -11,6 +9,8 @@ namespace BoffToolkit.Scheduling.Internal {
     internal class JobScheduler : IJobScheduler, IDisposable {
         private readonly StateContext _context;
         private bool _disposed;
+
+        public string CurrentStateName => _context.StateName;
 
         /// <summary>
         /// Evento sollevato quando un callback viene completato.
@@ -25,12 +25,9 @@ namespace BoffToolkit.Scheduling.Internal {
         /// <param name="callbackAdapter">L'adattatore di callback.</param>
         /// <param name="isBackground">Indica se il job deve essere eseguito in background.</param>
         internal JobScheduler(DateTime startTime, IPeriodRule periodRule, ICallbackAdapter callbackAdapter, bool isBackground) {
-            if (startTime == default)
-                throw new ArgumentException("Il tempo di inizio deve essere una data valida.", nameof(startTime));
-            if (periodRule == null)
-                throw new ArgumentNullException(nameof(periodRule), "La regola del periodo non può essere null.");
-            if (callbackAdapter == null)
-                throw new ArgumentNullException(nameof(callbackAdapter), "L'adattatore di callback non può essere null.");
+            _ = startTime == default ? throw new ArgumentException("Il tempo di inizio deve essere una data valida.", nameof(startTime)) : startTime;
+            _ = periodRule ?? throw new ArgumentNullException(nameof(periodRule), "La regola del periodo non può essere null.");
+            _ = callbackAdapter ?? throw new ArgumentNullException(nameof(callbackAdapter), "L'adattatore di callback non può essere null.");
 
             // Crea un contesto per lo scheduler con le configurazioni iniziali
             var jobSchedulerContext = new JobSchedulerContext(startTime, periodRule, callbackAdapter, isBackground);

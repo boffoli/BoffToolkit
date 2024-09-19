@@ -13,12 +13,11 @@ namespace BoffToolkit.Test {
             var wasCallbackInvoked = false;
             var periodRule = new TimeSpanPeriodRule(TimeSpan.FromSeconds(1));
 
-
-            
             var scheduler = JobSchedulerBuilder
                 .SetStartTime(DateTime.Now.AddSeconds(1))
                 .SetPeriod(periodRule)
                 .SetCallback(() => wasCallbackInvoked = true)
+                .RegisterScheduler(true)
                 .RunInBackground(true)
                 .SetCallbackCompleted((sender, args) => {
                     Console.WriteLine($"{DateTime.Now}: Callback Completed: " + args.Result);
@@ -30,7 +29,7 @@ namespace BoffToolkit.Test {
 
             // Assert
             WaitForNextOccurrence(periodRule);
-            Assert.True(wasCallbackInvoked);
+            Assert.True(wasCallbackInvoked, "The callback should have been invoked.");
         }
 
         [Fact]
@@ -44,6 +43,7 @@ namespace BoffToolkit.Test {
                 .SetStartTime(DateTime.Now.AddSeconds(1))
                 .SetPeriod(periodRule)
                 .SetCallback<string>((p) => receivedParam = p, param)
+                .RegisterScheduler(true)
                 .RunInBackground(false)
                 .SetCallbackCompleted((sender, args) => {
                     Console.WriteLine($"{DateTime.Now}: Callback Completed with Param: " + args.Result);
@@ -68,6 +68,7 @@ namespace BoffToolkit.Test {
                 .SetStartTime(DateTime.Now.AddSeconds(1))
                 .SetPeriod(periodRule)
                 .SetCallback(() => result = 42)
+                .RegisterScheduler(true)
                 .RunInBackground(false)
                 .SetCallbackCompleted((sender, args) => {
                     Console.WriteLine($"{DateTime.Now}: Callback Completed with Result: " + args.Result);
@@ -93,6 +94,7 @@ namespace BoffToolkit.Test {
                 .SetStartTime(DateTime.Now.AddSeconds(1))
                 .SetPeriod(periodRule)
                 .SetCallback<int, int>((p) => result = p * 2, param)
+                .RegisterScheduler(true)
                 .RunInBackground(false)
                 .SetCallbackCompleted((sender, args) => {
                     Console.WriteLine($"{DateTime.Now}: Callback Completed with Result: " + args.Result);
@@ -121,6 +123,7 @@ namespace BoffToolkit.Test {
                     result = 42;
                     return result;
                 })
+                .RegisterScheduler(true)
                 .RunInBackground(false)
                 .SetCallbackCompleted((sender, args) => {
                     Console.WriteLine($"{DateTime.Now}: Async Callback Completed with Result: " + args.Result);
@@ -149,6 +152,7 @@ namespace BoffToolkit.Test {
                     await Task.Delay(500);
                     return result = p * 2;
                 }, param)
+                .RegisterScheduler(true)
                 .RunInBackground(false)
                 .SetCallbackCompleted((sender, args) => {
                     Console.WriteLine($"{DateTime.Now}: Async Callback with Param Completed with Result: " + args.Result);
@@ -174,6 +178,7 @@ namespace BoffToolkit.Test {
                 .SetStartTime(DateTime.Now.AddSeconds(1))
                 .SetPeriod(periodRule)
                 .SetCallback(schedulable)
+                .RegisterScheduler(true)
                 .RunInBackground(false)
                 .SetCallbackCompleted((sender, args) => {
                     Console.WriteLine($"{DateTime.Now}: ISchedulable Callback Completed with Result: " + args.Result);
@@ -188,7 +193,7 @@ namespace BoffToolkit.Test {
             Assert.Equal(expectedResult, schedulable.Result);
         }
 
-[Fact]
+        [Fact]
         public void JobScheduler_Should_Invoke_HttpGetCall() {
             // Arrange
             var url = "https://send.araneacloud.it/mail/sendemailtest.php";
@@ -198,6 +203,7 @@ namespace BoffToolkit.Test {
                 .SetStartTime(DateTime.Now.AddSeconds(1))
                 .SetPeriod(periodRule)
                 .SetCallback(HttpCallFactory.CreateGetCall<string>(url))
+                .RegisterScheduler(true)
                 .RunInBackground(false)
                 .SetCallbackCompleted((sender, args) => {
                     Console.WriteLine($"{DateTime.Now}: GET Callback Completed with Result: " + args.Result);
@@ -209,6 +215,8 @@ namespace BoffToolkit.Test {
 
             // Assert
             WaitForNextOccurrence(periodRule);
+            // Add assertion for expected result if applicable
+            Assert.NotNull(scheduler); // Example assertion
         }
 
         [Fact]
@@ -222,6 +230,7 @@ namespace BoffToolkit.Test {
                 .SetStartTime(DateTime.Now.AddSeconds(1))
                 .SetPeriod(periodRule)
                 .SetCallback(HttpCallFactory.CreatePostCall<object, object>(url, data))
+                .RegisterScheduler(true)
                 .RunInBackground(false)
                 .SetCallbackCompleted((sender, args) => {
                     Console.WriteLine($"{DateTime.Now}: POST Callback Completed with Result: " + args.Result);
@@ -233,6 +242,8 @@ namespace BoffToolkit.Test {
 
             // Assert
             WaitForNextOccurrence(periodRule);
+            // Add assertion for expected result if applicable
+            Assert.NotNull(scheduler); // Example assertion
         }
 
         [Fact]
@@ -246,6 +257,7 @@ namespace BoffToolkit.Test {
                 .SetStartTime(DateTime.Now.AddSeconds(1))
                 .SetPeriod(periodRule)
                 .SetCallback(HttpCallFactory.CreatePutCall<object, object>(url, data))
+                .RegisterScheduler(true)
                 .RunInBackground(false)
                 .SetCallbackCompleted((sender, args) => {
                     Console.WriteLine($"{DateTime.Now}: PUT Callback Completed with Result: " + args.Result);
@@ -257,6 +269,8 @@ namespace BoffToolkit.Test {
 
             // Assert
             WaitForNextOccurrence(periodRule);
+            // Add assertion for expected result if applicable
+            Assert.NotNull(scheduler); // Example assertion
         }
 
         [Fact]
@@ -269,6 +283,7 @@ namespace BoffToolkit.Test {
                 .SetStartTime(DateTime.Now.AddSeconds(1))
                 .SetPeriod(periodRule)
                 .SetCallback(HttpCallFactory.CreateDeleteCall<object>(url))
+                .RegisterScheduler(true)
                 .RunInBackground(false)
                 .SetCallbackCompleted((sender, args) => {
                     Console.WriteLine($"{DateTime.Now}: DELETE Callback Completed with Result: " + args.Result);
@@ -280,19 +295,21 @@ namespace BoffToolkit.Test {
 
             // Assert
             WaitForNextOccurrence(periodRule);
+            // Add assertion for expected result if applicable
+            Assert.NotNull(scheduler); // Example assertion
         }
 
-        private static void WaitForNextOccurrence(IPeriodRule periodRule) {
-            DateTime now = DateTime.Now;
-            DateTime nextOccurrence = periodRule.GetNextOccurrence(now);
-            TimeSpan delayToNextOccurrence = nextOccurrence - now + TimeSpan.FromSeconds(10); // Aggiunge un buffer di 10 secondi
+        private static void WaitForNextOccurrence(TimeSpanPeriodRule periodRule) {
+            var now = DateTime.Now;
+            var nextOccurrence = periodRule.GetNextOccurrence(now);
+            var delayToNextOccurrence = nextOccurrence - now + TimeSpan.FromSeconds(10); // Aggiunge un buffer di 10 secondi
             Task.Delay(delayToNextOccurrence).Wait();
         }
 
-        private static async Task WaitForNextOccurrenceAsync(IPeriodRule periodRule) {
-            DateTime now = DateTime.Now;
-            DateTime nextOccurrence = periodRule.GetNextOccurrence(now);
-            TimeSpan delayToNextOccurrence = nextOccurrence - now + TimeSpan.FromSeconds(10); // Aggiunge un buffer di 10 secondi
+        private static async Task WaitForNextOccurrenceAsync(TimeSpanPeriodRule periodRule) {
+            var now = DateTime.Now;
+            var nextOccurrence = periodRule.GetNextOccurrence(now);
+            var delayToNextOccurrence = nextOccurrence - now + TimeSpan.FromSeconds(10); // Aggiunge un buffer di 10 secondi
             await Task.Delay(delayToNextOccurrence);
         }
 
