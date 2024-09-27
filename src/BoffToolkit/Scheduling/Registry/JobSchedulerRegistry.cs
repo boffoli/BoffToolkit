@@ -12,7 +12,7 @@ namespace BoffToolkit.Scheduling.Registry {
         /// Dizionario statico per contenere tutte le istanze di <see cref="IJobScheduler"/>.
         /// La chiave è un identificatore univoco per ogni job scheduler.
         /// </summary>
-        private static readonly ConcurrentDictionary<string, IJobScheduler> _schedulers = new ConcurrentDictionary<string, IJobScheduler>();
+        private static readonly ConcurrentDictionary<string, IJobScheduler> _schedulers = new();
 
         /// <summary>
         /// Aggiunge un job scheduler al registro.
@@ -55,7 +55,7 @@ namespace BoffToolkit.Scheduling.Registry {
         public static IReadOnlyCollection<IJobScheduler> GetAll() {
             return _schedulers.Values.ToList();
         }
-        
+
         /// <summary>
         /// Verifica se un job scheduler esiste nel registro.
         /// </summary>

@@ -1,12 +1,40 @@
 using BoffToolkit.Scheduling;
 using BoffToolkit.Scheduling.HttpCalls;
 using BoffToolkit.Scheduling.PeriodRules;
+using BoffToolkit.Scheduling.Registry;
 using System;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace BoffToolkit.Test {
     public class JobSchedulerTests {
+
+        [Fact]
+        public void JobScheduler_Should_Invoke_DateTime() {
+            // Arrange
+            var wasCallbackInvoked = false;
+            var periodRule = new TimeSpanPeriodRule(TimeSpan.FromSeconds(1));
+
+            var scheduler = JobSchedulerBuilder
+                .SetStartTime(DateTime.Now)
+                .SetPeriod(new DailyPeriodRule(new DateTime(1, 1, 1, 14, 00, 00)))
+                .SetCallback(() => wasCallbackInvoked = true)
+                .RegisterScheduler(false)
+                .RunInBackground(true)
+                .SetCallbackCompleted((sender2, args) => {
+                    Console.WriteLine("fatto");
+                })
+                .Build();
+
+            scheduler.Start();
+
+            // Assert
+            WaitForNextOccurrence(periodRule);
+            Assert.True(wasCallbackInvoked, "The callback should have been invoked.");
+        }
+
+
         [Fact]
         public void JobScheduler_Should_Invoke_Action_Callback() {
             // Arrange
@@ -52,6 +80,7 @@ namespace BoffToolkit.Test {
 
             // Act
             scheduler.Start();
+            PrintSchedulersState();
 
             // Assert
             WaitForNextOccurrence(periodRule);
@@ -77,6 +106,7 @@ namespace BoffToolkit.Test {
 
             // Act
             scheduler.Start();
+            PrintSchedulersState();
 
             // Assert
             WaitForNextOccurrence(periodRule);
@@ -103,6 +133,7 @@ namespace BoffToolkit.Test {
 
             // Act
             scheduler.Start();
+            PrintSchedulersState();
 
             // Assert
             WaitForNextOccurrence(periodRule);
@@ -133,6 +164,8 @@ namespace BoffToolkit.Test {
             // Act
             scheduler.Start();
 
+            PrintSchedulersState();
+
             // Assert
             await WaitForNextOccurrenceAsync(periodRule);
             Assert.Equal(42, result);
@@ -162,6 +195,8 @@ namespace BoffToolkit.Test {
             // Act
             scheduler.Start();
 
+            PrintSchedulersState();
+
             // Assert
             await WaitForNextOccurrenceAsync(periodRule);
             Assert.Equal(20, result);
@@ -188,6 +223,8 @@ namespace BoffToolkit.Test {
             // Act
             scheduler.Start();
 
+            PrintSchedulersState();
+
             // Assert
             WaitForNextOccurrence(periodRule);
             Assert.Equal(expectedResult, schedulable.Result);
@@ -212,6 +249,8 @@ namespace BoffToolkit.Test {
 
             // Act
             scheduler.Start();
+
+            PrintSchedulersState();
 
             // Assert
             WaitForNextOccurrence(periodRule);
@@ -240,6 +279,8 @@ namespace BoffToolkit.Test {
             // Act
             scheduler.Start();
 
+            PrintSchedulersState();
+
             // Assert
             WaitForNextOccurrence(periodRule);
             // Add assertion for expected result if applicable
@@ -267,6 +308,8 @@ namespace BoffToolkit.Test {
             // Act
             scheduler.Start();
 
+            PrintSchedulersState();
+
             // Assert
             WaitForNextOccurrence(periodRule);
             // Add assertion for expected result if applicable
@@ -293,6 +336,8 @@ namespace BoffToolkit.Test {
             // Act
             scheduler.Start();
 
+            PrintSchedulersState();
+
             // Assert
             WaitForNextOccurrence(periodRule);
             // Add assertion for expected result if applicable
@@ -318,6 +363,14 @@ namespace BoffToolkit.Test {
             public int Execute() {
                 Result = 42;
                 return Result;
+            }
+        }
+
+        private void PrintSchedulersState() {
+            var schedulers = JobSchedulerRegistry.GetAll();
+
+            foreach (var scheduler in schedulers) {
+                Console.WriteLine($"Key: {scheduler.GetType().Name}, State: {scheduler.CurrentStateName}");
             }
         }
     }

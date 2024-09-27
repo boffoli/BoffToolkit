@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net471;net8.0</TargetFrameworks>
     <OutputType>Library</OutputType>
-    <Version>1.3.0</Version>
+    <Version>1.5.3</Version>
     <Authors>Nicola Boffoli</Authors>
     <Description>Toolkit supporting base activities: caching, pooling, configuration exceptions, scheduling, type loading</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>

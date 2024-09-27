@@ -5,12 +5,13 @@ namespace BoffToolkit.Scheduling.PeriodRules {
     /// Implementa una regola di periodo giornaliero, con possibilità di specificare un intervallo di giorni.
     /// </summary>
     public class DailyPeriodRule : IPeriodRule {
+        private const int DefaultInterval = 1;
         private readonly TimeSpan _timeOfDay;
-        private readonly int? _daysInterval;
+        private readonly int _daysInterval; // evento giornaliero di default
 
         // Definizione delle costanti per i messaggi di errore
         private const string InvalidTimeOfDayErrorMessage = "L'orario deve essere compreso tra 00:00 e 23:59.";
-        private const string InvalidDaysIntervalErrorMessage = "L'intervallo deve essere maggiore di zero.";
+        private const string InvalidDaysIntervalErrorMessage = "L'intervallo giornaliero deve essere maggiore di zero.";
         private const string InvalidFromTimeErrorMessage = "La data di partenza deve essere una data valida.";
 
         /// <summary>
@@ -18,7 +19,7 @@ namespace BoffToolkit.Scheduling.PeriodRules {
         /// </summary>
         /// <param name="timeOfDay">L'ora del giorno.</param>
         public DailyPeriodRule(DateTime timeOfDay)
-            : this(timeOfDay.TimeOfDay, null) { }
+            : this(timeOfDay.TimeOfDay, DefaultInterval) { }
 
         /// <summary>
         /// Crea una nuova istanza di <see cref="DailyPeriodRule"/> per un evento che si verifica ogni n giorni.
@@ -33,20 +34,21 @@ namespace BoffToolkit.Scheduling.PeriodRules {
         /// </summary>
         /// <param name="timeOfDay">L'orario del giorno.</param>
         public DailyPeriodRule(TimeSpan timeOfDay)
-            : this(timeOfDay, null) { }
+            : this(timeOfDay, DefaultInterval) { }
 
         /// <summary>
         /// Crea una nuova istanza di <see cref="DailyPeriodRule"/> per un evento che si verifica ogni n giorni.
         /// </summary>
         /// <param name="timeOfDay">L'orario del giorno.</param>
         /// <param name="daysInterval">L'intervallo di giorni tra le occorrenze.</param>
-        public DailyPeriodRule(TimeSpan timeOfDay, int daysInterval)
-            : this(timeOfDay, (int?)daysInterval) { }
-
-        // Costruttore privato per gestire l'inizializzazione.
-        private DailyPeriodRule(TimeSpan timeOfDay, int? daysInterval) {
+        public DailyPeriodRule(TimeSpan timeOfDay, int daysInterval) {
             _timeOfDay = (timeOfDay >= TimeSpan.Zero && timeOfDay < TimeSpan.FromDays(1)) ? timeOfDay : throw new ArgumentException(InvalidTimeOfDayErrorMessage, nameof(timeOfDay));
-            _daysInterval = (daysInterval.HasValue && daysInterval.Value > 0) ? daysInterval : throw new ArgumentException(InvalidDaysIntervalErrorMessage, nameof(daysInterval));
+            if (daysInterval > 0) {
+                _daysInterval = daysInterval;
+            }
+            else {
+                throw new ArgumentException(InvalidDaysIntervalErrorMessage, nameof(daysInterval));
+            }
         }
 
         /// <inheritdoc />
@@ -57,14 +59,8 @@ namespace BoffToolkit.Scheduling.PeriodRules {
 
             var nextDate = fromTime.Date.Add(_timeOfDay);
 
-            if (_daysInterval.HasValue) {
-                // Caso: Ogni n giorni
-                nextDate = (nextDate <= fromTime) ? nextDate.AddDays(_daysInterval.Value) : nextDate;
-            }
-            else {
-                // Caso: Ogni giorno
-                nextDate = (nextDate <= fromTime) ? nextDate.AddDays(1) : nextDate;
-            }
+            // Caso: Ogni n giorni (compreso il caso in cui _daysInterval è 1 per giornaliero)
+            nextDate = (nextDate <= fromTime) ? nextDate.AddDays(_daysInterval) : nextDate;
 
             return nextDate;
         }

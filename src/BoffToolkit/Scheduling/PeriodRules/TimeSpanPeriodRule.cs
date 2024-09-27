@@ -13,7 +13,7 @@ namespace BoffToolkit.Scheduling.PeriodRules {
         /// <param name="interval">L'intervallo di tempo tra le occorrenze.</param>
         public TimeSpanPeriodRule(TimeSpan interval) {
             if (interval <= TimeSpan.Zero) {
-                throw new ArgumentException("L'intervallo deve essere maggiore di zero.", nameof(interval));
+                throw new ArgumentException("L'intervallo timespan deve essere maggiore di zero.", nameof(interval));
             }
 
             _interval = interval;
