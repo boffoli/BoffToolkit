@@ -5,22 +5,22 @@ using Newtonsoft.Json;
 
 namespace BoffToolkit.Scheduling.Internal.HttpCalls {
     /// <summary>
-    /// Rappresenta una chiamata HTTP POST schedulabile.
+    /// Represents a schedulable HTTP POST call.
     /// </summary>
-    /// <typeparam name="TResult">Il tipo del risultato atteso dalla chiamata POST.</typeparam>
-    /// <typeparam name="TParam">Il tipo dei dati inviati nel corpo della richiesta POST.</typeparam>
+    /// <typeparam name="TResult">The expected type of the result from the POST call.</typeparam>
+    /// <typeparam name="TParam">The type of the data sent in the body of the POST request.</typeparam>
     internal sealed class HttpPostCall<TParam, TResult> : HttpCallBase<TResult> {
         private readonly HttpContent _content;
 
         /// <summary>
-        /// Inizializza una nuova istanza della classe <see cref="HttpPostCall{TParam, TResult}"/>.
+        /// Initializes a new instance of the <see cref="HttpPostCall{TParam, TResult}"/> class.
         /// </summary>
-        /// <param name="url">L'URL dell'endpoint API da chiamare.</param>
-        /// <param name="data">I dati da inviare nel corpo della richiesta POST.</param>
-        /// <exception cref="ArgumentNullException">Sollevata se l'URL o i dati sono null.</exception>
+        /// <param name="url">The URL of the API endpoint to call.</param>
+        /// <param name="data">The data to send in the body of the POST request.</param>
+        /// <exception cref="ArgumentNullException">Thrown if the URL or the data is null.</exception>
         public HttpPostCall(string url, TParam data) : base(url) {
             if (object.Equals(data, default(TParam))) {
-                throw new ArgumentNullException(nameof(data), "I dati non possono essere null.");
+                throw new ArgumentNullException(nameof(data), "The data cannot be null.");
             }
 
             var jsonContent = JsonConvert.SerializeObject(data);
@@ -30,7 +30,7 @@ namespace BoffToolkit.Scheduling.Internal.HttpCalls {
         /// <inheritdoc />
         protected override Task<HttpResponseMessage> SendRequestAsync() {
             if (_content == null) {
-                throw new InvalidOperationException("Il contenuto della richiesta POST non può essere null.");
+                throw new InvalidOperationException("The content of the POST request cannot be null.");
             }
 
             return HttpClient.PostAsync(Url, _content);

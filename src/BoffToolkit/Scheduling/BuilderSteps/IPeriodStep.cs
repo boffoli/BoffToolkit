@@ -2,14 +2,14 @@ using BoffToolkit.Scheduling.PeriodRules;
 
 namespace BoffToolkit.Scheduling.BuilderSteps {
     /// <summary>
-    /// Interfaccia per impostare il periodo di esecuzione.
+    /// Interface for configuring the execution period of a job.
     /// </summary>
     public interface IPeriodStep {
         /// <summary>
-        /// Imposta la regola del periodo di esecuzione.
+        /// Sets the execution period rule.
         /// </summary>
-        /// <param name="periodRule">La regola del periodo da impostare.</param>
-        /// <returns>Un'istanza di <see cref="ICallbackStep"/>.</returns>
+        /// <param name="periodRule">The period rule to set.</param>
+        /// <returns>An instance of <see cref="ICallbackStep"/> for further configuration.</returns>
         ICallbackStep SetPeriod(IPeriodRule periodRule);
     }
 }

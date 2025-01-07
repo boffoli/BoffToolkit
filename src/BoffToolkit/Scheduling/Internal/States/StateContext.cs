@@ -2,84 +2,85 @@ using BoffToolkit.Scheduling.Internal.States;
 
 namespace BoffToolkit.Scheduling.Internal {
     /// <summary>
-    /// Rappresenta il contesto per la gestione degli stati del JobScheduler.
+    /// Represents the context for managing the states of a JobScheduler.
     /// </summary>
     internal class StateContext {
-        private IJobSchedulerState _currentState;
+        /// <summary>
+        /// Gets the current state of the JobScheduler.
+        /// </summary>
+        internal IJobSchedulerState CurrentState { get; private set; }
 
-        // Costanti per i messaggi di errore
-        private const string InitialStateNullErrorMessage = "Lo stato iniziale non può essere null.";
-        private const string NewStateNullErrorMessage = "Il nuovo stato non può essere null.";
-        private const string CurrentStateNullErrorMessage = "Lo stato corrente non può essere null.";
+        // Constants for error messages
+        private const string InitialStateNullErrorMessage = "The initial state cannot be null.";
+        private const string NewStateNullErrorMessage = "The new state cannot be null.";
+        private const string CurrentStateNullErrorMessage = "The current state cannot be null.";
 
         /// <summary>
-        /// Ottiene il nome dello stato corrente del task scheduler.
+        /// Initializes a new instance of the <see cref="StateContext"/> class.
         /// </summary>
-        /// <value>
-        /// Il nome dello stato attualmente attivo.
-        /// </value>
-        public string StateName => _currentState.Name;
-
-        /// <summary>
-        /// Inizializza una nuova istanza della classe <see cref="StateContext"/>.
-        /// </summary>
-        /// <param name="initialState">Lo stato iniziale del JobScheduler.</param>
+        /// <param name="initialState">The initial state of the JobScheduler.</param>
+        /// <exception cref="ArgumentNullException">Thrown when the initial state is null.</exception>
         public StateContext(IJobSchedulerState initialState) {
-            _currentState = initialState ?? throw new ArgumentNullException(nameof(initialState), InitialStateNullErrorMessage);
+            CurrentState = initialState ?? throw new ArgumentNullException(nameof(initialState), InitialStateNullErrorMessage);
             SetState(initialState);
         }
 
         /// <summary>
-        /// Imposta un nuovo stato per il JobScheduler.
+        /// Sets a new state for the JobScheduler.
         /// </summary>
-        /// <param name="newState">Il nuovo stato da impostare.</param>
+        /// <param name="newState">The new state to set.</param>
+        /// <exception cref="ArgumentNullException">Thrown when the new state is null.</exception>
         public void SetState(IJobSchedulerState newState) {
-            _currentState = newState ?? throw new ArgumentNullException(nameof(newState), NewStateNullErrorMessage);
-            _currentState.ApplyState();
+            CurrentState = newState ?? throw new ArgumentNullException(nameof(newState), NewStateNullErrorMessage);
+            CurrentState.ApplyState();
         }
 
         /// <summary>
-        /// Avvia il JobScheduler.
+        /// Starts the JobScheduler.
         /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown when the current state is null.</exception>
         public void Start() {
-            if (_currentState == null) {
+            if (CurrentState == null) {
                 throw new InvalidOperationException(CurrentStateNullErrorMessage);
             }
 
-            _currentState.Start(this);
+            CurrentState.Start(this);
         }
 
         /// <summary>
-        /// Ferma il JobScheduler.
+        /// Stops the JobScheduler.
         /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown when the current state is null.</exception>
         public void Stop() {
-            if (_currentState == null) {
+            if (CurrentState == null) {
                 throw new InvalidOperationException(CurrentStateNullErrorMessage);
             }
 
-            _currentState.Stop(this);
+            CurrentState.Stop(this);
         }
 
         /// <summary>
-        /// Mette in pausa il JobScheduler.
+        /// Pauses the JobScheduler.
         /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown when the current state is null.</exception>
         public void Pause() {
-            if (_currentState == null) {
+            if (CurrentState == null) {
                 throw new InvalidOperationException(CurrentStateNullErrorMessage);
             }
 
-            _currentState.Pause(this);
+            CurrentState.Pause(this);
         }
 
         /// <summary>
-        /// Riprende il JobScheduler se è stato messo in pausa.
+        /// Resumes the JobScheduler if it has been paused.
         /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown when the current state is null.</exception>
         public void Resume() {
-            if (_currentState == null) {
+            if (CurrentState == null) {
                 throw new InvalidOperationException(CurrentStateNullErrorMessage);
             }
 
-            _currentState.Resume(this);
+            CurrentState.Resume(this);
         }
     }
 }

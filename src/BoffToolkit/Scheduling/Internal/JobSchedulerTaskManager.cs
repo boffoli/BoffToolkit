@@ -1,55 +1,55 @@
 namespace BoffToolkit.Scheduling.Internal {
     /// <summary>
-    /// Gestisce il Task di scheduling, inclusi avvio, arresto, pausa e ripresa delle operazioni.
+    /// Manages the scheduling task, including starting, stopping, pausing, and resuming operations.
     /// </summary>
     /// <remarks>
-    /// Inizializza una nuova istanza della classe <see cref="JobSchedulerTaskManager"/>.
+    /// Initializes a new instance of the <see cref="JobSchedulerTaskManager"/> class.
     /// </remarks>
-    /// <param name="context">Il contesto del JobScheduler che contiene le configurazioni e lo stato corrente.</param>
+    /// <param name="context">The JobScheduler context containing configurations and the current state.</param>
     internal class JobSchedulerTaskManager(JobSchedulerContext context) {
         private readonly JobSchedulerContext _context = context ?? throw new ArgumentNullException(nameof(context));
         private CancellationTokenSource? _cancellationTokenSource;
         private bool _isPaused;
 
         /// <summary>
-        /// Avvia l'esecuzione del Task di scheduling.
+        /// Starts the execution of the scheduling task.
         /// </summary>
         public void Start() {
-            // Se esiste già un CancellationTokenSource, lo eliminiamo
+            // If a CancellationTokenSource already exists, cancel and dispose of it
             _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource?.Dispose(); // Dispose del precedente CancellationTokenSource
+            _cancellationTokenSource?.Dispose(); // Dispose of the previous CancellationTokenSource
 
-            // Creiamo un nuovo CancellationTokenSource
+            // Create a new CancellationTokenSource
             _cancellationTokenSource = new CancellationTokenSource();
             _isPaused = false;
 
-            // Avvia il task di scheduling
+            // Start the scheduling task
             RunSchedulingTask();
         }
 
         /// <summary>
-        /// Arresta l'esecuzione del Task di scheduling.
+        /// Stops the execution of the scheduling task.
         /// </summary>
         public void Stop() {
             _cancellationTokenSource?.Cancel();
         }
 
         /// <summary>
-        /// Mette in pausa l'esecuzione del Task di scheduling.
+        /// Pauses the execution of the scheduling task.
         /// </summary>
         public void Pause() {
             _isPaused = true;
         }
 
         /// <summary>
-        /// Riprende l'esecuzione del Task di scheduling.
+        /// Resumes the execution of the scheduling task.
         /// </summary>
         public void Resume() {
             _isPaused = false;
         }
 
         /// <summary>
-        /// Metodo privato che gestisce l'esecuzione del Task di scheduling.
+        /// Private method that manages the execution of the scheduling task.
         /// </summary>
         private void RunSchedulingTask() {
             var token = _cancellationTokenSource?.Token ?? CancellationToken.None;
@@ -57,7 +57,7 @@ namespace BoffToolkit.Scheduling.Internal {
             Task.Factory.StartNew(async () => {
                 while (!token.IsCancellationRequested) {
                     if (_isPaused) {
-                        // Attende finché non viene ripreso
+                        // Wait until resumed
                         await Task.Delay(100, token);
                         continue;
                     }
@@ -71,7 +71,7 @@ namespace BoffToolkit.Scheduling.Internal {
                     }
 
                     if (!token.IsCancellationRequested) {
-                        // Esegue il callback
+                        // Execute the callback
                         await _context.CallbackAdapter.ExecuteAsync();
                     }
                 }

@@ -2,10 +2,10 @@
 
 namespace BoffToolkit.Pooling {
     /// <summary>
-    /// Gestisce la pulizia periodica del pool di oggetti in base al tempo trascorso dall'ultimo utilizzo.
+    /// Manages periodic cleanup of object pools based on the elapsed time since their last usage.
     /// </summary>
-    /// <typeparam name="TKey">Il tipo della chiave utilizzata per identificare ogni pool.</typeparam>
-    /// <typeparam name="TValue">Il tipo degli oggetti memorizzati nei pool.</typeparam>
+    /// <typeparam name="TKey">The type of the key used to identify each pool.</typeparam>
+    /// <typeparam name="TValue">The type of objects stored in the pools, which must implement <see cref="IPoolable"/>.</typeparam>
     internal class PoolCleaner<TKey, TValue>
         where TKey : notnull
         where TValue : class, IPoolable {
@@ -15,12 +15,14 @@ namespace BoffToolkit.Pooling {
         private readonly Timer _cleanupTimer;
 
         /// <summary>
-        /// Inizializza una nuova istanza della classe <see cref="PoolCleaner{TKey, TValue}"/> con le impostazioni specificate.
+        /// Initializes a new instance of the <see cref="PoolCleaner{TKey, TValue}"/> class with the specified settings.
         /// </summary>
-        /// <param name="pool">Il dizionario contenente i pool di oggetti da pulire.</param>
-        /// <param name="cleanupInterval">L'intervallo di tempo tra le pulizie periodiche.</param>
-        /// <param name="maxIdleTime">Il tempo massimo di inattività prima che un oggetto venga rimosso.</param>
-        /// <exception cref="ArgumentNullException">Sollevata se <paramref name="pool"/>, <paramref name="cleanupInterval"/> o <paramref name="maxIdleTime"/> è null o zero.</exception>
+        /// <param name="pool">The dictionary containing the object pools to clean.</param>
+        /// <param name="cleanupInterval">The interval between periodic cleanup operations.</param>
+        /// <param name="maxIdleTime">The maximum idle time before an object is removed from the pool.</param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="pool"/>, <paramref name="cleanupInterval"/>, or <paramref name="maxIdleTime"/> is null or zero.
+        /// </exception>
         public PoolCleaner(ConcurrentDictionary<TKey, ConcurrentQueue<TValue>> pool, TimeSpan cleanupInterval, TimeSpan maxIdleTime) {
             _pool = pool ?? throw new ArgumentNullException(nameof(pool));
             _cleanupInterval = cleanupInterval == TimeSpan.Zero ? throw new ArgumentNullException(nameof(cleanupInterval)) : cleanupInterval;
@@ -30,37 +32,39 @@ namespace BoffToolkit.Pooling {
         }
 
         /// <summary>
-        /// Aggiorna le impostazioni di intervallo di pulizia e tempo massimo di inattività.
+        /// Updates the cleanup interval and maximum idle time settings.
         /// </summary>
-        /// <param name="newCleanupInterval">Il nuovo intervallo di tempo tra le pulizie periodiche.</param>
-        /// <param name="newMaxIdleTime">Il nuovo tempo massimo di inattività prima che un oggetto venga rimosso.</param>
-        /// <exception cref="ArgumentNullException">Sollevata se <paramref name="newCleanupInterval"/> o <paramref name="newMaxIdleTime"/> è null o zero.</exception>
+        /// <param name="newCleanupInterval">The new interval between cleanup operations.</param>
+        /// <param name="newMaxIdleTime">The new maximum idle time before an object is removed.</param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="newCleanupInterval"/> or <paramref name="newMaxIdleTime"/> is null or zero.
+        /// </exception>
         public void UpdateSettings(TimeSpan newCleanupInterval, TimeSpan newMaxIdleTime) {
             _cleanupInterval = newCleanupInterval == TimeSpan.Zero ? throw new ArgumentNullException(nameof(newCleanupInterval)) : newCleanupInterval;
             _maxIdleTime = newMaxIdleTime == TimeSpan.Zero ? throw new ArgumentNullException(nameof(newMaxIdleTime)) : newMaxIdleTime;
 
-            // Aggiorna il timer per usare il nuovo intervallo di pulizia
+            // Update the timer with the new cleanup interval
             _cleanupTimer.Change(_cleanupInterval, _cleanupInterval);
         }
 
         /// <summary>
-        /// Avvia il processo di pulizia manuale.
+        /// Starts the manual cleanup process immediately.
         /// </summary>
         public void StartCleaning() {
             _cleanupTimer.Change(TimeSpan.Zero, _cleanupInterval);
         }
 
         /// <summary>
-        /// Ferma il processo di pulizia manuale.
+        /// Stops the manual cleanup process.
         /// </summary>
         public void StopCleaning() {
             _cleanupTimer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
         /// <summary>
-        /// Esegue la pulizia del pool di oggetti rimuovendo gli elementi che hanno superato il tempo massimo di inattività.
+        /// Cleans up the object pool by removing items that have exceeded the maximum idle time.
         /// </summary>
-        /// <param name="state">Stato dell'oggetto passato dal timer.</param>
+        /// <param name="state">The state object passed by the timer.</param>
         private void CleanupPool(object? state) {
             var currentTime = DateTime.UtcNow;
 
@@ -77,11 +81,10 @@ namespace BoffToolkit.Pooling {
                         }
                     }
 
-                    // Sostituisci la coda originale con la nuova coda che contiene solo gli elementi non scaduti
+                    // Replace the original queue with the new one containing only non-expired items
                     _pool[key] = itemsToKeep;
                 }
             }
         }
-
     }
 }

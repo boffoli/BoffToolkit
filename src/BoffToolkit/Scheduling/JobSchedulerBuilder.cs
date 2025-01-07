@@ -3,11 +3,10 @@ using BoffToolkit.Scheduling.Internal;
 using BoffToolkit.Scheduling.Internal.Callbacks;
 using BoffToolkit.Scheduling.HttpCalls;
 using BoffToolkit.Scheduling.BuilderSteps;
-using BoffToolkit.Scheduling.Registry;
 
 namespace BoffToolkit.Scheduling {
     /// <summary>
-    /// Costruisce un'istanza di <see cref="IJobScheduler"/> con le specifiche fornite.
+    /// Builds an instance of <see cref="IJobScheduler"/> with the provided specifications.
     /// </summary>
     public class JobSchedulerBuilder {
         private DateTime _startTime;
@@ -18,19 +17,19 @@ namespace BoffToolkit.Scheduling {
         private bool _register;
 
         /// <summary>
-        /// Inizia la costruzione di un <see cref="IJobScheduler"/> impostando l'orario di inizio.
+        /// Starts building a <see cref="IJobScheduler"/> by setting the start time.
         /// </summary>
-        /// <param name="startTime">L'orario di inizio del job scheduler.</param>
-        /// <returns>Un'istanza di <see cref="IPeriodStep"/> per continuare la configurazione.</returns>
-        /// <exception cref="ArgumentException">Se l'orario di inizio è una data di default.</exception>
+        /// <param name="startTime">The start time for the job scheduler.</param>
+        /// <returns>An instance of <see cref="IPeriodStep"/> to continue the configuration.</returns>
+        /// <exception cref="ArgumentException">Thrown if the start time is a default value.</exception>
         public static IPeriodStep SetStartTime(DateTime startTime) {
             return (startTime == default)
-                ? throw new ArgumentException("L'orario di inizio deve essere una data valida.", nameof(startTime))
+                ? throw new ArgumentException("The start time must be a valid date.", nameof(startTime))
                 : new BuilderSteps(new JobSchedulerBuilder()).SetStart(startTime);
         }
 
         /// <summary>
-        /// Classe interna che implementa le interfacce per costruire il JobScheduler.
+        /// Internal class implementing interfaces for building the JobScheduler.
         /// </summary>
         private sealed class BuilderSteps(JobSchedulerBuilder builder) : IStartTimeStep, IPeriodStep, ICallbackStep, IRegistrationStep, IBackgroundStep, IBuildableStep {
             private readonly JobSchedulerBuilder _builder = builder ?? throw new ArgumentNullException(nameof(builder));
@@ -38,7 +37,7 @@ namespace BoffToolkit.Scheduling {
             /// <inheritdoc/>
             public IPeriodStep SetStart(DateTime startTime) {
                 _builder._startTime = startTime == default
-                    ? throw new ArgumentException("L'orario di inizio deve essere una data valida.", nameof(startTime))
+                    ? throw new ArgumentException("The start time must be a valid date.", nameof(startTime))
                     : startTime;
                 return this;
             }
@@ -136,11 +135,11 @@ namespace BoffToolkit.Scheduling {
             /// <inheritdoc/>
             public IJobScheduler Build() {
                 if (_builder._callbackAdapter == null) {
-                    throw new InvalidOperationException("Il callback deve essere impostato.");
+                    throw new InvalidOperationException("A callback must be set.");
                 }
 
                 if (_builder._periodRule == null) {
-                    throw new InvalidOperationException("La regola del periodo deve essere impostata.");
+                    throw new InvalidOperationException("A period rule must be set.");
                 }
 
                 var scheduler = new JobScheduler(
@@ -154,7 +153,7 @@ namespace BoffToolkit.Scheduling {
                     scheduler.OnCallbackCompleted += _builder._onCallbackCompleted;
                 }
 
-                // Registrazione nel registro globale se _register è true
+                // Register in the global registry if _register is true
                 if (_builder._register) {
                     JobSchedulerRegistry.Add(scheduler.GetType().Name, scheduler);
                 }

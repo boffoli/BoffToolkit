@@ -4,28 +4,28 @@ using Newtonsoft.Json;
 
 namespace BoffToolkit.Scheduling.Internal.HttpCalls {
     /// <summary>
-    /// Classe base astratta per la gestione delle chiamate HTTP schedulabili.
+    /// Abstract base class for handling schedulable HTTP calls.
     /// </summary>
-    /// <typeparam name="TResult">Il tipo del risultato prodotto dalla chiamata HTTP.</typeparam>
+    /// <typeparam name="TResult">The type of the result produced by the HTTP call.</typeparam>
     internal abstract class HttpCallBase<TResult> : IHttpCall<TResult> {
         /// <summary>
-        /// Client HTTP utilizzato per inviare la richiesta.
+        /// The HTTP client used to send the request.
         /// </summary>
         protected readonly HttpClient HttpClient;
 
         /// <summary>
-        /// L'URL dell'endpoint API.
+        /// The URL of the API endpoint.
         /// </summary>
         protected readonly string Url;
 
         /// <summary>
-        /// Inizializza una nuova istanza della classe <see cref="HttpCallBase{TResult}"/>.
+        /// Initializes a new instance of the <see cref="HttpCallBase{TResult}"/> class.
         /// </summary>
-        /// <param name="url">L'URL dell'endpoint API.</param>
-        /// <exception cref="ArgumentNullException">Sollevata se l'URL è null.</exception>
+        /// <param name="url">The URL of the API endpoint.</param>
+        /// <exception cref="ArgumentNullException">Thrown if the URL is null or empty.</exception>
         protected HttpCallBase(string url) {
             if (string.IsNullOrWhiteSpace(url)) {
-                throw new ArgumentNullException(nameof(url), "L'URL non può essere null o vuoto.");
+                throw new ArgumentNullException(nameof(url), "The URL cannot be null or empty.");
             }
 
             HttpClient = new HttpClient();
@@ -33,48 +33,54 @@ namespace BoffToolkit.Scheduling.Internal.HttpCalls {
         }
 
         /// <summary>
-        /// Metodo astratto che deve essere implementato per inviare la richiesta HTTP specifica.
+        /// Abstract method that must be implemented to send the specific HTTP request.
         /// </summary>
-        /// <returns>Un <see cref="HttpResponseMessage"/> rappresentante la risposta HTTP.</returns>
+        /// <returns>
+        /// A <see cref="HttpResponseMessage"/> representing the HTTP response.
+        /// </returns>
         protected abstract Task<HttpResponseMessage> SendRequestAsync();
 
         /// <summary>
-        /// Gestisce la risposta HTTP, garantendo il successo e deserializzando il contenuto della risposta.
+        /// Handles the HTTP response, ensures success, and deserializes the response content.
         /// </summary>
-        /// <param name="response">Il <see cref="HttpResponseMessage"/> da gestire.</param>
-        /// <returns>Il risultato deserializzato dalla risposta HTTP.</returns>
-        /// <exception cref="InvalidOperationException">Sollevata se la risposta non può essere deserializzata nel tipo specificato o è null.</exception>
+        /// <param name="response">The <see cref="HttpResponseMessage"/> to process.</param>
+        /// <returns>
+        /// The deserialized result from the HTTP response.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown if the response cannot be deserialized into the specified type or is null.
+        /// </exception>
         private static async Task<TResult> HandleResponseAsync(HttpResponseMessage response) {
             if (response == null) {
-                throw new ArgumentNullException(nameof(response), "La risposta HTTP non può essere null.");
+                throw new ArgumentNullException(nameof(response), "The HTTP response cannot be null.");
             }
 
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
 
             if (string.IsNullOrWhiteSpace(content)) {
-                throw new InvalidOperationException("Il contenuto della risposta è vuoto.");
+                throw new InvalidOperationException("The response content is empty.");
             }
 
             if (typeof(TResult) == typeof(string)) {
-                // Se TResult è string, restituisci il contenuto direttamente
+                // If TResult is string, return the content directly
                 return (TResult)(object)content;
             }
 
             try {
-                // Log del contenuto della risposta
-                Console.WriteLine("Contenuto della risposta JSON:");
+                // Log the response content
+                Console.WriteLine("Response JSON content:");
                 Console.WriteLine(content);
 
-                // Deserializza il contenuto
+                // Deserialize the content
                 var result = JsonConvert.DeserializeObject<TResult>(content)
-                    ?? throw new InvalidOperationException("La risposta non può essere deserializzata nel tipo specificato o è null.");
+                    ?? throw new InvalidOperationException("The response cannot be deserialized into the specified type or is null.");
 
                 return result;
             }
             catch (JsonReaderException ex) {
-                Console.WriteLine("Errore durante la deserializzazione del contenuto JSON: " + ex.Message);
-                throw new InvalidOperationException("Errore durante la deserializzazione del contenuto JSON.", ex);
+                Console.WriteLine("Error during JSON deserialization: " + ex.Message);
+                throw new InvalidOperationException("Error during JSON deserialization.", ex);
             }
         }
 

@@ -2,16 +2,22 @@ using System.Net.Http;
 
 namespace BoffToolkit.Scheduling.Internal.HttpCalls {
     /// <summary>
-    /// Rappresenta una chiamata HTTP DELETE schedulabile.
+    /// Represents a schedulable HTTP DELETE call.
     /// </summary>
-    /// <typeparam name="TResult">Il tipo del risultato atteso dalla chiamata DELETE.</typeparam>
+    /// <typeparam name="TResult">The expected type of the result from the DELETE call.</typeparam>
     /// <remarks>
-    /// Inizializza una nuova istanza della classe <see cref="HttpDeleteCall{TResult}"/>.
+    /// Initializes a new instance of the <see cref="HttpDeleteCall{TResult}"/> class.
     /// </remarks>
-    /// <param name="url">L'URL dell'endpoint API da chiamare.</param>
+    /// <param name="url">The URL of the API endpoint to call.</param>
     internal sealed class HttpDeleteCall<TResult>(string url) : HttpCallBase<TResult>(url) {
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Sends the HTTP DELETE request asynchronously.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="Task{TResult}"/> that represents the asynchronous operation, 
+        /// containing the HTTP response message.
+        /// </returns>
         protected override Task<HttpResponseMessage> SendRequestAsync() {
             return HttpClient.DeleteAsync(Url);
         }

@@ -1,39 +1,37 @@
 namespace BoffToolkit.Pooling {
     /// <summary>
-    /// Interfaccia per oggetti gestibili all'interno di un pool, fornendo metodi per attivare, validare,
-    /// deattivare e pulire l'oggetto per garantire il riutilizzo efficiente e sicuro.
+    /// Interface for objects that can be managed within a pool, providing methods to activate, validate,
+    /// deactivate, and clean up the object to ensure efficient and safe reuse.
     /// </summary>
-    /// <typeparam name="TPooledType">Il tipo dell'oggetto stesso.</typeparam>
     public interface IPoolable : IAsyncDisposable {
         /// <summary>
-        /// Ottiene o imposta il timestamp dell'ultimo utilizzo dell'oggetto. Usato per tracciare l'attività e gestire la
-        /// rimozione degli oggetti inattivi dal pool.
+        /// Gets or sets the timestamp of the last usage of the object. Used to track activity and manage
+        /// the removal of inactive objects from the pool.
         /// </summary>
         DateTime LastUsedTime { get; internal set; }
 
         /// <summary>
-        /// Indica se l'oggetto è attivo o no. True se attivo, False altrimenti.
+        /// Indicates whether the object is active. True if active, otherwise False.
         /// </summary>
         bool IsActive { get; internal set; }
 
         /// <summary>
-        /// Attiva l'oggetto, preparandolo per l'uso. Questo metodo può configurare lo stato iniziale dell'oggetto
-        /// o ripristinare le impostazioni a uno stato adatto per l'uso.
+        /// Activates the object, preparing it for use. This method may configure the initial state of the object
+        /// or restore settings to a suitable state for usage.
         /// </summary>
-        /// <param name="activationParams">Parametri opzionali utilizzati per configurare l'oggetto durante l'attivazione.</param>
+        /// <param name="activationParams">Optional parameters used to configure the object during activation.</param>
         Task ActivateAsync(params object[] activationParams);
 
         /// <summary>
-        /// Verifica se l'oggetto è in uno stato adatto per l'uso. Questo può includere controlli su connessioni di rete,
-        /// sessioni attive o coerenza di stato interno.
+        /// Validates whether the object is in a suitable state for usage. This may include checks on network connections,
+        /// active sessions, or consistency of internal state.
         /// </summary>
-        /// <returns>True se l'oggetto è valido e pronto per l'uso, altrimenti False.</returns>
+        /// <returns>True if the object is valid and ready for use, otherwise False.</returns>
         Task<bool> ValidateAsync();
 
         /// <summary>
-        /// Deattiva l'oggetto, resettandolo o preparandolo per essere rimesso nel pool. Pulisce stati temporanei,
-        /// dati sensibili, e revoca sottoscrizioni o osservatori per prevenire effetti collaterali indesiderati durante
-        /// il riutilizzo.
+        /// Deactivates the object, resetting or preparing it to be returned to the pool. Cleans up temporary states,
+        /// sensitive data, and revokes subscriptions or observers to prevent unintended side effects during reuse.
         /// </summary>
         Task DeactivateAsync();
     }

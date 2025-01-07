@@ -3,29 +3,26 @@ using BoffToolkit.Logging;
 
 namespace BoffToolkit.Scheduling.Internal.States {
     /// <summary>
-    /// Rappresenta lo stato di arresto per il task scheduler.
+    /// Represents the stopped state of the task scheduler.
     /// </summary>
     /// <remarks>
-    /// Inizializza una nuova istanza della classe <see cref="StoppedState"/> con le operazioni specificate.
+    /// Initializes a new instance of the <see cref="StoppedState"/> class with the specified task manager.
     /// </remarks>
-    /// <param name="taskManager">Il gestore dei task del job scheduler.</param>
+    /// <param name="taskManager">The task manager of the job scheduler.</param>
     internal class StoppedState(JobSchedulerTaskManager taskManager) : IJobSchedulerState {
         private readonly JobSchedulerTaskManager _taskManager = taskManager ?? throw new ArgumentNullException(nameof(taskManager), TaskManagerNullErrorMessage);
 
-        // Costanti per i messaggi di errore e di log
-        private const string TaskManagerNullErrorMessage = "Il gestore dei task non può essere null.";
-        private const string ContextNullErrorMessage = "Il contesto non può essere null.";
-        private const string StartFromStoppedStateMessage = "Avvio del task dallo stato di arresto.";
-        private const string InvalidPauseWarning = "Tentativo di pausa durante l'arresto. Operazione non valida.";
-        private const string InvalidResumeWarning = "Tentativo di ripresa durante l'arresto. Operazione non valida.";
-        private const string TaskAlreadyStoppedWarning = "Il task è già fermo.";
-
-        /// <inheritdoc/>
-        public string Name => "Stopped";
+        // Constants for error and log messages
+        private const string TaskManagerNullErrorMessage = "The task manager cannot be null.";
+        private const string ContextNullErrorMessage = "The context cannot be null.";
+        private const string StartFromStoppedStateMessage = "Starting task from the stopped state.";
+        private const string InvalidPauseWarning = "Attempted to pause while in the stopped state. Operation is not valid.";
+        private const string InvalidResumeWarning = "Attempted to resume while in the stopped state. Operation is not valid.";
+        private const string TaskAlreadyStoppedWarning = "The task is already stopped.";
 
         /// <inheritdoc/>
         public void ApplyState() {
-            // Ferma il task quando lo stato diventa Stopped
+            // Stops the task when the state is set to Stopped
             _taskManager.Stop();
         }
 
@@ -65,6 +62,21 @@ namespace BoffToolkit.Scheduling.Internal.States {
             }
 
             CentralLogger<StoppedState>.LogWarning(TaskAlreadyStoppedWarning);
+        }
+
+        /// <inheritdoc/>
+        public bool IsStopped() {
+            return true;
+        }
+
+        /// <inheritdoc/>
+        public bool IsPaused() {
+            return false;
+        }
+
+        /// <inheritdoc/>
+        public bool IsRunning() {
+            return false;
         }
     }
 }

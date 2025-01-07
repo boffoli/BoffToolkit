@@ -3,56 +3,56 @@ using Newtonsoft.Json.Linq;
 
 namespace BoffToolkit.Configuration {
     /// <summary>
-    /// Fornisce funzionalità per aggiornare un file JSON.
+    /// Provides functionality for updating a JSON file.
     /// </summary>
     public static class JsonFileUpdater {
         /// <summary>
-        /// Aggiorna un valore specifico in un contenuto JSON.
+        /// Updates a specific value in JSON content.
         /// </summary>
-        /// <param name="jsonContent">Il contenuto JSON da aggiornare.</param>
-        /// <param name="keyPath">Il percorso della chiave da aggiornare nel formato 'Sezione:Chiave'.</param>
-        /// <param name="newValue">Il nuovo valore da impostare per la chiave specificata.</param>
-        /// <returns>Il contenuto JSON aggiornato come stringa.</returns>
-        /// <exception cref="JsonException">Lanciata se il contenuto JSON non è valido.</exception>
-        /// <exception cref="ArgumentException">Lanciata se il percorso della chiave non è nel formato corretto o non corrisponde alla struttura del JSON.</exception>
+        /// <param name="jsonContent">The JSON content to update.</param>
+        /// <param name="keyPath">The key path to update, formatted as 'Section:Key'.</param>
+        /// <param name="newValue">The new value to set for the specified key.</param>
+        /// <returns>The updated JSON content as a string.</returns>
+        /// <exception cref="JsonException">Thrown if the JSON content is invalid.</exception>
+        /// <exception cref="ArgumentException">Thrown if the key path is incorrectly formatted or does not match the JSON structure.</exception>
         public static string UpdateValue(string jsonContent, string keyPath, string newValue) {
             var jsonObject = JsonConvert.DeserializeObject<JObject>(jsonContent)
-                        ?? throw new JsonException("Il contenuto del file non è un JSON valido.");
+                        ?? throw new JsonException("The content of the file is not valid JSON.");
 
-            // Imposta il nuovo valore per la chiave specificata
+            // Sets the new value for the specified key
             SetJsonValue(jsonObject, keyPath, newValue);
 
-            // Salva il JSON aggiornato nel file
+            // Serializes the updated JSON content
             var updatedJsonContent = JsonConvert.SerializeObject(jsonObject, Formatting.Indented);
 
             return updatedJsonContent;
         }
 
         /// <summary>
-        /// Imposta il valore specificato nel <see cref="JObject"/>.
+        /// Sets the specified value in the <see cref="JObject"/>.
         /// </summary>
-        /// <param name="jsonObject">Il <see cref="JObject"/> da modificare.</param>
-        /// <param name="keyPath">Il percorso della chiave nel formato 'Sezione:Chiave'.</param>
-        /// <param name="value">Il nuovo valore da impostare.</param>
-        /// <exception cref="ArgumentException">Lanciata se il percorso della chiave non è nel formato corretto o non corrisponde alla struttura del JSON.</exception>
-        /// <exception cref="InvalidOperationException">Lanciata se l'oggetto corrente è null.</exception>
+        /// <param name="jsonObject">The <see cref="JObject"/> to modify.</param>
+        /// <param name="keyPath">The key path, formatted as 'Section:Key'.</param>
+        /// <param name="value">The new value to set.</param>
+        /// <exception cref="ArgumentException">Thrown if the key path is incorrectly formatted or does not match the JSON structure.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the current JSON object is null.</exception>
         private static void SetJsonValue(JObject jsonObject, string keyPath, string value) {
-            // Suddivide il percorso della chiave in sezioni
+            // Splits the key path into sections
             var pathParts = keyPath.Split(':');
             if (pathParts.Length < 2) {
-                throw new ArgumentException("Il percorso della chiave deve essere nel formato 'Sezione:Chiave' o 'Sezione:Sezione:...:Chiave'");
+                throw new ArgumentException("The key path must be formatted as 'Section:Key' or 'Section:Section:...:Key'");
             }
 
-            // Naviga attraverso le sezioni del JSON
+            // Navigates through the JSON sections
             var currentObject = jsonObject;
             foreach (var part in pathParts.Take(pathParts.Length - 1).SelectMany(section => section.Split('.'))) {
                 Object? currentObjectPart = currentObject[part];
 
-                currentObject = currentObjectPart != null ? (JObject)currentObjectPart : throw new InvalidOperationException("currentObject non può essere null.");
-                currentObject = currentObject ?? throw new ArgumentException("Il percorso della chiave non corrisponde alla struttura del JSON");
+                currentObject = currentObjectPart != null ? (JObject)currentObjectPart : throw new InvalidOperationException("currentObject cannot be null.");
+                currentObject = currentObject ?? throw new ArgumentException("The key path does not match the JSON structure.");
             }
 
-            // Imposta il nuovo valore per la chiave finale
+            // Sets the new value for the final key
             currentObject[pathParts.Last()] = value;
         }
     }

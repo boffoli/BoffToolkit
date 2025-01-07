@@ -2,10 +2,8 @@ using BoffToolkit.Scheduling;
 using BoffToolkit.Scheduling.HttpCalls;
 using BoffToolkit.Scheduling.PeriodRules;
 using BoffToolkit.Scheduling.Registry;
-using System;
-using System.Runtime.Serialization;
-using System.Threading.Tasks;
-using Xunit;
+using BoffToolkit.Scheduling.Factories;
+
 
 namespace BoffToolkit.Test {
     public class JobSchedulerTests {
@@ -14,11 +12,11 @@ namespace BoffToolkit.Test {
         public void JobScheduler_Should_Invoke_DateTime() {
             // Arrange
             var wasCallbackInvoked = false;
-            var periodRule = new TimeSpanPeriodRule(TimeSpan.FromSeconds(1));
+            var periodRule = PeriodRuleFactory.CreateTimeSpanPeriodRule(TimeSpan.FromSeconds(1));
 
             var scheduler = JobSchedulerBuilder
                 .SetStartTime(DateTime.Now)
-                .SetPeriod(new DailyPeriodRule(new DateTime(1, 1, 1, 14, 00, 00)))
+                .SetPeriod(periodRule)
                 .SetCallback(() => wasCallbackInvoked = true)
                 .RegisterScheduler(false)
                 .RunInBackground(true)
@@ -39,7 +37,7 @@ namespace BoffToolkit.Test {
         public void JobScheduler_Should_Invoke_Action_Callback() {
             // Arrange
             var wasCallbackInvoked = false;
-            var periodRule = new TimeSpanPeriodRule(TimeSpan.FromSeconds(1));
+            var periodRule = PeriodRuleFactory.CreateTimeSpanPeriodRule(TimeSpan.FromSeconds(1));
 
             var scheduler = JobSchedulerBuilder
                 .SetStartTime(DateTime.Now.AddSeconds(1))
@@ -65,7 +63,7 @@ namespace BoffToolkit.Test {
             // Arrange
             var param = "test";
             var receivedParam = string.Empty;
-            var periodRule = new TimeSpanPeriodRule(TimeSpan.FromSeconds(1));
+            var periodRule = PeriodRuleFactory.CreateTimeSpanPeriodRule(TimeSpan.FromSeconds(1));
 
             var scheduler = JobSchedulerBuilder
                 .SetStartTime(DateTime.Now.AddSeconds(1))
@@ -91,7 +89,7 @@ namespace BoffToolkit.Test {
         public void JobScheduler_Should_Invoke_Func_Callback() {
             // Arrange
             var result = 0;
-            var periodRule = new TimeSpanPeriodRule(TimeSpan.FromSeconds(1));
+            var periodRule = PeriodRuleFactory.CreateTimeSpanPeriodRule(TimeSpan.FromSeconds(1));
 
             var scheduler = JobSchedulerBuilder
                 .SetStartTime(DateTime.Now.AddSeconds(1))
@@ -118,7 +116,7 @@ namespace BoffToolkit.Test {
             // Arrange
             var param = 10;
             var result = 0;
-            var periodRule = new TimeSpanPeriodRule(TimeSpan.FromSeconds(1));
+            var periodRule = PeriodRuleFactory.CreateTimeSpanPeriodRule(TimeSpan.FromSeconds(1));
 
             var scheduler = JobSchedulerBuilder
                 .SetStartTime(DateTime.Now.AddSeconds(1))
@@ -144,7 +142,7 @@ namespace BoffToolkit.Test {
         public async Task JobScheduler_Should_Invoke_TaskFunc_CallbackAsync() {
             // Arrange
             var result = 0;
-            var periodRule = new TimeSpanPeriodRule(TimeSpan.FromSeconds(1));
+            var periodRule = PeriodRuleFactory.CreateTimeSpanPeriodRule(TimeSpan.FromSeconds(1));
 
             var scheduler = JobSchedulerBuilder
                 .SetStartTime(DateTime.Now.AddSeconds(1))
@@ -176,7 +174,7 @@ namespace BoffToolkit.Test {
             // Arrange
             var param = 10;
             var result = 0;
-            var periodRule = new TimeSpanPeriodRule(TimeSpan.FromSeconds(1));
+            var periodRule = PeriodRuleFactory.CreateTimeSpanPeriodRule(TimeSpan.FromSeconds(1));
 
             var scheduler = JobSchedulerBuilder
                 .SetStartTime(DateTime.Now.AddSeconds(1))
@@ -207,7 +205,7 @@ namespace BoffToolkit.Test {
             // Arrange
             var schedulable = new SchedulableStub();
             var expectedResult = 42;
-            var periodRule = new TimeSpanPeriodRule(TimeSpan.FromSeconds(1));
+            var periodRule = PeriodRuleFactory.CreateTimeSpanPeriodRule(TimeSpan.FromSeconds(1));
 
             var scheduler = JobSchedulerBuilder
                 .SetStartTime(DateTime.Now.AddSeconds(1))
@@ -234,7 +232,7 @@ namespace BoffToolkit.Test {
         public void JobScheduler_Should_Invoke_HttpGetCall() {
             // Arrange
             var url = "https://send.araneacloud.it/mail/sendemailtest.php";
-            var periodRule = new TimeSpanPeriodRule(TimeSpan.FromSeconds(1));
+            var periodRule = PeriodRuleFactory.CreateTimeSpanPeriodRule(TimeSpan.FromSeconds(1));
 
             var scheduler = JobSchedulerBuilder
                 .SetStartTime(DateTime.Now.AddSeconds(1))
@@ -263,7 +261,7 @@ namespace BoffToolkit.Test {
             // Arrange
             var url = "https://jsonplaceholder.typicode.com/posts";
             var data = new { title = "foo", body = "bar", userId = 1 };
-            var periodRule = new TimeSpanPeriodRule(TimeSpan.FromSeconds(1));
+            var periodRule = PeriodRuleFactory.CreateTimeSpanPeriodRule(TimeSpan.FromSeconds(1));
 
             var scheduler = JobSchedulerBuilder
                 .SetStartTime(DateTime.Now.AddSeconds(1))
@@ -292,7 +290,7 @@ namespace BoffToolkit.Test {
             // Arrange
             var url = "https://jsonplaceholder.typicode.com/posts/1";
             var data = new { id = 1, title = "foo", body = "bar", userId = 1 };
-            var periodRule = new TimeSpanPeriodRule(TimeSpan.FromSeconds(1));
+            var periodRule = PeriodRuleFactory.CreateTimeSpanPeriodRule(TimeSpan.FromSeconds(1));
 
             var scheduler = JobSchedulerBuilder
                 .SetStartTime(DateTime.Now.AddSeconds(1))
@@ -320,7 +318,7 @@ namespace BoffToolkit.Test {
         public void JobScheduler_Should_Invoke_HttpDeleteCall() {
             // Arrange
             var url = "https://jsonplaceholder.typicode.com/posts/1";
-            var periodRule = new TimeSpanPeriodRule(TimeSpan.FromSeconds(1));
+            var periodRule = PeriodRuleFactory.CreateTimeSpanPeriodRule(TimeSpan.FromSeconds(1));
 
             var scheduler = JobSchedulerBuilder
                 .SetStartTime(DateTime.Now.AddSeconds(1))
@@ -344,14 +342,14 @@ namespace BoffToolkit.Test {
             Assert.NotNull(scheduler); // Example assertion
         }
 
-        private static void WaitForNextOccurrence(TimeSpanPeriodRule periodRule) {
+        private static void WaitForNextOccurrence(ITimeSpanPeriodRule periodRule) {
             var now = DateTime.Now;
             var nextOccurrence = periodRule.GetNextOccurrence(now);
             var delayToNextOccurrence = nextOccurrence - now + TimeSpan.FromSeconds(10); // Aggiunge un buffer di 10 secondi
             Task.Delay(delayToNextOccurrence).Wait();
         }
 
-        private static async Task WaitForNextOccurrenceAsync(TimeSpanPeriodRule periodRule) {
+        private static async Task WaitForNextOccurrenceAsync(ITimeSpanPeriodRule periodRule) {
             var now = DateTime.Now;
             var nextOccurrence = periodRule.GetNextOccurrence(now);
             var delayToNextOccurrence = nextOccurrence - now + TimeSpan.FromSeconds(10); // Aggiunge un buffer di 10 secondi
@@ -366,11 +364,32 @@ namespace BoffToolkit.Test {
             }
         }
 
-        private void PrintSchedulersState() {
+        /// <summary>
+        /// Prints the state of all schedulers in the registry to the console.
+        /// </summary>
+        private static void PrintSchedulersState() {
             var schedulers = JobSchedulerRegistry.GetAll();
 
             foreach (var scheduler in schedulers) {
-                Console.WriteLine($"Key: {scheduler.GetType().Name}, State: {scheduler.CurrentStateName}");
+                string state;
+
+                if (scheduler.IsDisposed()) {
+                    state = "Disposed";
+                }
+                else if (scheduler.IsRunning()) {
+                    state = "Running";
+                }
+                else if (scheduler.IsPaused()) {
+                    state = "Paused";
+                }
+                else if (scheduler.IsStopped()) {
+                    state = "Stopped";
+                }
+                else {
+                    state = "Unknown State";
+                }
+
+                Console.WriteLine($"Scheduler Type: {scheduler.GetType().Name}, State: {state}");
             }
         }
     }

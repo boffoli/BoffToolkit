@@ -1,13 +1,13 @@
 namespace BoffToolkit.Scheduling.BuilderSteps {
     /// <summary>
-    /// Interfaccia per impostare l'esecuzione in background.
+    /// Interface for configuring background execution of a job.
     /// </summary>
     public interface IBackgroundStep {
         /// <summary>
-        /// Imposta se il job deve essere eseguito in background.
+        /// Configures whether the job should run in the background.
         /// </summary>
-        /// <param name="isBackground">Se true, il job viene eseguito in background.</param>
-        /// <returns>Un'istanza di <see cref="IBuildableStep"/>.</returns>
+        /// <param name="isBackground">If <c>true</c>, the job will execute in the background.</param>
+        /// <returns>An instance of <see cref="IBuildableStep"/> to continue the build process.</returns>
         IBuildableStep RunInBackground(bool isBackground);
     }
 }

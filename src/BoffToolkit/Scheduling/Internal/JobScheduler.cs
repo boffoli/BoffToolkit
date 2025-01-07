@@ -1,78 +1,88 @@
+using System;
 using BoffToolkit.Scheduling.Internal.Callbacks;
 using BoffToolkit.Scheduling.Internal.States;
 using BoffToolkit.Scheduling.PeriodRules;
 
 namespace BoffToolkit.Scheduling.Internal {
     /// <summary>
-    /// Rappresenta uno scheduler per l'esecuzione di job periodici.
+    /// Represents a scheduler for executing periodic jobs.
     /// </summary>
-    internal class JobScheduler : IJobScheduler, IDisposable {
+    internal class JobScheduler : IJobScheduler {
         private readonly StateContext _context;
         private bool _disposed;
 
-        public string CurrentStateName => _context.StateName;
+        /// <inheritdoc />
+        public DateTime StartTime { get; }
+
+        /// <inheritdoc />
+        public IPeriodRule PeriodRule { get; }
 
         /// <summary>
-        /// Evento sollevato quando un callback viene completato.
+        /// Occurs when a callback is completed.
         /// </summary>
         public event EventHandler<CallbackCompletedEventArgs>? OnCallbackCompleted;
 
         /// <summary>
-        /// Inizializza una nuova istanza della classe <see cref="JobScheduler"/>.
+        /// Initializes a new instance of the <see cref="JobScheduler"/> class.
         /// </summary>
-        /// <param name="startTime">Il tempo di inizio del job.</param>
-        /// <param name="periodRule">La regola del periodo per il job.</param>
-        /// <param name="callbackAdapter">L'adattatore di callback.</param>
-        /// <param name="isBackground">Indica se il job deve essere eseguito in background.</param>
+        /// <param name="startTime">The start time of the job.</param>
+        /// <param name="periodRule">The period rule defining the job's execution intervals.</param>
+        /// <param name="callbackAdapter">The adapter responsible for executing callbacks.</param>
+        /// <param name="isBackground">Indicates whether the job should run as a background process.</param>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="startTime"/> is not a valid date.</exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when <paramref name="periodRule"/> or <paramref name="callbackAdapter"/> is <c>null</c>.
+        /// </exception>
         internal JobScheduler(DateTime startTime, IPeriodRule periodRule, ICallbackAdapter callbackAdapter, bool isBackground) {
-            _ = startTime == default ? throw new ArgumentException("Il tempo di inizio deve essere una data valida.", nameof(startTime)) : startTime;
-            _ = periodRule ?? throw new ArgumentNullException(nameof(periodRule), "La regola del periodo non può essere null.");
-            _ = callbackAdapter ?? throw new ArgumentNullException(nameof(callbackAdapter), "L'adattatore di callback non può essere null.");
+            StartTime = startTime != default
+                ? startTime
+                : throw new ArgumentException("The start time must be a valid date.", nameof(startTime));
 
-            // Crea un contesto per lo scheduler con le configurazioni iniziali
+            PeriodRule = periodRule ?? throw new ArgumentNullException(nameof(periodRule), "The period rule cannot be null.");
+
+            // Create a context for the scheduler with the initial configuration
             var jobSchedulerContext = new JobSchedulerContext(startTime, periodRule, callbackAdapter, isBackground);
 
-            // Iscrizione all'evento di completamento del callback
+            // Subscribe to the callback completion event
             jobSchedulerContext.CallbackAdapter.CallbackCompleted += (sender, args) => {
-                // Solleva l'evento OnCallbackCompleted quando un callback è completato
                 OnCallbackCompleted?.Invoke(this, args);
             };
 
-            // Inizializza le operazioni dello scheduler e lo stato iniziale
+            // Initialize scheduler operations and set the initial state
             var taskManager = new JobSchedulerTaskManager(jobSchedulerContext);
             _context = new StateContext(new StoppedState(taskManager));
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Start() {
             _context.Start();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Stop() {
             _context.Stop();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Pause() {
             _context.Pause();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Resume() {
             _context.Resume();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
         /// <summary>
-        /// Metodo per la gestione del rilascio delle risorse.
+        /// Releases resources used by the <see cref="JobScheduler"/> instance.
         /// </summary>
-        /// <param name="disposing">Indica se il metodo è chiamato da Dispose.</param>
+        /// <param name="disposing">Indicates whether the method is being called from <see cref="Dispose()"/>.</param>
         protected virtual void Dispose(bool disposing) {
             if (_disposed) {
                 return;
@@ -85,8 +95,33 @@ namespace BoffToolkit.Scheduling.Internal {
             _disposed = true;
         }
 
+        /// <inheritdoc />
+        public bool IsStopped() {
+            return _context.CurrentState.IsStopped();
+        }
+
+        /// <inheritdoc />
+        public bool IsPaused() {
+            return _context.CurrentState.IsPaused();
+        }
+
+        /// <inheritdoc />
+        public bool IsRunning() {
+            return _context.CurrentState.IsRunning();
+        }
+
+        /// <inheritdoc />
+        public void Release() {
+            Dispose(); // Calls Dispose to release resources.
+        }
+
+        /// <inheritdoc />
+        public bool IsDisposed() {
+            return _disposed;
+        }
+
         /// <summary>
-        /// Finalizzatore per rilasciare le risorse non gestite.
+        /// Finalizer to release unmanaged resources.
         /// </summary>
         ~JobScheduler() {
             Dispose(false);

@@ -4,10 +4,10 @@ using BoffToolkit.Scheduling.HttpCalls;
 
 namespace BoffToolkit.Scheduling.Internal.Callbacks {
     /// <summary>
-    /// Adattatore per la gestione di diversi tipi di callback, inclusa l'esecuzione di chiamate API.
+    /// Adapter for managing various types of callbacks, including executing API calls.
     /// </summary>
-    /// <typeparam name="TResult">Il tipo di risultato del callback.</typeparam>
-    /// <typeparam name="TParam">Il tipo del parametro del callback.</typeparam>
+    /// <typeparam name="TResult">The type of the callback result.</typeparam>
+    /// <typeparam name="TParam">The type of the callback parameter.</typeparam>
     public class CallbackAdapter<TResult, TParam> : ICallbackAdapter {
         private readonly Action? _action;
         private readonly Action<TParam>? _actionWithParam;
@@ -20,110 +20,110 @@ namespace BoffToolkit.Scheduling.Internal.Callbacks {
         private readonly TParam? _param;
 
         private CallbackAdapter(Action action) {
-            _action = action ?? throw new ArgumentNullException(nameof(action), "L'azione non può essere null.");
+            _action = action ?? throw new ArgumentNullException(nameof(action), "The action cannot be null.");
         }
 
         private CallbackAdapter(Action<TParam> actionWithParam, TParam param) {
-            _actionWithParam = actionWithParam ?? throw new ArgumentNullException(nameof(actionWithParam), "L'azione con parametro non può essere null.");
+            _actionWithParam = actionWithParam ?? throw new ArgumentNullException(nameof(actionWithParam), "The action with parameter cannot be null.");
             _param = param;
         }
 
         private CallbackAdapter(Func<Task<TResult>> taskFunc) {
-            _taskFunc = taskFunc ?? throw new ArgumentNullException(nameof(taskFunc), "La funzione asincrona non può essere null.");
+            _taskFunc = taskFunc ?? throw new ArgumentNullException(nameof(taskFunc), "The asynchronous function cannot be null.");
         }
 
         private CallbackAdapter(Func<TParam, Task<TResult>> taskFuncWithParam, TParam param) {
-            _taskFuncWithParam = taskFuncWithParam ?? throw new ArgumentNullException(nameof(taskFuncWithParam), "La funzione asincrona con parametro non può essere null.");
+            _taskFuncWithParam = taskFuncWithParam ?? throw new ArgumentNullException(nameof(taskFuncWithParam), "The asynchronous function with parameter cannot be null.");
             _param = param;
         }
 
         private CallbackAdapter(Func<TResult> func) {
-            _func = func ?? throw new ArgumentNullException(nameof(func), "La funzione non può essere null.");
+            _func = func ?? throw new ArgumentNullException(nameof(func), "The function cannot be null.");
         }
 
         private CallbackAdapter(Func<TParam, TResult> funcWithParam, TParam param) {
-            _funcWithParam = funcWithParam ?? throw new ArgumentNullException(nameof(funcWithParam), "La funzione con parametro non può essere null.");
+            _funcWithParam = funcWithParam ?? throw new ArgumentNullException(nameof(funcWithParam), "The function with parameter cannot be null.");
             _param = param;
         }
 
         private CallbackAdapter(ISchedulable<TResult> schedulable) {
-            _schedulable = schedulable ?? throw new ArgumentNullException(nameof(schedulable), "Il schedulable non può essere null.");
+            _schedulable = schedulable ?? throw new ArgumentNullException(nameof(schedulable), "The schedulable cannot be null.");
         }
 
         private CallbackAdapter(ISchedulable<TParam, TResult> schedulableWithParam, TParam param) {
-            _schedulableWithParam = schedulableWithParam ?? throw new ArgumentNullException(nameof(schedulableWithParam), "Il schedulable con parametro non può essere null.");
+            _schedulableWithParam = schedulableWithParam ?? throw new ArgumentNullException(nameof(schedulableWithParam), "The schedulable with parameter cannot be null.");
             _param = param;
         }
 
         private CallbackAdapter(IHttpCall<TResult> httpCall) {
-            _schedulable = httpCall ?? throw new ArgumentNullException(nameof(httpCall), "L'oggetto HttpCall non può essere null.");
+            _schedulable = httpCall ?? throw new ArgumentNullException(nameof(httpCall), "The HTTP call object cannot be null.");
         }
 
         /// <summary>
-        /// Crea un'istanza di <see cref="CallbackAdapter{TResult, TParam}"/> per un'azione.
+        /// Creates an instance of <see cref="CallbackAdapter{TResult, TParam}"/> for an action.
         /// </summary>
-        /// <param name="action">L'azione da eseguire.</param>
-        /// <returns>Una nuova istanza di <see cref="CallbackAdapter{TResult, TParam}"/>.</returns>
+        /// <param name="action">The action to be executed.</param>
+        /// <returns>A new instance of <see cref="CallbackAdapter{TResult, TParam}"/>.</returns>
         public static CallbackAdapter<TResult, TParam> Create(Action action) => new(action);
 
         /// <summary>
-        /// Crea un'istanza di <see cref="CallbackAdapter{TResult, TParam}"/> per un'azione con parametro.
+        /// Creates an instance of <see cref="CallbackAdapter{TResult, TParam}"/> for an action with a parameter.
         /// </summary>
-        /// <param name="actionWithParam">L'azione con parametro da eseguire.</param>
-        /// <param name="param">Il parametro per l'azione.</param>
-        /// <returns>Una nuova istanza di <see cref="CallbackAdapter{TResult, TParam}"/>.</returns>
+        /// <param name="actionWithParam">The action with a parameter to be executed.</param>
+        /// <param name="param">The parameter for the action.</param>
+        /// <returns>A new instance of <see cref="CallbackAdapter{TResult, TParam}"/>.</returns>
         public static CallbackAdapter<TResult, TParam> Create(Action<TParam> actionWithParam, TParam param) => new(actionWithParam, param);
 
         /// <summary>
-        /// Crea un'istanza di <see cref="CallbackAdapter{TResult, TParam}"/> per una funzione asincrona.
+        /// Creates an instance of <see cref="CallbackAdapter{TResult, TParam}"/> for an asynchronous function.
         /// </summary>
-        /// <param name="taskFunc">La funzione asincrona da eseguire.</param>
-        /// <returns>Una nuova istanza di <see cref="CallbackAdapter{TResult, TParam}"/>.</returns>
+        /// <param name="taskFunc">The asynchronous function to be executed.</param>
+        /// <returns>A new instance of <see cref="CallbackAdapter{TResult, TParam}"/>.</returns>
         public static CallbackAdapter<TResult, TParam> Create(Func<Task<TResult>> taskFunc) => new(taskFunc);
 
         /// <summary>
-        /// Crea un'istanza di <see cref="CallbackAdapter{TResult, TParam}"/> per una funzione asincrona con parametro.
+        /// Creates an instance of <see cref="CallbackAdapter{TResult, TParam}"/> for an asynchronous function with a parameter.
         /// </summary>
-        /// <param name="taskFuncWithParam">La funzione asincrona con parametro da eseguire.</param>
-        /// <param name="param">Il parametro per la funzione.</param>
-        /// <returns>Una nuova istanza di <see cref="CallbackAdapter{TResult, TParam}"/>.</returns>
+        /// <param name="taskFuncWithParam">The asynchronous function with a parameter to be executed.</param>
+        /// <param name="param">The parameter for the function.</param>
+        /// <returns>A new instance of <see cref="CallbackAdapter{TResult, TParam}"/>.</returns>
         public static CallbackAdapter<TResult, TParam> Create(Func<TParam, Task<TResult>> taskFuncWithParam, TParam param) => new(taskFuncWithParam, param);
 
         /// <summary>
-        /// Crea un'istanza di <see cref="CallbackAdapter{TResult, TParam}"/> per una funzione.
+        /// Creates an instance of <see cref="CallbackAdapter{TResult, TParam}"/> for a function.
         /// </summary>
-        /// <param name="func">La funzione da eseguire.</param>
-        /// <returns>Una nuova istanza di <see cref="CallbackAdapter{TResult, TParam}"/>.</returns>
+        /// <param name="func">The function to be executed.</param>
+        /// <returns>A new instance of <see cref="CallbackAdapter{TResult, TParam}"/>.</returns>
         public static CallbackAdapter<TResult, TParam> Create(Func<TResult> func) => new(func);
 
         /// <summary>
-        /// Crea un'istanza di <see cref="CallbackAdapter{TResult, TParam}"/> per una funzione con parametro.
+        /// Creates an instance of <see cref="CallbackAdapter{TResult, TParam}"/> for a function with a parameter.
         /// </summary>
-        /// <param name="funcWithParam">La funzione con parametro da eseguire.</param>
-        /// <param name="param">Il parametro per la funzione.</param>
-        /// <returns>Una nuova istanza di <see cref="CallbackAdapter{TResult, TParam}"/>.</returns>
+        /// <param name="funcWithParam">The function with a parameter to be executed.</param>
+        /// <param name="param">The parameter for the function.</param>
+        /// <returns>A new instance of <see cref="CallbackAdapter{TResult, TParam}"/>.</returns>
         public static CallbackAdapter<TResult, TParam> Create(Func<TParam, TResult> funcWithParam, TParam param) => new(funcWithParam, param);
 
         /// <summary>
-        /// Crea un'istanza di <see cref="CallbackAdapter{TResult, TParam}"/> per un oggetto <see cref="ISchedulable{TResult}"/>.
+        /// Creates an instance of <see cref="CallbackAdapter{TResult, TParam}"/> for a <see cref="ISchedulable{TResult}"/>.
         /// </summary>
-        /// <param name="schedulable">L'oggetto <see cref="ISchedulable{TResult}"/> da eseguire.</param>
-        /// <returns>Una nuova istanza di <see cref="CallbackAdapter{TResult, TParam}"/>.</returns>
+        /// <param name="schedulable">The <see cref="ISchedulable{TResult}"/> object to be executed.</param>
+        /// <returns>A new instance of <see cref="CallbackAdapter{TResult, TParam}"/>.</returns>
         public static CallbackAdapter<TResult, TParam> Create(ISchedulable<TResult> schedulable) => new(schedulable);
 
         /// <summary>
-        /// Crea un'istanza di <see cref="CallbackAdapter{TResult, TParam}"/> per un oggetto <see cref="ISchedulable{TParam, TResult}"/>.
+        /// Creates an instance of <see cref="CallbackAdapter{TResult, TParam}"/> for a <see cref="ISchedulable{TParam, TResult}"/>.
         /// </summary>
-        /// <param name="schedulableWithParam">L'oggetto <see cref="ISchedulable{TParam, TResult}"/> da eseguire.</param>
-        /// <param name="param">Il parametro per l'oggetto schedulable.</param>
-        /// <returns>Una nuova istanza di <see cref="CallbackAdapter{TResult, TParam}"/>.</returns>
+        /// <param name="schedulableWithParam">The <see cref="ISchedulable{TParam, TResult}"/> object to be executed.</param>
+        /// <param name="param">The parameter for the schedulable object.</param>
+        /// <returns>A new instance of <see cref="CallbackAdapter{TResult, TParam}"/>.</returns>
         public static CallbackAdapter<TResult, TParam> Create(ISchedulable<TParam, TResult> schedulableWithParam, TParam param) => new(schedulableWithParam, param);
 
         /// <summary>
-        /// Crea un'istanza di <see cref="CallbackAdapter{TResult, TParam}"/> per una chiamata HTTP.
+        /// Creates an instance of <see cref="CallbackAdapter{TResult, TParam}"/> for an HTTP call.
         /// </summary>
-        /// <param name="httpCall">L'oggetto <see cref="IHttpCall{TResult}"/> che rappresenta la chiamata HTTP da eseguire.</param>
-        /// <returns>Una nuova istanza di <see cref="CallbackAdapter{TResult, TParam}"/>.</returns>
+        /// <param name="httpCall">The <see cref="IHttpCall{TResult}"/> representing the HTTP call to be executed.</param>
+        /// <returns>A new instance of <see cref="CallbackAdapter{TResult, TParam}"/>.</returns>
         public static CallbackAdapter<TResult, TParam> Create(IHttpCall<TResult> httpCall) => new(httpCall);
 
         /// <inheritdoc />
@@ -158,9 +158,9 @@ namespace BoffToolkit.Scheduling.Internal.Callbacks {
                 result = _schedulableWithParam.Execute(_param!);
             }
             else {
-                throw new InvalidOperationException("Nessun callback valido trovato.");
+                throw new InvalidOperationException("No valid callback found.");
             }
-            // Solleva l'evento di completamento
+            // Raise the callback completed event
             CallbackCompleted?.Invoke(this, new CallbackCompletedEventArgs(result));
         }
     }

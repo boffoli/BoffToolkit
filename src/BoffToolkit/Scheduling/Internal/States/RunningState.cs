@@ -2,28 +2,25 @@ using BoffToolkit.Logging;
 
 namespace BoffToolkit.Scheduling.Internal.States {
     /// <summary>
-    /// Rappresenta lo stato di esecuzione del JobScheduler.
+    /// Represents the running state of the JobScheduler.
     /// </summary>
     /// <remarks>
-    /// Inizializza una nuova istanza della classe <see cref="RunningState"/>.
+    /// Initializes a new instance of the <see cref="RunningState"/> class.
     /// </remarks>
-    /// <param name="taskManager">Il gestore dei task del JobScheduler.</param>
+    /// <param name="taskManager">The task manager for the JobScheduler.</param>
     internal class RunningState(JobSchedulerTaskManager taskManager) : IJobSchedulerState {
         private readonly JobSchedulerTaskManager _taskManager = taskManager ?? throw new ArgumentNullException(nameof(taskManager), TaskManagerNullErrorMessage);
 
-        // Costanti per i messaggi
-        private const string TaskManagerNullErrorMessage = "Il gestore dei task non può essere null.";
-        private const string ContextNullErrorMessage = "Il contesto non può essere null.";
-        private const string TaskAlreadyRunningWarning = "Il task è già in esecuzione.";
-        private const string TaskStoppingInfo = "Arresto del task in esecuzione.";
-        private const string TaskPausingInfo = "Messa in pausa del task in esecuzione.";
-
-        /// <inheritdoc/>
-        public string Name => "Running";
+        // Constants for error and log messages
+        private const string TaskManagerNullErrorMessage = "The task manager cannot be null.";
+        private const string ContextNullErrorMessage = "The context cannot be null.";
+        private const string TaskAlreadyRunningWarning = "The task is already running.";
+        private const string TaskStoppingInfo = "Stopping the currently running task.";
+        private const string TaskPausingInfo = "Pausing the currently running task.";
 
         /// <inheritdoc/>
         public void ApplyState() {
-            // Avvia il task quando lo stato diventa Running
+            // Starts the task when the state transitions to Running
             _taskManager.Start();
         }
 
@@ -60,15 +57,30 @@ namespace BoffToolkit.Scheduling.Internal.States {
         }
 
         /// <summary>
-        /// Gestisce il caso in cui il task sia già in esecuzione.
+        /// Handles the scenario where the task is already running.
         /// </summary>
-        /// <param name="context">Il contesto del job scheduler.</param>
+        /// <param name="context">The context of the job scheduler.</param>
         private static void HandleAlreadyRunning(StateContext context) {
             if (context == null) {
                 throw new ArgumentNullException(nameof(context), ContextNullErrorMessage);
             }
 
             CentralLogger<RunningState>.LogWarning(TaskAlreadyRunningWarning);
+        }
+
+        /// <inheritdoc/>
+        public bool IsStopped() {
+            return false;
+        }
+
+        /// <inheritdoc/>
+        public bool IsPaused() {
+            return false;
+        }
+
+        /// <inheritdoc/>
+        public bool IsRunning() {
+            return true;
         }
     }
 }

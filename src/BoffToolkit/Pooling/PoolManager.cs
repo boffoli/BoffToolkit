@@ -5,11 +5,11 @@ using BoffToolkit.Logging;
 
 namespace BoffToolkit.Pooling {
     /// <summary>
-    /// Gestisce un pool di oggetti per ogni chiave, riutilizzando gli oggetti anziché crearne di nuovi ogni volta.
-    /// Questo aiuta a migliorare le prestazioni e a ridurre il sovraccarico della creazione di oggetti.
+    /// Manages a pool of objects for each key, reusing objects instead of creating new ones each time.
+    /// This improves performance and reduces the overhead of object creation.
     /// </summary>
-    /// <typeparam name="TKey">Il tipo della chiave utilizzata per identificare ogni pool.</typeparam>
-    /// <typeparam name="TValue">Il tipo degli oggetti memorizzati nei pool, che deve implementare IPoolable.</typeparam>
+    /// <typeparam name="TKey">The type of the key used to identify each pool.</typeparam>
+    /// <typeparam name="TValue">The type of objects stored in the pools, which must implement <see cref="IPoolable"/>.</typeparam>
     public class PoolManager<TKey, TValue> : IAsyncDisposable
         where TKey : notnull
         where TValue : class, IPoolable {
@@ -20,78 +20,80 @@ namespace BoffToolkit.Pooling {
         private bool _disposed = false;
 
         /// <summary>
-        /// Inizializza una nuova istanza della classe PoolManager con i parametri specificati.
+        /// Initializes a new instance of the <see cref="PoolManager{TKey, TValue}"/> class with the specified parameters.
         /// </summary>
-        /// <param name="instanceCreator">Una funzione che crea una nuova istanza dell'oggetto.</param>
-        /// <param name="maxInstancesPerKey">Il numero massimo di istanze da mantenere nel pool per chiave.</param>
-        /// <param name="cleanupInterval">L'intervallo di tempo tra le pulizie periodiche.</param>
-        /// <param name="maxIdleTime">Il tempo massimo di inattività prima che un oggetto venga rimosso.</param>
-        /// <exception cref="ArgumentNullException">Sollevata se <paramref name="instanceCreator"/>, <paramref name="cleanupInterval"/> o <paramref name="maxIdleTime"/> è null o zero.</exception>
+        /// <param name="instanceCreator">A function that creates a new instance of the object.</param>
+        /// <param name="maxInstancesPerKey">The maximum number of instances to maintain in the pool for each key.</param>
+        /// <param name="cleanupInterval">The interval between periodic cleanups.</param>
+        /// <param name="maxIdleTime">The maximum idle time before an object is removed.</param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="instanceCreator"/>, <paramref name="cleanupInterval"/>, or <paramref name="maxIdleTime"/> is null or zero.
+        /// </exception>
         public PoolManager(Func<TKey, TValue> instanceCreator, int maxInstancesPerKey, TimeSpan cleanupInterval, TimeSpan maxIdleTime) {
             _instanceCreator = instanceCreator ?? throw new ArgumentNullException(nameof(instanceCreator));
             _maxInstancesPerKey = maxInstancesPerKey;
 
-            // Crea e avvia il cleaner per il pool
+            // Create and start the pool cleaner
             _poolCleaner = new PoolCleaner<TKey, TValue>(_pool, cleanupInterval, maxIdleTime);
             _poolCleaner.StartCleaning();
         }
 
         /// <summary>
-        /// Recupera un'istanza dell'oggetto per la chiave specificata o ne crea una nuova se non è disponibile.
+        /// Retrieves an instance of the object for the specified key, or creates a new one if none are available.
         /// </summary>
-        /// <param name="key">La chiave per cui recuperare o creare l'oggetto.</param>
-        /// <param name="activationParams">Parametri opzionali utilizzati per configurare l'oggetto durante l'attivazione.</param>
-        /// <returns>Un'istanza dell'oggetto per la chiave specificata, attivata e pronta all'uso.</returns>
+        /// <param name="key">The key for which to retrieve or create the object.</param>
+        /// <param name="activationParams">Optional parameters used to configure the object during activation.</param>
+        /// <returns>An instance of the object for the specified key, activated and ready for use.</returns>
         public async Task<TValue> GetOrCreateAsync(TKey key, params object[] activationParams) {
             if (!_pool.TryGetValue(key, out var instances) || instances.IsEmpty) {
-                CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Nessuna istanza disponibile nel pool, creazione di una nuova istanza per la chiave {key}.");
+                CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"No instance available in the pool, creating a new instance for key {key}.");
                 return await CreateNewInstanceAsync(key, activationParams);
             }
 
             while (instances.TryDequeue(out var instance)) {
                 await instance.ActivateAsync(activationParams);
-                CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Istanza per la chiave {key}, è stata attivata.");
+                CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Instance for key {key} has been activated.");
 
                 if (await instance.ValidateAsync()) {
-                    CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Istanza già attivata per la chiave {key}, è stata validata.");
+                    CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Instance already activated for key {key}, validated successfully.");
                     return instance;
                 }
                 else {
-                    CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Fallimento della validazione dell'istanza per la chiave {key}, inizio pulizia.");
+                    CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Validation failed for instance with key {key}, disposing the instance.");
                     await instance.DisposeAsync();
                 }
             }
 
-            CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Creazione di una nuova istanza per la chiave {key} dopo fallimenti di validazione.");
+            CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Creating a new instance for key {key} after validation failures.");
             return await CreateNewInstanceAsync(key, activationParams);
         }
 
         /// <summary>
-        /// Rilascia un'istanza dell'oggetto nel pool, preparandola per essere riutilizzata.
+        /// Releases an instance of the object into the pool, preparing it for reuse.
         /// </summary>
-        /// <param name="key">La chiave associata all'istanza dell'oggetto.</param>
-        /// <param name="instance">L'istanza dell'oggetto da rilasciare.</param>
+        /// <param name="key">The key associated with the object instance.</param>
+        /// <param name="instance">The object instance to release.</param>
         public async Task ReleaseAsync(TKey key, TValue instance) {
             await instance.DeactivateAsync();
-            CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Istanza disattivata per la chiave {key}.");
+            CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Instance deactivated for key {key}.");
 
             var instances = _pool.GetOrAdd(key, _ => new ConcurrentQueue<TValue>());
             if (instances.Count < _maxInstancesPerKey) {
                 instances.Enqueue(instance);
-                CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Istanza rimessa nel pool per la chiave {key}.");
+                CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Instance returned to the pool for key {key}.");
             }
             else {
-                CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"Il pool per la chiave {key} è pieno, inizio pulizia dell'istanza.");
+                CentralLogger<PoolManager<TKey, TValue>>.LogInformation($"The pool for key {key} is full, disposing the instance.");
                 await instance.DisposeAsync();
             }
         }
 
         /// <summary>
-        /// Crea una nuova istanza dell'oggetto e la attiva utilizzando la funzione di creazione fornita.
+        /// Creates a new instance of the object and activates it using the provided creation function.
         /// </summary>
-        /// <param name="key">La chiave per cui creare l'oggetto.</param>
-        /// <param name="activationParams">Parametri opzionali utilizzati per configurare l'oggetto durante l'attivazione.</param>
-        /// <returns>Una nuova istanza dell'oggetto, già attivata.</returns>
+        /// <param name="key">The key for which to create the object.</param>
+        /// <param name="activationParams">Optional parameters used to configure the object during activation.</param>
+        /// <returns>A new instance of the object, already activated.</returns>
         private async Task<TValue> CreateNewInstanceAsync(TKey key, params object[] activationParams) {
             var newInstance = _instanceCreator(key);
             await newInstance.ActivateAsync(activationParams);
@@ -99,24 +101,27 @@ namespace BoffToolkit.Pooling {
         }
 
         /// <summary>
-        /// Rilascia le risorse utilizzate dalla cache temporizzata.
+        /// Releases resources used by the pool manager.
         /// </summary>
         public async ValueTask DisposeAsync() {
             await DisposeAsyncCore();
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Disposes of resources in a manner specific to the derived type.
+        /// </summary>
+        /// <returns>A <see cref="ValueTask"/> representing the asynchronous operation.</returns>
         protected virtual ValueTask DisposeAsyncCore() {
             if (!_disposed) {
                 _poolCleaner?.StopCleaning();
                 _disposed = true;
             }
 #if NET8_0
-            return ValueTask.CompletedTask; // Restituisce ValueTask per .NET 8.0
+            return ValueTask.CompletedTask; // Returns ValueTask for .NET 8.0
 #else
-            return new ValueTask(Task.CompletedTask); // Converti Task in ValueTask per .NET Framework 4.7.1
+            return new ValueTask(Task.CompletedTask); // Converts Task to ValueTask for older frameworks
 #endif
         }
-
     }
 }

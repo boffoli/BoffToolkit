@@ -5,22 +5,22 @@ using Newtonsoft.Json;
 
 namespace BoffToolkit.Scheduling.Internal.HttpCalls {
     /// <summary>
-    /// Rappresenta una chiamata HTTP PUT schedulabile.
+    /// Represents a schedulable HTTP PUT call.
     /// </summary>
-    /// <typeparam name="TResult">Il tipo del risultato atteso dalla chiamata PUT.</typeparam>
-    /// <typeparam name="TParam">Il tipo dei dati inviati nel corpo della richiesta PUT.</typeparam>
+    /// <typeparam name="TResult">The expected type of the result from the PUT call.</typeparam>
+    /// <typeparam name="TParam">The type of the data sent in the body of the PUT request.</typeparam>
     internal sealed class HttpPutCall<TParam, TResult> : HttpCallBase<TResult> {
         private readonly HttpContent _content;
 
         /// <summary>
-        /// Inizializza una nuova istanza della classe <see cref="HttpPutCall{TParam, TResult}"/>.
+        /// Initializes a new instance of the <see cref="HttpPutCall{TParam, TResult}"/> class.
         /// </summary>
-        /// <param name="url">L'URL dell'endpoint API da chiamare.</param>
-        /// <param name="data">I dati da inviare nel corpo della richiesta PUT.</param>
-        /// <exception cref="ArgumentNullException">Sollevata se l'URL o i dati sono null.</exception>
+        /// <param name="url">The URL of the API endpoint to call.</param>
+        /// <param name="data">The data to send in the body of the PUT request.</param>
+        /// <exception cref="ArgumentNullException">Thrown if the URL or the data is null.</exception>
         public HttpPutCall(string url, TParam data) : base(url) {
             if (object.Equals(data, default(TParam))) {
-                throw new ArgumentNullException(nameof(data), "I dati non possono essere null.");
+                throw new ArgumentNullException(nameof(data), "The data cannot be null.");
             }
 
             var jsonContent = JsonConvert.SerializeObject(data);
@@ -30,7 +30,7 @@ namespace BoffToolkit.Scheduling.Internal.HttpCalls {
         /// <inheritdoc />
         protected override Task<HttpResponseMessage> SendRequestAsync() {
             if (_content == null) {
-                throw new InvalidOperationException("Il contenuto della richiesta PUT non può essere null.");
+                throw new InvalidOperationException("The content of the PUT request cannot be null.");
             }
 
             return HttpClient.PutAsync(Url, _content);

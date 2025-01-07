@@ -4,43 +4,47 @@ using BoffToolkit.Scheduling.Internal.Callbacks;
 
 namespace BoffToolkit.Scheduling.Internal {
     /// <summary>
-    /// Contesto del JobScheduler che mantiene le informazioni necessarie per la schedulazione.
+    /// Context for the JobScheduler that holds the necessary information for scheduling.
     /// </summary>
     internal class JobSchedulerContext {
         /// <summary>
-        /// Tempo di inizio del job.
+        /// Start time of the job.
         /// </summary>
         public DateTime StartTime { get; }
 
         /// <summary>
-        /// Regola del periodo per il job.
+        /// Period rule for the job.
         /// </summary>
         public IPeriodRule PeriodRule { get; }
 
         /// <summary>
-        /// Adattatore di callback per eseguire le azioni schedulate.
+        /// Callback adapter for executing the scheduled actions.
         /// </summary>
         public ICallbackAdapter CallbackAdapter { get; }
 
         /// <summary>
-        /// Indica se il job deve essere eseguito in background.
+        /// Indicates whether the job should run in the background.
         /// </summary>
         public bool IsBackground { get; }
 
         /// <summary>
-        /// Inizializza una nuova istanza della classe <see cref="JobSchedulerContext "/>.
+        /// Initializes a new instance of the <see cref="JobSchedulerContext"/> class.
         /// </summary>
-        /// <param name="startTime">Il tempo di inizio del job.</param>
-        /// <param name="periodRule">La regola del periodo per il job.</param>
-        /// <param name="callbackAdapter">L'adattatore di callback.</param>
-        /// <param name="isBackground">Indica se il job deve essere eseguito in background.</param>
+        /// <param name="startTime">The start time of the job.</param>
+        /// <param name="periodRule">The period rule for the job.</param>
+        /// <param name="callbackAdapter">The callback adapter.</param>
+        /// <param name="isBackground">Indicates whether the job should run in the background.</param>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="startTime"/> is not a valid date.</exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when <paramref name="periodRule"/> or <paramref name="callbackAdapter"/> is <c>null</c>.
+        /// </exception>
         public JobSchedulerContext(DateTime startTime, IPeriodRule periodRule, ICallbackAdapter callbackAdapter, bool isBackground) {
             if (startTime == default) {
-                throw new ArgumentException("Il tempo di inizio deve essere una data valida.", nameof(startTime));
+                throw new ArgumentException("The start time must be a valid date.", nameof(startTime));
             }
 
-            PeriodRule = periodRule ?? throw new ArgumentNullException(nameof(periodRule), "La regola del periodo non può essere null.");
-            CallbackAdapter = callbackAdapter ?? throw new ArgumentNullException(nameof(callbackAdapter), "L'adattatore di callback non può essere null.");
+            PeriodRule = periodRule ?? throw new ArgumentNullException(nameof(periodRule), "The period rule cannot be null.");
+            CallbackAdapter = callbackAdapter ?? throw new ArgumentNullException(nameof(callbackAdapter), "The callback adapter cannot be null.");
             StartTime = startTime;
             IsBackground = isBackground;
         }

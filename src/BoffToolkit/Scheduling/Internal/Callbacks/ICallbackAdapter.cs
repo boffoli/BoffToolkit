@@ -3,33 +3,32 @@ using System.Threading.Tasks;
 
 namespace BoffToolkit.Scheduling.Internal.Callbacks {
     /// <summary>
-    /// Classe per gli argomenti dell'evento di completamento del callback.
+    /// Represents the event arguments for a callback completion event.
     /// </summary>
     /// <remarks>
-    /// Inizializza una nuova istanza della classe <see cref="CallbackCompletedEventArgs"/>.
+    /// Initializes a new instance of the <see cref="CallbackCompletedEventArgs"/> class.
     /// </remarks>
-    /// <param name="result">Il risultato del callback.</param>
+    /// <param name="result">The result of the callback.</param>
     public class CallbackCompletedEventArgs(object? result) : EventArgs {
-
         /// <summary>
-        /// Ottiene il risultato del callback, se disponibile.
+        /// Gets the result of the callback, if available.
         /// </summary>
         public object? Result { get; } = result;
     }
 
     /// <summary>
-    /// Interfaccia per l'adattatore di callback che gestisce l'esecuzione di diversi tipi di callback.
+    /// Interface for a callback adapter that manages the execution of various types of callbacks.
     /// </summary>
     internal interface ICallbackAdapter {
         /// <summary>
-        /// Evento che viene sollevato al completamento del callback.
+        /// Event raised when the callback execution is completed.
         /// </summary>
         event EventHandler<CallbackCompletedEventArgs>? CallbackCompleted;
 
         /// <summary>
-        /// Esegue il callback in modo asincrono.
+        /// Executes the callback asynchronously.
         /// </summary>
-        /// <returns>Un Task che rappresenta l'operazione asincrona.</returns>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task ExecuteAsync();
     }
 }

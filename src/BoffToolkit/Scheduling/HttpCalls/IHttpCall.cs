@@ -1,8 +1,7 @@
-
 namespace BoffToolkit.Scheduling.HttpCalls {
     /// <summary>
-    /// Interfaccia che rappresenta una chiamata HTTP schedulabile.
+    /// Interface representing a schedulable HTTP call.
     /// </summary>
-    /// <typeparam name="TResult">Il tipo del risultato prodotto dalla chiamata HTTP.</typeparam>
-    public interface IHttpCall<TResult> : ISchedulable<TResult> { }
+    /// <typeparam name="TResult">The type of the result produced by the HTTP call.</typeparam>
+    public interface IHttpCall<out TResult> : ISchedulable<TResult> { }
 }

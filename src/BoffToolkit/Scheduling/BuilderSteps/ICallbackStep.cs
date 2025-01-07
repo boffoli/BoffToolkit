@@ -2,85 +2,85 @@ using BoffToolkit.Scheduling.HttpCalls;
 
 namespace BoffToolkit.Scheduling.BuilderSteps {
     /// <summary>
-    /// Interfaccia per impostare il callback da eseguire.
+    /// Interface for configuring the callback to be executed.
     /// </summary>
     public interface ICallbackStep {
         /// <summary>
-        /// Imposta il callback da eseguire.
+        /// Sets the callback to be executed.
         /// </summary>
-        /// <param name="callback">L'azione del callback.</param>
-        /// <returns>Un'istanza di <see cref="IRegistrationStep"/>.</returns>
+        /// <param name="callback">The callback action.</param>
+        /// <returns>An instance of <see cref="IRegistrationStep"/>.</returns>
         IRegistrationStep SetCallback(Action callback);
 
         /// <summary>
-        /// Imposta il callback da eseguire con un parametro.
+        /// Sets the callback to be executed with a parameter.
         /// </summary>
-        /// <typeparam name="TParam">Il tipo del parametro del callback.</typeparam>
-        /// <param name="callback">L'azione del callback.</param>
-        /// <param name="param">Il parametro del callback.</param>
-        /// <returns>Un'istanza di <see cref="IRegistrationStep"/>.</returns>
+        /// <typeparam name="TParam">The type of the callback parameter.</typeparam>
+        /// <param name="callback">The callback action.</param>
+        /// <param name="param">The callback parameter.</param>
+        /// <returns>An instance of <see cref="IRegistrationStep"/>.</returns>
         IRegistrationStep SetCallback<TParam>(Action<TParam> callback, TParam param);
 
         /// <summary>
-        /// Imposta il callback da eseguire con un risultato.
+        /// Sets the callback to be executed with a result.
         /// </summary>
-        /// <typeparam name="TResult">Il tipo del risultato del callback.</typeparam>
-        /// <param name="func">La funzione del callback.</param>
-        /// <returns>Un'istanza di <see cref="IRegistrationStep"/>.</returns>
+        /// <typeparam name="TResult">The type of the callback result.</typeparam>
+        /// <param name="func">The callback function.</param>
+        /// <returns>An instance of <see cref="IRegistrationStep"/>.</returns>
         IRegistrationStep SetCallback<TResult>(Func<TResult> func);
 
         /// <summary>
-        /// Imposta il callback da eseguire con un parametro e un risultato.
+        /// Sets the callback to be executed with a parameter and a result.
         /// </summary>
-        /// <typeparam name="TParam">Il tipo del parametro del callback.</typeparam>
-        /// <typeparam name="TResult">Il tipo del risultato del callback.</typeparam>
-        /// <param name="func">La funzione del callback.</param>
-        /// <param name="param">Il parametro del callback.</param>
-        /// <returns>Un'istanza di <see cref="IRegistrationStep"/>.</returns>
+        /// <typeparam name="TParam">The type of the callback parameter.</typeparam>
+        /// <typeparam name="TResult">The type of the callback result.</typeparam>
+        /// <param name="func">The callback function.</param>
+        /// <param name="param">The callback parameter.</param>
+        /// <returns>An instance of <see cref="IRegistrationStep"/>.</returns>
         IRegistrationStep SetCallback<TParam, TResult>(Func<TParam, TResult> func, TParam param);
 
         /// <summary>
-        /// Imposta il callback asincrono da eseguire.
+        /// Sets an asynchronous callback to be executed.
         /// </summary>
-        /// <typeparam name="TResult">Il tipo del risultato del callback.</typeparam>
-        /// <param name="func">La funzione del callback.</param>
-        /// <returns>Un'istanza di <see cref="IRegistrationStep"/>.</returns>
+        /// <typeparam name="TResult">The type of the callback result.</typeparam>
+        /// <param name="func">The asynchronous callback function.</param>
+        /// <returns>An instance of <see cref="IRegistrationStep"/>.</returns>
         IRegistrationStep SetCallback<TResult>(Func<Task<TResult>> func);
 
         /// <summary>
-        /// Imposta il callback asincrono da eseguire con un parametro e un risultato.
+        /// Sets an asynchronous callback to be executed with a parameter and a result.
         /// </summary>
-        /// <typeparam name="TParam">Il tipo del parametro del callback.</typeparam>
-        /// <typeparam name="TResult">Il tipo del risultato del callback.</typeparam>
-        /// <param name="func">La funzione del callback.</param>
-        /// <param name="param">Il parametro del callback.</param>
-        /// <returns>Un'istanza di <see cref="IRegistrationStep"/>.</returns>
+        /// <typeparam name="TParam">The type of the callback parameter.</typeparam>
+        /// <typeparam name="TResult">The type of the callback result.</typeparam>
+        /// <param name="func">The asynchronous callback function.</param>
+        /// <param name="param">The callback parameter.</param>
+        /// <returns>An instance of <see cref="IRegistrationStep"/>.</returns>
         IRegistrationStep SetCallback<TParam, TResult>(Func<TParam, Task<TResult>> func, TParam param);
 
         /// <summary>
-        /// Imposta un'istanza di <see cref="ISchedulable{TResult}"/> come callback da eseguire.
+        /// Sets an instance of <see cref="ISchedulable{TResult}"/> as the callback to be executed.
         /// </summary>
-        /// <typeparam name="TResult">Il tipo del risultato del callback.</typeparam>
-        /// <param name="schedulable">L'istanza di <see cref="ISchedulable{TResult}"/>.</param>
-        /// <returns>Un'istanza di <see cref="IRegistrationStep"/>.</returns>
+        /// <typeparam name="TResult">The type of the callback result.</typeparam>
+        /// <param name="schedulable">The instance of <see cref="ISchedulable{TResult}"/>.</param>
+        /// <returns>An instance of <see cref="IRegistrationStep"/>.</returns>
         IRegistrationStep SetCallback<TResult>(ISchedulable<TResult> schedulable);
 
         /// <summary>
-        /// Imposta un'istanza di <see cref="ISchedulable{TParam, TResult}"/> come callback da eseguire con un parametro.
+        /// Sets an instance of <see cref="ISchedulable{TParam, TResult}"/> as the callback to be executed with a parameter.
         /// </summary>
-        /// <typeparam name="TParam">Il tipo del parametro del callback.</typeparam>
-        /// <typeparam name="TResult">Il tipo del risultato del callback.</typeparam>
-        /// <param name="schedulable">L'istanza di <see cref="ISchedulable{TParam, TResult}"/>.</param>
-        /// <param name="param">Il parametro del callback.</param>
-        /// <returns>Un'istanza di <see cref="IRegistrationStep"/>.</returns>
+        /// <typeparam name="TParam">The type of the callback parameter.</typeparam>
+        /// <typeparam name="TResult">The type of the callback result.</typeparam>
+        /// <param name="schedulable">The instance of <see cref="ISchedulable{TParam, TResult}"/>.</param>
+        /// <param name="param">The callback parameter.</param>
+        /// <returns>An instance of <see cref="IRegistrationStep"/>.</returns>
         IRegistrationStep SetCallback<TParam, TResult>(ISchedulable<TParam, TResult> schedulable, TParam param);
 
         /// <summary>
-        /// Imposta un'istanza di <see cref="IHttpCall{TResult}"/> come callback da eseguire.
+        /// Sets an instance of <see cref="IHttpCall{TResult}"/> as the callback to be executed.
         /// </summary>
-        /// <typeparam name="TResult">Il tipo del risultato del callback.</typeparam>
-        /// <param name="httpCall">L'istanza di <see cref="IHttpCall{TResult}"/>.</param>
-        /// <returns>Un'istanza di <see cref="IRegistrationStep"/>.</returns>
+        /// <typeparam name="TResult">The type of the callback result.</typeparam>
+        /// <param name="httpCall">The instance of <see cref="IHttpCall{TResult}"/>.</param>
+        /// <returns>An instance of <see cref="IRegistrationStep"/>.</returns>
         IRegistrationStep SetCallback<TResult>(IHttpCall<TResult> httpCall);
     }
 }

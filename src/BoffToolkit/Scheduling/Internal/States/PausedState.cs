@@ -3,29 +3,26 @@ using BoffToolkit.Logging;
 
 namespace BoffToolkit.Scheduling.Internal.States {
     /// <summary>
-    /// Rappresenta lo stato di pausa per il task scheduler.
+    /// Represents the paused state for the task scheduler.
     /// </summary>
     /// <remarks>
-    /// Inizializza una nuova istanza della classe <see cref="PausedState"/> con le operazioni specificate.
+    /// Initializes a new instance of the <see cref="PausedState"/> class with the specified operations.
     /// </remarks>
-    /// <param name="taskManager">Il gestore dei task del job scheduler.</param>
+    /// <param name="taskManager">The task manager for the job scheduler.</param>
     internal class PausedState(JobSchedulerTaskManager taskManager) : IJobSchedulerState {
         private readonly JobSchedulerTaskManager _taskManager = taskManager ?? throw new ArgumentNullException(nameof(taskManager), TaskManagerNullErrorMessage);
 
-        // Costanti per i messaggi
-        private const string TaskManagerNullErrorMessage = "Il gestore dei task non può essere null.";
-        private const string ContextNullErrorMessage = "Il contesto non può essere null.";
-        private const string TaskAlreadyPausedWarning = "Il task è già in pausa.";
-        private const string TaskCannotStartWarning = "Il task è già in pausa. Non è possibile avviarlo.";
-        private const string TaskResumingInfo = "Ripresa del task dallo stato di pausa.";
-        private const string TaskStoppingInfo = "Arresto del task dallo stato di pausa.";
-
-        /// <inheritdoc/>
-        public string Name => "Paused";
+        // Constants for error and log messages
+        private const string TaskManagerNullErrorMessage = "The task manager cannot be null.";
+        private const string ContextNullErrorMessage = "The context cannot be null.";
+        private const string TaskAlreadyPausedWarning = "The task is already paused.";
+        private const string TaskCannotStartWarning = "The task is already paused. It cannot be started.";
+        private const string TaskResumingInfo = "Resuming the task from the paused state.";
+        private const string TaskStoppingInfo = "Stopping the task from the paused state.";
 
         /// <inheritdoc/>
         public void ApplyState() {
-            // Pausa il task quando lo stato diventa Paused
+            // Pauses the task when the state transitions to Paused
             _taskManager.Pause();
         }
 
@@ -67,6 +64,21 @@ namespace BoffToolkit.Scheduling.Internal.States {
             CentralLogger<PausedState>.LogInformation(TaskStoppingInfo);
             _taskManager.Stop();
             context.SetState(new StoppedState(_taskManager));
+        }
+
+        /// <inheritdoc/>
+        public bool IsStopped() {
+            return false;
+        }
+
+        /// <inheritdoc/>
+        public bool IsPaused() {
+            return true;
+        }
+
+        /// <inheritdoc/>
+        public bool IsRunning() {
+            return false;
         }
     }
 }

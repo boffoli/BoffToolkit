@@ -1,13 +1,13 @@
 namespace BoffToolkit.Scheduling.BuilderSteps {
     /// <summary>
-    /// Interfaccia per il passo di registrazione nel processo di costruzione del JobScheduler.
+    /// Interface for the registration step in the JobScheduler build process.
     /// </summary>
     public interface IRegistrationStep {
         /// <summary>
-        /// Indica se registrare il job scheduler nel registro globale.
+        /// Specifies whether to register the job scheduler in the global registry.
         /// </summary>
-        /// <param name="register">Se true, il job scheduler verrà registrato; se false, non verrà registrato.</param>
-        /// <returns>Un'istanza di <see cref="IBuildableStep"/> per continuare la configurazione.</returns>
+        /// <param name="register">If <c>true</c>, the job scheduler will be registered; otherwise, it will not be registered.</param>
+        /// <returns>An instance of <see cref="IBuildableStep"/> to continue the configuration process.</returns>
         IBackgroundStep RegisterScheduler(bool register);
     }
 }

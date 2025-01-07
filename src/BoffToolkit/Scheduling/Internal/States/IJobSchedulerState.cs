@@ -1,41 +1,54 @@
 namespace BoffToolkit.Scheduling.Internal.States {
     /// <summary>
-    /// Interfaccia che definisce lo stato di un task scheduler.
+    /// Interface defining the state of a task scheduler.
     /// </summary>
     internal interface IJobSchedulerState {
         /// <summary>
-        /// Nome dello stato corrente.
+        /// Determines whether the current state is <c>Stopped</c>.
         /// </summary>
-        string Name { get; }
+        /// <returns><c>true</c> if the task scheduler is stopped; otherwise, <c>false</c>.</returns>
+        bool IsStopped();
 
         /// <summary>
-        /// Metodo chiamato quando uno stato diventa attivo. 
-        /// Esegue le operazioni specifiche dello stato, come l'avvio, la pausa o l'arresto di un task.
+        /// Determines whether the current state is <c>Paused</c>.
+        /// </summary>
+        /// <returns><c>true</c> if the task scheduler is paused; otherwise, <c>false</c>.</returns>
+        bool IsPaused();
+
+        /// <summary>
+        /// Determines whether the current state is <c>Running</c>.
+        /// </summary>
+        /// <returns><c>true</c> if the task scheduler is running; otherwise, <c>false</c>.</returns>
+        bool IsRunning();
+
+        /// <summary>
+        /// Method called when a state becomes active.
+        /// Executes state-specific operations such as starting, pausing, or stopping a task.
         /// </summary>
         void ApplyState();
 
         /// <summary>
-        /// Avvia il task scheduler.
+        /// Starts the task scheduler.
         /// </summary>
-        /// <param name="context">Il contesto del job scheduler.</param>
+        /// <param name="context">The context of the job scheduler.</param>
         void Start(StateContext context);
 
         /// <summary>
-        /// Mette in pausa il task scheduler.
+        /// Pauses the task scheduler.
         /// </summary>
-        /// <param name="context">Il contesto del job scheduler.</param>
+        /// <param name="context">The context of the job scheduler.</param>
         void Pause(StateContext context);
 
         /// <summary>
-        /// Riprende l'esecuzione del task scheduler.
+        /// Resumes the execution of the task scheduler.
         /// </summary>
-        /// <param name="context">Il contesto del job scheduler.</param>
+        /// <param name="context">The context of the job scheduler.</param>
         void Resume(StateContext context);
 
         /// <summary>
-        /// Ferma il task scheduler.
+        /// Stops the task scheduler.
         /// </summary>
-        /// <param name="context">Il contesto del job scheduler.</param>
+        /// <param name="context">The context of the job scheduler.</param>
         void Stop(StateContext context);
     }
 }

@@ -2,37 +2,44 @@
 
 namespace BoffToolkit.Configuration {
     /// <summary>
-    /// Classe di utilità per gestire le risorse incorporate in un assembly.
+    /// Utility class for managing embedded resources in an assembly.
     /// </summary>
     public static class EmbeddedResourceHandler {
         /// <summary>
-        /// Legge una risorsa come stringa da un assembly.
+        /// Reads an embedded resource as a string from the specified assembly.
         /// </summary>
-        /// <param name="assembly">L'assembly contenente la risorsa.</param>
-        /// <param name="resourceNamePath">Il percorso della risorsa nell'assembly.</param>
-        /// <returns>Il contenuto della risorsa come stringa.</returns>
+        /// <param name="assembly">The assembly containing the resource.</param>
+        /// <param name="resourceNamePath">The path of the resource within the assembly.</param>
+        /// <returns>The content of the resource as a string.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the resource cannot be found in the assembly.</exception>
         public static string ReadResourceAsString(Assembly assembly, string resourceNamePath) {
-            // Legge la risorsa come stringa
-            using var stream = assembly.GetManifestResourceStream(resourceNamePath) ?? throw new InvalidOperationException($"La risorsa {resourceNamePath} non è stata trovata nell'assembly.");
+            // Reads the resource as a string
+            using var stream = assembly.GetManifestResourceStream(resourceNamePath)
+                ?? throw new InvalidOperationException($"The resource {resourceNamePath} was not found in the assembly.");
 
             using var reader = new StreamReader(stream);
             return reader.ReadToEnd();
         }
 
         /// <summary>
-        /// Estrae una risorsa in un file.
+        /// Extracts an embedded resource to a file.
         /// </summary>
-        /// <param name="assembly">L'assembly contenente la risorsa.</param>
-        /// <param name="resourceNamePath">Il percorso della risorsa nell'assembly.</param>
-        /// <param name="createTemporaryFile">Se vero, crea un file temporaneo; altrimenti, crea il file nella directory temporanea.</param>
-        /// <returns>Il percorso del file estratto.</returns>
+        /// <param name="assembly">The assembly containing the resource.</param>
+        /// <param name="resourceNamePath">The path of the resource within the assembly.</param>
+        /// <param name="createTemporaryFile">
+        /// If <c>true</c>, creates a temporary file with a random name.
+        /// Otherwise, creates the file in the temporary directory with the resource name.
+        /// </param>
+        /// <returns>The path to the extracted file.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the resource cannot be found in the assembly.</exception>
         public static string ExtractResourceToFile(Assembly assembly, string resourceNamePath, bool createTemporaryFile = false) {
-            // Estrae la risorsa in un file
-            using var stream = assembly.GetManifestResourceStream(resourceNamePath) ?? throw new InvalidOperationException($"La risorsa {resourceNamePath} non è stata trovata nell'assembly.");
+            // Extracts the resource to a file
+            using var stream = assembly.GetManifestResourceStream(resourceNamePath)
+                ?? throw new InvalidOperationException($"The resource {resourceNamePath} was not found in the assembly.");
 
             var filePath = createTemporaryFile
-                    ? Path.Combine(Path.GetTempPath(), Path.GetRandomFileName())
-                    : Path.Combine(Path.GetTempPath(), resourceNamePath);
+                ? Path.Combine(Path.GetTempPath(), Path.GetRandomFileName())
+                : Path.Combine(Path.GetTempPath(), resourceNamePath);
 
             using (var fileStream = File.Create(filePath)) {
                 stream.CopyTo(fileStream);

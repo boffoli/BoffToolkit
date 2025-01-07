@@ -1,13 +1,13 @@
 namespace BoffToolkit.Scheduling.BuilderSteps {
     /// <summary>
-    /// Interfaccia per impostare l'orario di inizio del job scheduler.
+    /// Interface for setting the start time of the job scheduler.
     /// </summary>
     public interface IStartTimeStep {
         /// <summary>
-        /// Imposta l'orario di inizio del job scheduler.
+        /// Sets the start time of the job scheduler.
         /// </summary>
-        /// <param name="startTime">L'orario di inizio.</param>
-        /// <returns>Un'istanza di <see cref="IPeriodStep"/>.</returns>
+        /// <param name="startTime">The start time to set.</param>
+        /// <returns>An instance of <see cref="IPeriodStep"/> to proceed with the configuration.</returns>
         IPeriodStep SetStart(DateTime startTime);
     }
 }

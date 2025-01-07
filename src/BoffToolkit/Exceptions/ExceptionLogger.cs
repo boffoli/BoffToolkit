@@ -2,36 +2,34 @@
 
 namespace BoffToolkit.Exceptions {
     /// <summary>
-    /// Fornisce funzionalità per registrare eccezioni utilizzando un logger.
+    /// Provides functionality for logging exceptions using a configured logger.
     /// </summary>
-    public class ExceptionLogger {
-        private readonly ILogger _logger;
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="ExceptionLogger"/> class.
+    /// </remarks>
+    /// <param name="logger">The logger to use for logging exceptions.</param>
+    /// <exception cref="ArgumentNullException">Thrown when the <paramref name="logger"/> is <c>null</c>.</exception>
+    public class ExceptionLogger(ILogger logger) {
+        private readonly ILogger _logger = logger ?? throw new ArgumentNullException(nameof(logger), "Logger cannot be null.");
 
         /// <summary>
-        /// Inizializza una nuova istanza della classe ExceptionLogger.
+        /// Logs an exception using the configured logger.
         /// </summary>
-        /// <param name="logger">Il logger da utilizzare per registrare le eccezioni.</param>
-        public ExceptionLogger(ILogger logger) {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger), "Il logger non può essere null.");
-        }
-
-        /// <summary>
-        /// Registra un'eccezione utilizzando il logger configurato.
-        /// </summary>
-        /// <param name="ex">L'eccezione da registrare.</param>
+        /// <param name="ex">The exception to log.</param>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="ex"/> is <c>null</c>.</exception>
         public void LogException(Exception ex) {
             if (ex == null) {
-                throw new ArgumentNullException(nameof(ex), "L'eccezione non può essere null.");
+                throw new ArgumentNullException(nameof(ex), "Exception cannot be null.");
             }
 
-            // Estrae le informazioni dall'eccezione e dalle eventuali eccezioni interne
+            // Extract information from the exception and any inner exception
             var errorMessage = ex.Message;
             var exceptionType = ex.GetType().FullName;
             var stackTrace = ex.StackTrace;
             var innerMessage = ex.InnerException?.Message;
             var innerStackTrace = ex.InnerException?.StackTrace;
 
-            // Registra le informazioni dell'eccezione utilizzando il logger senza usare l'interpolazione di stringhe
+            // Log the exception information using the logger without string interpolation
             _logger.LogError("Exception Type: {ExceptionType}\nMessage: {ErrorMessage}\nStackTrace: {StackTrace}\nInnerException Message: {InnerMessage}\nInnerException StackTrace: {InnerStackTrace}",
                              exceptionType, errorMessage, stackTrace, innerMessage, innerStackTrace);
         }

@@ -2,21 +2,22 @@
 
 namespace BoffToolkit.Caching {
     /// <summary>
-    /// Gestisce una cache di oggetti di tipo TValue indicizzata da chiavi di tipo TKey, implementando il pattern singleton.
+    /// Manages a cache of objects of type <typeparamref name="TValue"/> indexed by keys of type <typeparamref name="TKey"/>, implementing the singleton pattern.
     /// </summary>
-    /// <typeparam name="TKey">Il tipo delle chiavi nella cache.</typeparam>
-    /// <typeparam name="TValue">Il tipo degli oggetti memorizzati nella cache.</typeparam>
+    /// <typeparam name="TKey">The type of keys used in the cache.</typeparam>
+    /// <typeparam name="TValue">The type of objects stored in the cache.</typeparam>
     public class SharedCacheManager<TKey, TValue> : CacheManager<TKey, TValue> where TKey : notnull {
+        // Lazy instance of the shared cache manager.
         private static readonly Lazy<SharedCacheManager<TKey, TValue>> _instance =
             new(() => new SharedCacheManager<TKey, TValue>());
 
         /// <summary>
-        /// Ottiene l'istanza condivisa di SharedCacheManager.
+        /// Gets the shared instance of <see cref="SharedCacheManager{TKey, TValue}"/>.
         /// </summary>
         public static SharedCacheManager<TKey, TValue> Instance => _instance.Value;
 
         /// <summary>
-        /// Costruttore privato per evitare la creazione di istanze esterne.
+        /// Private constructor to prevent external instantiation.
         /// </summary>
         private SharedCacheManager() { }
     }

@@ -2,39 +2,42 @@
 
 namespace BoffToolkit.TypeLoading {
     /// <summary>
-    /// Fornisce un meccanismo per caricare e manipolare tipi da assembly.
+    /// Provides a mechanism for loading and manipulating types from assemblies.
     /// </summary>
     public static class DynamicTypeLoader {
         /// <summary>
-        /// Carica un tipo da un nome completo qualificato.
+        /// Loads a type by its fully qualified name.
         /// </summary>
-        /// <param name="fullyQualifiedName">Nome completo del tipo da caricare.</param>
-        /// <param name="assemblyPath">Percorso opzionale dell'assembly esterno da cui caricare il tipo. Usa l'assembly corrente se non specificato.</param>
-        /// <returns>Il tipo caricato dall'assembly specificato.</returns>
-        /// <exception cref="ArgumentException">Lanciata se il nome completo qualificato del tipo è null o vuoto.</exception>
-        /// <exception cref="InvalidOperationException">Se il tipo non può essere trovato nell'assembly specificato.</exception>
+        /// <param name="fullyQualifiedName">The fully qualified name of the type to load.</param>
+        /// <param name="assemblyPath">
+        /// An optional path to an external assembly from which to load the type. 
+        /// If not specified, the current assembly will be used.
+        /// </param>
+        /// <returns>The type loaded from the specified assembly.</returns>
+        /// <exception cref="ArgumentException">Thrown if the fully qualified name of the type is null or empty.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the type cannot be found in the specified assembly.</exception>
         public static Type LoadType(string fullyQualifiedName, string? assemblyPath = null) {
             if (string.IsNullOrEmpty(fullyQualifiedName)) {
-                throw new ArgumentException("Il nome completo qualificato del tipo non può essere null o vuoto.", nameof(fullyQualifiedName));
+                throw new ArgumentException("The fully qualified name of the type cannot be null or empty.", nameof(fullyQualifiedName));
             }
 
             Type? type = null;
 
-            // Carica il tipo dall'assembly specificato se viene fornito un percorso.
+            // Load the type from the specified assembly if a path is provided.
             if (!string.IsNullOrEmpty(assemblyPath)) {
                 var an = AssemblyName.GetAssemblyName(assemblyPath);
                 var assembly = Assembly.Load(an);
                 type = assembly.GetType(fullyQualifiedName, throwOnError: false);
             }
 
-            // Prova a caricare il tipo dall'assembly corrente se non è stato trovato e non è stato fornito un percorso di assembly.
+            // Attempt to load the type from the current assembly if not found and no assembly path is provided.
             if (type == null) {
                 type = Type.GetType(fullyQualifiedName);
             }
 
-            // Lancia un'eccezione se il tipo non è stato trovato.
+            // Throw an exception if the type was not found.
             if (type == null) {
-                throw new InvalidOperationException($"Tipo {fullyQualifiedName} non trovato.");
+                throw new InvalidOperationException($"Type {fullyQualifiedName} not found.");
             }
 
             return type;

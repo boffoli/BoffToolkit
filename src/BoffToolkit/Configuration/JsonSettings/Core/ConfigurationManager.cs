@@ -4,44 +4,46 @@ using Newtonsoft.Json;
 
 namespace BoffToolkit.Configuration.JsonSettings.Core {
     /// <summary>
-    /// Gestisce la configurazione basata su file JSON.
+    /// Manages configuration settings based on JSON files.
     /// </summary>
     internal class ConfigurationManager {
         private readonly ConfigurationBuilder _builder = new();
         private IConfiguration? _cachedConfiguration;
 
         /// <summary>
-        /// Aggiunge la configurazione da un flusso JSON.
+        /// Adds configuration from a JSON stream.
         /// </summary>
-        /// <param name="jsonContent">Il contenuto JSON da aggiungere alla configurazione.</param>
+        /// <param name="jsonContent">The JSON content to add to the configuration.</param>
         public void AddJsonStream(string jsonContent) {
             _builder.AddJsonStream(new MemoryStream(Encoding.UTF8.GetBytes(jsonContent)));
         }
 
         /// <summary>
-        /// Aggiunge la configurazione da un file JSON.
+        /// Adds configuration from a JSON file.
         /// </summary>
-        /// <param name="configFilePath">Il percorso del file JSON di configurazione.</param>
+        /// <param name="configFilePath">The path to the JSON configuration file.</param>
         public void AddJsonFile(string configFilePath) {
             _builder.AddJsonFile(configFilePath, optional: false, reloadOnChange: true);
         }
 
         /// <summary>
-        /// Costruisce la configurazione.
+        /// Builds the configuration.
         /// </summary>
-        /// <returns>La configurazione costruita.</returns>
+        /// <returns>The constructed configuration object.</returns>
         public IConfiguration Build() {
             _cachedConfiguration ??= _builder.Build();
             return _cachedConfiguration;
         }
 
         /// <summary>
-        /// Stampa la configurazione come stringa JSON.
+        /// Prints the configuration as a JSON string to the console.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Viene generata quando la configurazione non è ancora stata costruita.</exception>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown if the configuration has not been built yet.
+        /// </exception>
         public void PrintConfigAsJson() {
             if (_cachedConfiguration == null) {
-                throw new InvalidOperationException("La configurazione non è stata ancora costruita.");
+                throw new InvalidOperationException("The configuration has not been built yet.");
             }
 
             var configData = new Dictionary<string, string>();

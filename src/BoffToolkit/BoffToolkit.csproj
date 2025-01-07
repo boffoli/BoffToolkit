@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net471;net8.0</TargetFrameworks>
     <OutputType>Library</OutputType>
-    <Version>1.5.3</Version>
+    <Version>1.5.5</Version>
     <Authors>Nicola Boffoli</Authors>
     <Description>Toolkit supporting base activities: caching, pooling, configuration exceptions, scheduling, type loading</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -17,6 +17,8 @@
     <DebugSymbols>true</DebugSymbols>
     <Optimize>false</Optimize>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>$(BaseOutputPath)$(TargetFramework)\BoffToolkit.xml</DocumentationFile>
   </PropertyGroup>
 
   <!-- Configurazione specifica per net471 -->
@@ -33,6 +35,8 @@
 
   <ItemGroup>
     <None Include="readme.md" Pack="true" PackagePath="" />
+    <!-- Includere il file XML nella distribuzione del pacchetto -->
+    <None Include="bin\$(Configuration)\$(TargetFramework)\*.xml" Pack="true" PackagePath="lib\$(TargetFramework)\" />
   </ItemGroup>
 
   <!-- Dipendenze comuni -->

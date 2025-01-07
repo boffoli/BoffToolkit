@@ -2,14 +2,14 @@ using System;
 
 namespace BoffToolkit.Scheduling.PeriodRules {
     /// <summary>
-    /// Interfaccia che definisce una regola per determinare la prossima occorrenza di un periodo.
+    /// Interface that defines a rule for determining the next occurrence of a period.
     /// </summary>
     public interface IPeriodRule {
         /// <summary>
-        /// Restituisce la prossima occorrenza del periodo a partire da un momento specifico.
+        /// Returns the next occurrence of the period starting from a specified time.
         /// </summary>
-        /// <param name="fromTime">Il momento di partenza dal quale calcolare la prossima occorrenza.</param>
-        /// <returns>La prossima occorrenza del periodo.</returns>
+        /// <param name="fromTime">The starting point from which to calculate the next occurrence.</param>
+        /// <returns>The next occurrence of the period.</returns>
         DateTime GetNextOccurrence(DateTime fromTime);
     }
 }
