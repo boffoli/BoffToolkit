@@ -1,2 +1,18 @@
 # BoffToolkit
-utility di base a supporto dello sviluppo delle mie applicazioni
+A powerful toolkit for caching, pooling, configuration, and scheduling tasks.
+
+## Features
+- **Caching**: Efficient in-memory caching solutions.
+- **Pooling**: Object pooling for performance optimization.
+- **Scheduling**: Advanced periodic task scheduling.
+
+## Installation
+Install via NuGet:
+```sh
+dotnet add package BoffToolkit --version 1.6.0
+
+## Support and Contact
+For questions, support, or commercial extensions:
+- Email: [nicola.boffoli@uniba.it](nicola.boffoli@uniba.it)
+
+If you need tailored features or want to use this package in a commercial product, feel free to reach out!
