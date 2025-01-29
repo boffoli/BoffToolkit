@@ -1,13 +1,26 @@
+using BoffToolkit.Scheduling.PeriodRules;
+
 namespace BoffToolkit.Scheduling.BuilderSteps {
     /// <summary>
     /// Interface for the registration step in the JobScheduler build process.
     /// </summary>
-    public interface IRegistrationStep {
+    /// <typeparam name="TPeriodRule">The type of period rule used by the job scheduler.</typeparam>
+    public interface IRegistrationStep<TPeriodRule> where TPeriodRule : IPeriodRule {
         /// <summary>
-        /// Specifies whether to register the job scheduler in the global registry.
+        /// Adds the job scheduler to the global registry with a unique key.
         /// </summary>
-        /// <param name="register">If <c>true</c>, the job scheduler will be registered; otherwise, it will not be registered.</param>
-        /// <returns>An instance of <see cref="IBuildableStep"/> to continue the configuration process.</returns>
-        IBackgroundStep RegisterScheduler(bool register);
+        /// <param name="key">The unique key to identify the job scheduler in the registry.</param>
+        /// <param name="overwrite">
+        /// If <c>true</c>, an existing scheduler with the same key will be overwritten.
+        /// Defaults to <c>false</c>.
+        /// </param>
+        /// <returns>An instance of <see cref="IBuildableStep{TPeriodRule}"/> to continue the configuration process.</returns>
+        IBuildableStep<TPeriodRule> AddToRegistry(string key, bool overwrite = false);
+
+        /// <summary>
+        /// Skips adding the job scheduler to the global registry.
+        /// </summary>
+        /// <returns>An instance of <see cref="IBuildableStep{TPeriodRule}"/> to continue the configuration process.</returns>
+        IBuildableStep<TPeriodRule> SkipRegistry();
     }
 }

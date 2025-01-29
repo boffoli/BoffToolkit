@@ -6,37 +6,25 @@ namespace BoffToolkit.Scheduling.Internal.PeriodRules {
     /// Implements a monthly period rule, allowing for a specified interval in months.
     /// </summary>
     /// <remarks>
-    /// Creates a new instance of <see cref="MonthlyPeriodRule"/> for an event that occurs every n months.
+    /// Represents an event that occurs every specified number of months on a given day of the month.
     /// </remarks>
-    internal class MonthlyPeriodRule(int dayOfMonth, int monthsInterval) : IMonthlyPeriodRule {
+    /// <remarks>
+    /// Creates a new instance of <see cref="MonthlyPeriodRule"/> for a monthly event.
+    /// </remarks>
+    /// <param name="dayOfMonth">The day of the month (1-31).</param>
+    /// <param name="monthsInterval">The interval in months between occurrences. Default is 1 month.</param>
+    internal class MonthlyPeriodRule(int dayOfMonth, int monthsInterval = MonthlyPeriodRule.DefaultInterval) : IMonthlyPeriodRule {
         private const int DefaultInterval = 1;
 
         private readonly int _dayOfMonth = (dayOfMonth >= 1 && dayOfMonth <= 31)
                 ? dayOfMonth
-                : throw new ArgumentException(InvalidDayOfMonthErrorMessage, nameof(dayOfMonth));
-        private readonly int _monthsInterval = (monthsInterval > 0)
+                : throw new ArgumentException("The day of the month must be between 1 and 31.", nameof(dayOfMonth));
+        private readonly int _monthsInterval = monthsInterval > 0
                 ? monthsInterval
-                : throw new ArgumentException(InvalidMonthsIntervalErrorMessage, nameof(monthsInterval));
-
-        // Error message constants
-        private const string InvalidDayOfMonthErrorMessage = "The day of the month must be between 1 and 31.";
-        private const string InvalidMonthsIntervalErrorMessage = "The interval in months must be greater than zero.";
-        private const string InvalidFromTimeErrorMessage = "The starting date must be a valid date.";
-        private const string CalculateNextDateErrorMessage = "Error calculating the next date: the combination of year, month, and day is invalid.";
-
-        /// <summary>
-        /// Creates a new instance of <see cref="MonthlyPeriodRule"/> for a monthly event.
-        /// </summary>
-        /// <param name="dayOfMonth">The day of the month (1-31).</param>
-        public MonthlyPeriodRule(int dayOfMonth)
-            : this(dayOfMonth, DefaultInterval) { }
+                : throw new ArgumentException("The interval in months must be greater than zero.", nameof(monthsInterval));
 
         /// <inheritdoc />
         public DateTime GetNextOccurrence(DateTime fromTime) {
-            if (fromTime == default) {
-                throw new ArgumentException(InvalidFromTimeErrorMessage, nameof(fromTime));
-            }
-
             var nextDate = CalculateNextDate(fromTime);
 
             // If the next date is less than or equal to fromTime, advance by the interval of months
@@ -48,14 +36,18 @@ namespace BoffToolkit.Scheduling.Internal.PeriodRules {
             return nextDate;
         }
 
-        // Method to calculate the next date while preserving the DateTimeKind
+        /// <summary>
+        /// Calculates the next valid date while preserving the DateTimeKind.
+        /// </summary>
+        /// <param name="fromTime">The reference date.</param>
+        /// <returns>A valid next occurrence date.</returns>
         private DateTime CalculateNextDate(DateTime fromTime) {
             try {
                 var day = ValidateDayInMonth(fromTime.Year, fromTime.Month, _dayOfMonth);
                 return new DateTime(fromTime.Year, fromTime.Month, day, 0, 0, 0, fromTime.Kind);
             }
             catch (ArgumentOutOfRangeException ex) {
-                throw new InvalidOperationException(CalculateNextDateErrorMessage, ex);
+                throw new InvalidOperationException("Error calculating the next date: the combination of year, month, and day is invalid.", ex);
             }
         }
 
@@ -68,8 +60,6 @@ namespace BoffToolkit.Scheduling.Internal.PeriodRules {
         /// <returns>A valid day for the specified month.</returns>
         private static int ValidateDayInMonth(int year, int month, int day) {
             var maxDaysInMonth = DateTime.DaysInMonth(year, month);
-
-            // If the day exceeds the month's maximum, return the valid maximum
             return day <= maxDaysInMonth ? day : maxDaysInMonth;
         }
 

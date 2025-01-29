@@ -6,53 +6,28 @@ namespace BoffToolkit.Scheduling.Internal.PeriodRules {
     /// Implements a daily period rule with the option to specify an interval in days.
     /// </summary>
     /// <remarks>
+    /// Represents an event that occurs every specified number of days at a given time of day.
+    /// </remarks>
+    /// <remarks>
     /// Creates a new instance of <see cref="DailyPeriodRule"/> for an event that occurs every n days.
     /// </remarks>
-    internal class DailyPeriodRule(TimeSpan timeOfDay, int daysInterval) : IDailyPeriodRule {
+    /// <param name="timeOfDay">The time of day for the event as a <see cref="DateTime"/>.</param>
+    /// <param name="daysInterval">The interval in days between occurrences. Default is 1 day.</param>
+    internal class DailyPeriodRule(DateTime timeOfDay, int daysInterval = DailyPeriodRule.DefaultInterval) : IDailyPeriodRule {
         private const int DefaultInterval = 1;
-        private readonly TimeSpan _timeOfDay = (timeOfDay >= TimeSpan.Zero && timeOfDay < TimeSpan.FromDays(1))
-                ? timeOfDay
-                : throw new ArgumentException(InvalidTimeOfDayErrorMessage, nameof(timeOfDay));
+
+        private readonly TimeSpan _timeOfDay = (timeOfDay.TimeOfDay >= TimeSpan.Zero && timeOfDay.TimeOfDay < TimeSpan.FromDays(1))
+                ? timeOfDay.TimeOfDay
+                : throw new ArgumentException("The time of day must be between 00:00 and 23:59.", nameof(timeOfDay));
         private readonly int _daysInterval = daysInterval > 0
                 ? daysInterval
-                : throw new ArgumentException(InvalidDaysIntervalErrorMessage, nameof(daysInterval));
-
-        // Error message constants
-        private const string InvalidTimeOfDayErrorMessage = "The time of day must be between 00:00 and 23:59.";
-        private const string InvalidDaysIntervalErrorMessage = "The daily interval must be greater than zero.";
-        private const string InvalidFromTimeErrorMessage = "The starting date must be a valid date.";
-
-        /// <summary>
-        /// Creates a new instance of <see cref="DailyPeriodRule"/> for a daily event.
-        /// </summary>
-        /// <param name="timeOfDay">The time of day for the event.</param>
-        public DailyPeriodRule(DateTime timeOfDay)
-            : this(timeOfDay.TimeOfDay, DefaultInterval) { }
-
-        /// <summary>
-        /// Creates a new instance of <see cref="DailyPeriodRule"/> for an event that occurs every n days.
-        /// </summary>
-        /// <param name="timeOfDay">The time of day for the event.</param>
-        /// <param name="daysInterval">The interval in days between occurrences.</param>
-        public DailyPeriodRule(DateTime timeOfDay, int daysInterval)
-            : this(timeOfDay.TimeOfDay, daysInterval) { }
-
-        /// <summary>
-        /// Creates a new instance of <see cref="DailyPeriodRule"/> for a daily event.
-        /// </summary>
-        /// <param name="timeOfDay">The time of day for the event.</param>
-        public DailyPeriodRule(TimeSpan timeOfDay)
-            : this(timeOfDay, DefaultInterval) { }
+                : throw new ArgumentException("The daily interval must be greater than zero.", nameof(daysInterval));
 
         /// <inheritdoc />
         public DateTime GetNextOccurrence(DateTime fromTime) {
-            if (fromTime == default) {
-                throw new ArgumentException(InvalidFromTimeErrorMessage, nameof(fromTime));
-            }
-
             var nextDate = fromTime.Date.Add(_timeOfDay);
 
-            // Case: Every n days (including the case where _daysInterval is 1 for daily events)
+            // Adjust the date if the calculated occurrence is in the past
             if (nextDate <= fromTime) {
                 nextDate = nextDate.AddDays(_daysInterval);
             }

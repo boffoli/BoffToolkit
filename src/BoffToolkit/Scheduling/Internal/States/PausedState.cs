@@ -1,5 +1,6 @@
 using System;
 using BoffToolkit.Logging;
+using BoffToolkit.Scheduling.Internal.TaskManagers;
 
 namespace BoffToolkit.Scheduling.Internal.States {
     /// <summary>

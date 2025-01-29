@@ -1,13 +1,16 @@
+using BoffToolkit.Scheduling.PeriodRules;
+
 namespace BoffToolkit.Scheduling.BuilderSteps {
     /// <summary>
-    /// Interface for setting the start time of the job scheduler.
+    /// Defines the step for setting the start time in the job scheduler configuration.
     /// </summary>
-    public interface IStartTimeStep {
+    /// <typeparam name="TPeriodRule">The specific period rule type associated with the job scheduler.</typeparam>
+    public interface IStartTimeStep<TPeriodRule> where TPeriodRule : IPeriodRule {
         /// <summary>
-        /// Sets the start time of the job scheduler.
+        /// Specifies the start time of the job scheduler.
         /// </summary>
-        /// <param name="startTime">The start time to set.</param>
-        /// <returns>An instance of <see cref="IPeriodStep"/> to proceed with the configuration.</returns>
-        IPeriodStep SetStart(DateTime startTime);
+        /// <param name="startTime">The date and time when the job scheduler should start executing.</param>
+        /// <returns>An instance of <see cref="IEndTimeStep{TPeriodRule}"/> to proceed with the configuration.</returns>
+        IEndTimeStep<TPeriodRule> SetStart(DateTime startTime);
     }
 }

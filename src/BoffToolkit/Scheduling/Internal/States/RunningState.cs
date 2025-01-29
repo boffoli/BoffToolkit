@@ -1,4 +1,5 @@
 using BoffToolkit.Logging;
+using BoffToolkit.Scheduling.Internal.TaskManagers;
 
 namespace BoffToolkit.Scheduling.Internal.States {
     /// <summary>
@@ -54,6 +55,7 @@ namespace BoffToolkit.Scheduling.Internal.States {
             CentralLogger<RunningState>.LogInformation(TaskPausingInfo);
             _taskManager.Pause();
             context.SetState(new PausedState(_taskManager));
+
         }
 
         /// <summary>

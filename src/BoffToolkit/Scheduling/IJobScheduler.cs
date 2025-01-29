@@ -2,7 +2,7 @@ using BoffToolkit.Scheduling.PeriodRules;
 
 namespace BoffToolkit.Scheduling {
     /// <summary>
-    /// Provides an interface for managing the execution of scheduled tasks.
+    /// Provides a non-generic interface for managing the execution of scheduled tasks.
     /// </summary>
     public interface IJobScheduler : IDisposable {
         /// <summary>
@@ -56,9 +56,46 @@ namespace BoffToolkit.Scheduling {
         DateTime StartTime { get; }
 
         /// <summary>
-        /// Gets the period rule used by the job scheduler.
+        /// Gets the end time of the job scheduler, if any.
         /// </summary>
-        /// <value>The <see cref="IPeriodRule"/> associated with the scheduler.</value>
-        IPeriodRule PeriodRule { get; }
+        /// <value>The end time of the scheduler, or <c>null</c> if the scheduler does not have an end time.</value>
+        DateTime? EndTime { get; }
     }
+
+    /// <summary>
+    /// Provides an interface for managing the execution of scheduled tasks with a specific period rule.
+    /// </summary>
+    public interface IJobScheduler<out TPeriodRule> : IJobScheduler
+        where TPeriodRule : IPeriodRule {
+
+        /// <summary>
+        /// Gets the specific period rule for this job scheduler.
+        /// </summary>
+        TPeriodRule PeriodRule { get; }
+    }
+
+    /// <summary>
+    /// Job scheduler interface for TimeSpan-based period rules.
+    /// </summary>
+    public interface ITimeSpanJobScheduler : IJobScheduler<ITimeSpanPeriodRule> { }
+
+    /// <summary>
+    /// Job scheduler interface for daily period rules.
+    /// </summary>
+    public interface IDailyJobScheduler : IJobScheduler<IDailyPeriodRule> { }
+
+    /// <summary>
+    /// Job scheduler interface for weekly period rules.
+    /// </summary>
+    public interface IWeeklyJobScheduler : IJobScheduler<IWeeklyPeriodRule> { }
+
+    /// <summary>
+    /// Job scheduler interface for monthly period rules.
+    /// </summary>
+    public interface IMonthlyJobScheduler : IJobScheduler<IMonthlyPeriodRule> { }
+
+    /// <summary>
+    /// Job scheduler interface for annual period rules.
+    /// </summary>
+    public interface IAnnualJobScheduler : IJobScheduler<IAnnualPeriodRule> { }
 }

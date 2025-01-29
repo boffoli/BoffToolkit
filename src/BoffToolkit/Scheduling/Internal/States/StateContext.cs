@@ -43,7 +43,6 @@ namespace BoffToolkit.Scheduling.Internal {
             if (CurrentState == null) {
                 throw new InvalidOperationException(CurrentStateNullErrorMessage);
             }
-
             CurrentState.Start(this);
         }
 

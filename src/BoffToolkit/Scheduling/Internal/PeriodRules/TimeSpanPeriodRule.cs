@@ -23,10 +23,6 @@ namespace BoffToolkit.Scheduling.Internal.PeriodRules {
 
         /// <inheritdoc />
         public DateTime GetNextOccurrence(DateTime fromTime) {
-            if (fromTime == default) {
-                throw new ArgumentException("The start time cannot be the default value.", nameof(fromTime));
-            }
-
             return fromTime.Add(_interval);
         }
 

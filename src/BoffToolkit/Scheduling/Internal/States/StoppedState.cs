@@ -1,5 +1,6 @@
 using System;
 using BoffToolkit.Logging;
+using BoffToolkit.Scheduling.Internal.TaskManagers;
 
 namespace BoffToolkit.Scheduling.Internal.States {
     /// <summary>
@@ -42,7 +43,6 @@ namespace BoffToolkit.Scheduling.Internal.States {
             if (context == null) {
                 throw new ArgumentNullException(nameof(context), ContextNullErrorMessage);
             }
-
             CentralLogger<StoppedState>.LogWarning(InvalidPauseWarning);
         }
 
@@ -51,7 +51,6 @@ namespace BoffToolkit.Scheduling.Internal.States {
             if (context == null) {
                 throw new ArgumentNullException(nameof(context), ContextNullErrorMessage);
             }
-
             CentralLogger<StoppedState>.LogWarning(InvalidResumeWarning);
         }
 
@@ -60,7 +59,6 @@ namespace BoffToolkit.Scheduling.Internal.States {
             if (context == null) {
                 throw new ArgumentNullException(nameof(context), ContextNullErrorMessage);
             }
-
             CentralLogger<StoppedState>.LogWarning(TaskAlreadyStoppedWarning);
         }
 

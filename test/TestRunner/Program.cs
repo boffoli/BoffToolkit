@@ -1,10 +1,13 @@
-﻿using System;
-using BoffToolkit.Test;
+﻿using BoffToolkit.Test;
 
 Console.WriteLine("Esecuzione dei test...");
 
 var jobSchedulerTests = new JobSchedulerTests();
-jobSchedulerTests.JobScheduler_Should_Invoke_DateTime();
+
+// Chiamata asincrona al test
+await jobSchedulerTests.JobScheduler_Should_Invoke_DateTimeAsync();
+
+// Altri test possono essere eseguiti qui
 //jobSchedulerTests.JobScheduler_Should_Invoke_HttpGetCall();
 /*jobSchedulerTests.JobScheduler_Should_Invoke_Action_Callback();
 jobSchedulerTests.JobScheduler_Should_Invoke_ActionWithParam_Callback();
