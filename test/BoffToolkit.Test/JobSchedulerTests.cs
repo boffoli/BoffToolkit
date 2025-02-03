@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using BoffToolkit.Scheduling;
 using BoffToolkit.Scheduling.HttpCalls;
 using BoffToolkit.Scheduling.PeriodRules;
@@ -12,7 +14,7 @@ namespace BoffToolkit.Test {
             var wasCallbackInvoked = false;
             var periodRule = PeriodRuleFactory.CreateTimeSpanPeriodRule(TimeSpan.FromSeconds(3));
 
-            var scheduler = JobSchedulerBuilder<ITimeSpanPeriodRule>
+            IJobScheduler<ITimeSpanPeriodRule> scheduler = JobSchedulerBuilderTimeSpan
                 .SetStartTime(DateTime.Now)
                 .SetEnd(DateTime.Now + TimeSpan.FromSeconds(30))
                 .SetPeriod(periodRule)

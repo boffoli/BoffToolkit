@@ -73,29 +73,4 @@ namespace BoffToolkit.Scheduling {
         /// </summary>
         TPeriodRule PeriodRule { get; }
     }
-
-    /// <summary>
-    /// Job scheduler interface for TimeSpan-based period rules.
-    /// </summary>
-    public interface ITimeSpanJobScheduler : IJobScheduler<ITimeSpanPeriodRule> { }
-
-    /// <summary>
-    /// Job scheduler interface for daily period rules.
-    /// </summary>
-    public interface IDailyJobScheduler : IJobScheduler<IDailyPeriodRule> { }
-
-    /// <summary>
-    /// Job scheduler interface for weekly period rules.
-    /// </summary>
-    public interface IWeeklyJobScheduler : IJobScheduler<IWeeklyPeriodRule> { }
-
-    /// <summary>
-    /// Job scheduler interface for monthly period rules.
-    /// </summary>
-    public interface IMonthlyJobScheduler : IJobScheduler<IMonthlyPeriodRule> { }
-
-    /// <summary>
-    /// Job scheduler interface for annual period rules.
-    /// </summary>
-    public interface IAnnualJobScheduler : IJobScheduler<IAnnualPeriodRule> { }
 }

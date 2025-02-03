@@ -8,7 +8,8 @@ namespace BoffToolkit.Scheduling {
     /// <summary>
     /// Builds an instance of <see cref="IJobScheduler{TPeriodRule}"/> with the provided specifications.
     /// </summary>
-    public class JobSchedulerBuilder<TPeriodRule> where TPeriodRule : IPeriodRule {
+    public class JobSchedulerBuilder<TPeriodRule>
+        where TPeriodRule : IPeriodRule {
         private DateTime _startTime;
         private DateTime? _endTime;
 
@@ -195,25 +196,25 @@ namespace BoffToolkit.Scheduling {
     /// <summary>
     /// Builder for job schedulers using TimeSpan-based period rules.
     /// </summary>
-    public class TimeSpanJobSchedulerBuilder : JobSchedulerBuilder<ITimeSpanPeriodRule> { }
+    public class JobSchedulerBuilderTimeSpan : JobSchedulerBuilder<ITimeSpanPeriodRule> { }
 
     /// <summary>
     /// Builder for job schedulers using daily period rules.
     /// </summary>
-    public class DailyJobSchedulerBuilder : JobSchedulerBuilder<IDailyPeriodRule> { }
+    public class JobSchedulerBuilderDaily : JobSchedulerBuilder<IDailyPeriodRule> { }
 
     /// <summary>
     /// Builder for job schedulers using weekly period rules.
     /// </summary>
-    public class WeeklyJobSchedulerBuilder : JobSchedulerBuilder<IWeeklyPeriodRule> { }
+    public class JobSchedulerBuilderWeekly : JobSchedulerBuilder<IWeeklyPeriodRule> { }
 
     /// <summary>
     /// Builder for job schedulers using monthly period rules.
     /// </summary>
-    public class MonthlyJobSchedulerBuilder : JobSchedulerBuilder<IMonthlyPeriodRule> { }
+    public class JobSchedulerBuilderMonthly : JobSchedulerBuilder<IMonthlyPeriodRule> { }
 
     /// <summary>
     /// Builder for job schedulers using annual period rules.
     /// </summary>
-    public class AnnualJobSchedulerBuilder : JobSchedulerBuilder<IAnnualPeriodRule> { }
+    public class JobSchedulerBuilderAnnual : JobSchedulerBuilder<IAnnualPeriodRule> { }
 }

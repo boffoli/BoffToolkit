@@ -1,0 +1,2658 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BoffToolkit</name>
+    </assembly>
+    <members>
+        <member name="T:BoffToolkit.Caching.CacheManager`2">
+            <summary>
+            Manages a cache of objects of type <typeparamref name="TValue"/> indexed by keys of type <typeparamref name="TKey"/>.
+            </summary>
+            <typeparam name="TKey">The type of keys used in the cache.</typeparam>
+            <typeparam name="TValue">The type of objects stored in the cache.</typeparam>
+        </member>
+        <member name="M:BoffToolkit.Caching.CacheManager`2.TryGetValue(`0)">
+            <summary>
+            Attempts to retrieve the value associated with the specified key from the cache.
+            </summary>
+            <param name="key">The key of the value to retrieve from the cache.</param>
+            <returns>The value associated with the key if present; otherwise, the default value (null for reference types).</returns>
+        </member>
+        <member name="M:BoffToolkit.Caching.CacheManager`2.GetOrProvide(`0,System.Func{`0,`1},System.Boolean)">
+            <summary>
+            Retrieves or generates the value associated with the given key.
+            If the value is not present in the cache, it generates the value using the provided function.
+            </summary>
+            <param name="key">The key to access or generate the value in the cache.</param>
+            <param name="valueProvider">The function that generates the value if it is not present in the cache.</param>
+            <param name="allowNullValues">Specifies whether null values should be accepted in the cache.</param>
+            <returns>The value associated with the given key, which may be null.</returns>
+        </member>
+        <member name="M:BoffToolkit.Caching.CacheManager`2.GetOrProvide(`0,System.Func{`1},System.Boolean)">
+            <summary>
+            Retrieves or generates the value associated with the given key without additional parameters.
+            If the value is not present in the cache, it generates the value using the provided function.
+            </summary>
+            <param name="key">The key to access or generate the value in the cache.</param>
+            <param name="valueProvider">The function that generates the value if it is not present in the cache.</param>
+            <param name="allowNullValues">Specifies whether null values should be accepted in the cache.</param>
+            <returns>The value associated with the given key, which may be null.</returns>
+        </member>
+        <member name="M:BoffToolkit.Caching.CacheManager`2.Remove(`0)">
+            <summary>
+            Removes the item associated with the specified key from the cache.
+            </summary>
+            <param name="key">The key of the item to remove from the cache.</param>
+            <returns><c>true</c> if the item was successfully removed; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Caching.CacheManager`2.GetOrProvideInternal(`0,System.Func{`1},System.Boolean)">
+            <summary>
+            Internal logic for retrieving or generating the value associated with the given key.
+            </summary>
+            <param name="key">The key to access or generate the value in the cache.</param>
+            <param name="valueProvider">The function that generates the value if it is not present in the cache.</param>
+            <param name="allowNullValues">Specifies whether null values should be accepted in the cache.</param>
+            <returns>The value associated with the given key, which may be null.</returns>
+        </member>
+        <member name="T:BoffToolkit.Caching.SharedCacheManager`2">
+            <summary>
+            Manages a cache of objects of type <typeparamref name="TValue"/> indexed by keys of type <typeparamref name="TKey"/>, implementing the singleton pattern.
+            </summary>
+            <typeparam name="TKey">The type of keys used in the cache.</typeparam>
+            <typeparam name="TValue">The type of objects stored in the cache.</typeparam>
+        </member>
+        <member name="P:BoffToolkit.Caching.SharedCacheManager`2.Instance">
+            <summary>
+            Gets the shared instance of <see cref="T:BoffToolkit.Caching.SharedCacheManager`2"/>.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Caching.SharedCacheManager`2.#ctor">
+            <summary>
+            Private constructor to prevent external instantiation.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Caching.SharedTimedCacheManager`2">
+            <summary>
+            Manages a cache of objects of type <typeparamref name="TValue"/> indexed by keys of type <typeparamref name="TKey"/>, with timed expiration, implementing the singleton pattern.
+            </summary>
+            <typeparam name="TKey">The type of keys used in the cache.</typeparam>
+            <typeparam name="TValue">The type of objects stored in the cache.</typeparam>
+        </member>
+        <member name="P:BoffToolkit.Caching.SharedTimedCacheManager`2.Instance">
+            <summary>
+            Gets the shared instance of <see cref="T:BoffToolkit.Caching.SharedTimedCacheManager`2"/>.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the shared instance has not been configured using the <see cref="M:BoffToolkit.Caching.SharedTimedCacheManager`2.Configure(System.TimeSpan,System.Action)"/> method.
+            </exception>
+        </member>
+        <member name="M:BoffToolkit.Caching.SharedTimedCacheManager`2.#ctor(System.TimeSpan,System.Action)">
+            <summary>
+            Private constructor to prevent external instantiation.
+            </summary>
+            <param name="timerInterval">The interval between cache checks.</param>
+            <param name="timerAction">The action to execute when the timer expires.</param>
+        </member>
+        <member name="M:BoffToolkit.Caching.SharedTimedCacheManager`2.Configure(System.TimeSpan,System.Action)">
+            <summary>
+            Configures the shared instance of <see cref="T:BoffToolkit.Caching.SharedTimedCacheManager`2"/> with the specified timer interval and action.
+            </summary>
+            <param name="timerInterval">The interval between cache checks.</param>
+            <param name="timerAction">The action to execute when the timer expires.</param>
+        </member>
+        <member name="T:BoffToolkit.Caching.TimedCacheManager`2">
+            <summary>
+            Manages a cache of objects of type <typeparamref name="TValue"/> indexed by keys of type <typeparamref name="TKey"/> with timed expiration.
+            </summary>
+            <typeparam name="TKey">The type of keys used in the cache.</typeparam>
+            <typeparam name="TValue">The type of objects stored in the cache.</typeparam>
+        </member>
+        <member name="M:BoffToolkit.Caching.TimedCacheManager`2.#ctor(System.TimeSpan,System.Action)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Caching.TimedCacheManager`2"/> class with a time interval for periodic cache checks and an action to perform when the timer expires.
+            </summary>
+            <param name="timerInterval">The interval between cache checks.</param>
+            <param name="timerAction">The action to perform when the timer expires.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the timer interval is less than or equal to zero.</exception>
+            <exception cref="T:System.ArgumentNullException">Thrown when the timer action is null.</exception>
+        </member>
+        <member name="M:BoffToolkit.Caching.TimedCacheManager`2.Dispose">
+            <summary>
+            Releases the resources used by the timed cache manager.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Caching.TimedCacheManager`2.Dispose(System.Boolean)">
+            <summary>
+            Releases the resources used by the <see cref="T:BoffToolkit.Caching.TimedCacheManager`2"/> instance.
+            </summary>
+            <param name="disposing">
+            A boolean value indicating whether the method is called directly by user code (<c>true</c>) 
+            or by the runtime from a finalizer (<c>false</c>).
+            </param>
+            <remarks>
+            When <paramref name="disposing"/> is <c>true</c>, this method disposes of the managed resources,
+            such as the internal <see cref="T:System.Threading.Timer"/>. Unmanaged resources can also be released here if necessary.
+            </remarks>
+        </member>
+        <member name="T:BoffToolkit.Configuration.EmbeddedResourceHandler">
+            <summary>
+            Utility class for managing embedded resources in an assembly.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Configuration.EmbeddedResourceHandler.ReadResourceAsString(System.Reflection.Assembly,System.String)">
+            <summary>
+            Reads an embedded resource as a string from the specified assembly.
+            </summary>
+            <param name="assembly">The assembly containing the resource.</param>
+            <param name="resourceNamePath">The path of the resource within the assembly.</param>
+            <returns>The content of the resource as a string.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if the resource cannot be found in the assembly.</exception>
+        </member>
+        <member name="M:BoffToolkit.Configuration.EmbeddedResourceHandler.ExtractResourceToFile(System.Reflection.Assembly,System.String,System.Boolean)">
+            <summary>
+            Extracts an embedded resource to a file.
+            </summary>
+            <param name="assembly">The assembly containing the resource.</param>
+            <param name="resourceNamePath">The path of the resource within the assembly.</param>
+            <param name="createTemporaryFile">
+            If <c>true</c>, creates a temporary file with a random name.
+            Otherwise, creates the file in the temporary directory with the resource name.
+            </param>
+            <returns>The path to the extracted file.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if the resource cannot be found in the assembly.</exception>
+        </member>
+        <member name="T:BoffToolkit.Configuration.JsonFileUpdater">
+            <summary>
+            Provides functionality for updating a JSON file.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Configuration.JsonFileUpdater.UpdateValue(System.String,System.String,System.String)">
+            <summary>
+            Updates a specific value in JSON content.
+            </summary>
+            <param name="jsonContent">The JSON content to update.</param>
+            <param name="keyPath">The key path to update, formatted as 'Section:Key'.</param>
+            <param name="newValue">The new value to set for the specified key.</param>
+            <returns>The updated JSON content as a string.</returns>
+            <exception cref="T:Newtonsoft.Json.JsonException">Thrown if the JSON content is invalid.</exception>
+            <exception cref="T:System.ArgumentException">Thrown if the key path is incorrectly formatted or does not match the JSON structure.</exception>
+        </member>
+        <member name="M:BoffToolkit.Configuration.JsonFileUpdater.SetJsonValue(Newtonsoft.Json.Linq.JObject,System.String,System.String)">
+            <summary>
+            Sets the specified value in the <see cref="T:Newtonsoft.Json.Linq.JObject"/>.
+            </summary>
+            <param name="jsonObject">The <see cref="T:Newtonsoft.Json.Linq.JObject"/> to modify.</param>
+            <param name="keyPath">The key path, formatted as 'Section:Key'.</param>
+            <param name="value">The new value to set.</param>
+            <exception cref="T:System.ArgumentException">Thrown if the key path is incorrectly formatted or does not match the JSON structure.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown if the current JSON object is null.</exception>
+        </member>
+        <member name="T:BoffToolkit.Configuration.JsonSettings.Core.ConfigurationManager">
+            <summary>
+            Manages configuration settings based on JSON files.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Configuration.JsonSettings.Core.ConfigurationManager.AddJsonStream(System.String)">
+            <summary>
+            Adds configuration from a JSON stream.
+            </summary>
+            <param name="jsonContent">The JSON content to add to the configuration.</param>
+        </member>
+        <member name="M:BoffToolkit.Configuration.JsonSettings.Core.ConfigurationManager.AddJsonFile(System.String)">
+            <summary>
+            Adds configuration from a JSON file.
+            </summary>
+            <param name="configFilePath">The path to the JSON configuration file.</param>
+        </member>
+        <member name="M:BoffToolkit.Configuration.JsonSettings.Core.ConfigurationManager.Build">
+            <summary>
+            Builds the configuration.
+            </summary>
+            <returns>The constructed configuration object.</returns>
+        </member>
+        <member name="M:BoffToolkit.Configuration.JsonSettings.Core.ConfigurationManager.PrintConfigAsJson">
+            <summary>
+            Prints the configuration as a JSON string to the console.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the configuration has not been built yet.
+            </exception>
+        </member>
+        <member name="T:BoffToolkit.Configuration.JsonSettings.Resource">
+            <summary>
+            Represents a resource, including configuration files and JSON schemas.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Configuration.JsonSettings.Resource.Name">
+            <summary>
+            Gets or sets the name of the resource.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Configuration.JsonSettings.Resource.Assembly">
+            <summary>
+            Gets or sets the assembly containing the resource.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Configuration.JsonSettings.JsonSettingsBuilder">
+            <summary>
+            Provides functionality to build and configure a JSON-based configuration object.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Configuration.JsonSettings.JsonSettingsBuilder.WithConfiguration(System.String,System.String)">
+            <summary>
+            Loads JSON configuration directly from the provided content and optionally validates it against a given JSON schema.
+            </summary>
+            <param name="jsonContent">The JSON configuration content.</param>
+            <param name="schemaContent">The JSON schema content for validation. If null or empty, schema validation is skipped.</param>
+            <returns>The current instance for chaining configuration calls.</returns>
+        </member>
+        <member name="M:BoffToolkit.Configuration.JsonSettings.JsonSettingsBuilder.WithConfiguration(BoffToolkit.Configuration.JsonSettings.Resource,System.Nullable{BoffToolkit.Configuration.JsonSettings.Resource})">
+            <summary>
+            Loads JSON configuration from an embedded resource and optionally validates it against an embedded JSON schema.
+            If the schema is not provided, no schema validation is performed.
+            </summary>
+            <param name="configResource">The configuration resource.</param>
+            <param name="schemaResource">The optional schema resource.</param>
+            <returns>The current instance for chaining configuration calls.</returns>
+        </member>
+        <member name="M:BoffToolkit.Configuration.JsonSettings.JsonSettingsBuilder.WithConfiguration(System.String,BoffToolkit.Configuration.JsonSettings.Resource)">
+            <summary>
+            Loads JSON configuration directly from the provided content and optionally validates it against a given schema resource.
+            </summary>
+            <param name="jsonContent">The JSON configuration content.</param>
+            <param name="schemaResource">The schema resource for validation.</param>
+            <returns>The current instance for chaining configuration calls.</returns>
+        </member>
+        <member name="M:BoffToolkit.Configuration.JsonSettings.JsonSettingsBuilder.WithConfiguration(BoffToolkit.Configuration.JsonSettings.Resource,System.String)">
+            <summary>
+            Loads JSON configuration from an embedded resource and optionally validates it against a provided JSON schema.
+            </summary>
+            <param name="configResource">The configuration resource.</param>
+            <param name="schemaContent">The JSON schema content for validation. If null or empty, schema validation is skipped.</param>
+            <returns>The current instance for chaining configuration calls.</returns>
+        </member>
+        <member name="M:BoffToolkit.Configuration.JsonSettings.JsonSettingsBuilder.Build">
+            <summary>
+            Builds the final configuration based on the provided data.
+            </summary>
+            <returns>An instance of <see cref="T:Microsoft.Extensions.Configuration.IConfiguration"/> containing the built configuration.</returns>
+        </member>
+        <member name="M:BoffToolkit.Configuration.JsonSettings.JsonSettingsBuilder.ReadJsonContentFromResource(System.Reflection.Assembly,System.String)">
+            <summary>
+            Reads the JSON content from an embedded resource.
+            </summary>
+            <param name="assembly">The assembly containing the resource.</param>
+            <param name="resourceName">The name of the resource.</param>
+            <returns>The JSON content as a string.</returns>
+            <exception cref="T:System.ArgumentException">Thrown if the assembly or resource name is null or empty.</exception>
+        </member>
+        <member name="M:BoffToolkit.Configuration.JsonSettings.JsonSettingsBuilder.ReadSchemaFromResource(System.String,System.Reflection.Assembly)">
+            <summary>
+            Reads the JSON schema content from an embedded resource.
+            </summary>
+            <param name="resourceSchemaName">The name of the schema resource.</param>
+            <param name="schemaAssembly">The assembly containing the schema resource.</param>
+            <returns>The JSON schema content as a string, or an empty string if the schema assembly or resource name is null.</returns>
+        </member>
+        <member name="M:BoffToolkit.Configuration.JsonSettings.JsonSettingsBuilder.AddConfiguration(System.String,System.String)">
+            <summary>
+            Adds JSON configuration and optionally validates it against a JSON schema.
+            </summary>
+            <param name="jsonContent">The JSON configuration content.</param>
+            <param name="schemaContent">The JSON schema content for validation.</param>
+        </member>
+        <member name="M:BoffToolkit.Configuration.JsonSettings.JsonSettingsBuilder.ValidateJson(System.String,System.String)">
+            <summary>
+            Validates JSON content against a specified JSON schema.
+            </summary>
+            <param name="jsonContent">The JSON content to validate.</param>
+            <param name="schemaContent">The JSON schema content to validate against.</param>
+        </member>
+        <member name="T:BoffToolkit.Exceptions.ExceptionLogger">
+            <summary>
+            Provides functionality for logging exceptions using a configured logger.
+            </summary>
+            <remarks>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Exceptions.ExceptionLogger"/> class.
+            </remarks>
+            <param name="logger">The logger to use for logging exceptions.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when the <paramref name="logger"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:BoffToolkit.Exceptions.ExceptionLogger.#ctor(Microsoft.Extensions.Logging.ILogger)">
+            <summary>
+            Provides functionality for logging exceptions using a configured logger.
+            </summary>
+            <remarks>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Exceptions.ExceptionLogger"/> class.
+            </remarks>
+            <param name="logger">The logger to use for logging exceptions.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when the <paramref name="logger"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:BoffToolkit.Exceptions.ExceptionLogger.LogException(System.Exception)">
+            <summary>
+            Logs an exception using the configured logger.
+            </summary>
+            <param name="ex">The exception to log.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when the <paramref name="ex"/> is <c>null</c>.</exception>
+        </member>
+        <member name="T:BoffToolkit.JsonValidator.SchemaValidator">
+            <summary>
+            Provides functionality for validating JSON content against a specified JSON schema.
+            </summary>
+            <remarks>
+            Initializes a new instance of the <see cref="T:BoffToolkit.JsonValidator.SchemaValidator"/> class with a specified JSON schema.
+            </remarks>
+        </member>
+        <member name="M:BoffToolkit.JsonValidator.SchemaValidator.#ctor(System.String)">
+            <summary>
+            Provides functionality for validating JSON content against a specified JSON schema.
+            </summary>
+            <remarks>
+            Initializes a new instance of the <see cref="T:BoffToolkit.JsonValidator.SchemaValidator"/> class with a specified JSON schema.
+            </remarks>
+        </member>
+        <member name="M:BoffToolkit.JsonValidator.SchemaValidator.Validate(System.String)">
+            <summary>
+            Validates a JSON string against the JSON schema provided during initialization.
+            </summary>
+            <param name="jsonContent">The JSON string to validate.</param>
+        </member>
+        <member name="M:BoffToolkit.JsonValidator.SchemaValidator.Validate(System.Object)">
+            <summary>
+            Validates an object by serializing it into JSON and checking it against the provided schema.
+            </summary>
+            <param name="instance">The object instance to validate.</param>
+        </member>
+        <member name="M:BoffToolkit.JsonValidator.SchemaValidator.Validate(System.Type)">
+            <summary>
+            Validates a type by creating an instance, serializing it into JSON, and checking it against the schema.
+            </summary>
+            <param name="type">The type of the object to validate.</param>
+        </member>
+        <member name="M:BoffToolkit.JsonValidator.SchemaValidator.TryValidate(System.String)">
+            <summary>
+            Attempts to validate a JSON string against the schema and returns a validation result.
+            </summary>
+            <param name="jsonContent">The JSON string to validate.</param>
+            <returns>A <see cref="T:BoffToolkit.JsonValidator.ValidationResult"/> indicating success or failure of validation.</returns>
+        </member>
+        <member name="M:BoffToolkit.JsonValidator.SchemaValidator.TryValidate(System.Object)">
+            <summary>
+            Attempts to validate an object instance against the schema by serializing it into JSON.
+            </summary>
+            <param name="instance">The object to validate.</param>
+            <returns>A <see cref="T:BoffToolkit.JsonValidator.ValidationResult"/> indicating success or failure of validation.</returns>
+        </member>
+        <member name="M:BoffToolkit.JsonValidator.SchemaValidator.TryValidate(System.Type)">
+            <summary>
+            Attempts to validate a type by creating an instance, serializing it into JSON, and validating it against the schema.
+            </summary>
+            <param name="type">The type to validate.</param>
+            <returns>A <see cref="T:BoffToolkit.JsonValidator.ValidationResult"/> indicating success or failure of validation.</returns>
+        </member>
+        <member name="M:BoffToolkit.JsonValidator.SchemaValidator.Validate(System.String,System.String)">
+            <summary>
+            Validates a JSON string against a specified schema.
+            </summary>
+            <param name="jsonContent">The JSON string to validate.</param>
+            <param name="jsonSchema">The schema to validate against.</param>
+        </member>
+        <member name="M:BoffToolkit.JsonValidator.SchemaValidator.Validate(System.Object,System.String)">
+            <summary>
+            Validates an object instance against a specified schema by serializing it into JSON.
+            </summary>
+            <param name="instance">The object to validate.</param>
+            <param name="jsonSchema">The schema to validate against.</param>
+        </member>
+        <member name="M:BoffToolkit.JsonValidator.SchemaValidator.Validate(System.Type,System.String)">
+            <summary>
+            Validates a type by creating an instance, serializing it into JSON, and validating it against a schema.
+            </summary>
+            <param name="type">The type to validate.</param>
+            <param name="jsonSchema">The schema to validate against.</param>
+        </member>
+        <member name="M:BoffToolkit.JsonValidator.SchemaValidator.TryValidate(System.String,System.String)">
+            <summary>
+            Attempts to validate a JSON string against a specified schema.
+            </summary>
+            <param name="jsonContent">The JSON string to validate.</param>
+            <param name="jsonSchema">The schema to validate against.</param>
+            <returns>A <see cref="T:BoffToolkit.JsonValidator.ValidationResult"/> indicating whether the validation succeeded or failed.</returns>
+        </member>
+        <member name="M:BoffToolkit.JsonValidator.SchemaValidator.TryValidate(System.Object,System.String)">
+            <summary>
+            Attempts to validate an object instance against a schema by serializing it into JSON.
+            </summary>
+            <param name="instance">The object to validate.</param>
+            <param name="jsonSchema">The schema to validate against.</param>
+            <returns>A <see cref="T:BoffToolkit.JsonValidator.ValidationResult"/> indicating whether the validation succeeded or failed.</returns>
+        </member>
+        <member name="M:BoffToolkit.JsonValidator.SchemaValidator.TryValidate(System.Type,System.String)">
+            <summary>
+            Attempts to validate a type by creating an instance, serializing it into JSON, and validating it against a schema.
+            </summary>
+            <param name="type">The type to validate.</param>
+            <param name="jsonSchema">The schema to validate against.</param>
+            <returns>A <see cref="T:BoffToolkit.JsonValidator.ValidationResult"/> indicating whether the validation succeeded or failed.</returns>
+        </member>
+        <member name="M:BoffToolkit.JsonValidator.SchemaValidator.SerializeInstance(System.Type)">
+            <summary>
+            Serializes an instance of the specified type into a JSON string.
+            </summary>
+            <param name="type">The type to create an instance of and serialize.</param>
+            <returns>A JSON string representing the created instance.</returns>
+        </member>
+        <member name="T:BoffToolkit.JsonValidator.ValidationResult">
+            <summary>
+            Represents the result of a validation, including the validity status and any error messages.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.JsonValidator.ValidationResult.#ctor(System.Boolean,System.Collections.Generic.IList{System.String})">
+            <summary>
+            Represents the result of a validation, including the validity status and any error messages.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.JsonValidator.ValidationResult.IsValid">
+            <summary>
+            Gets a value indicating whether the validation was successful.
+            </summary>
+            <value>
+            <c>true</c> if the validation passed; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:BoffToolkit.JsonValidator.ValidationResult.ErrorMessages">
+            <summary>
+            Gets a list of error messages describing validation failures, if any.
+            </summary>
+            <value>
+            A collection of error messages returned during validation.
+            </value>
+            <exception cref="T:System.ArgumentNullException">
+            </exception>
+        </member>
+        <member name="T:BoffToolkit.Logging.LoggerResources">
+            <summary>
+            Provides shared resources and configurations for logging across the application.
+            </summary>
+        </member>
+        <member name="F:BoffToolkit.Logging.LoggerResources.LoggerFactory">
+            <summary>
+            The global <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> instance used to create loggers.
+            </summary>
+        </member>
+        <member name="F:BoffToolkit.Logging.LoggerResources.DefaultErrorMessage">
+            <summary>
+            The default error message used when no specific error message is provided.
+            </summary>
+        </member>
+        <member name="F:BoffToolkit.Logging.LoggerResources.Lock">
+            <summary>
+            A global lock object for thread-safe operations.
+            </summary>
+        </member>
+        <member name="F:BoffToolkit.Logging.LoggerResources.Loggers">
+            <summary>
+            A dictionary to store loggers for different types.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Logging.LoggerResources.IsLoggingEnabled">
+            <summary>
+            Indicates whether logging is enabled across the application.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Logging.LoggerResources.CreateLoggerFactory">
+            <summary>
+            Creates the global <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> instance with default configuration.
+            </summary>
+            <returns>An instance of <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Logging.LoggerResources.GetLock">
+            <summary>
+            Gets the global lock object for thread-safe operations.
+            </summary>
+            <returns>The global lock object.</returns>
+        </member>
+        <member name="M:BoffToolkit.Logging.LoggerResources.GetLogger``1">
+            <summary>
+            Gets an <see cref="T:Microsoft.Extensions.Logging.ILogger`1"/> instance for the specified type.
+            </summary>
+            <typeparam name="T">The type for which to get the logger.</typeparam>
+            <returns>An <see cref="T:Microsoft.Extensions.Logging.ILogger`1"/> instance.</returns>
+        </member>
+        <member name="T:BoffToolkit.Logging.CentralLogger`1">
+            <summary>
+            Provides centralized logging functionality for a specific type.
+            </summary>
+            <typeparam name="T">The type for which logging is performed.</typeparam>
+        </member>
+        <member name="M:BoffToolkit.Logging.CentralLogger`1.GetLogger">
+            <summary>
+            Retrieves the singleton instance of <see cref="T:Microsoft.Extensions.Logging.ILogger`1"/>.
+            </summary>
+            <returns>An instance of <see cref="T:Microsoft.Extensions.Logging.ILogger`1"/> if logging is enabled; otherwise, <c>null</c>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Logging.CentralLogger`1.LogInformation(System.String,System.Object[])">
+            <summary>
+            Logs an information message.
+            </summary>
+            <param name="message">The message to log.</param>
+            <param name="args">The arguments for the message.</param>
+        </member>
+        <member name="M:BoffToolkit.Logging.CentralLogger`1.LogError(System.String,System.Object[])">
+            <summary>
+            Logs an error message.
+            </summary>
+            <param name="message">The message to log.</param>
+            <param name="args">The arguments for the message.</param>
+        </member>
+        <member name="M:BoffToolkit.Logging.CentralLogger`1.LogError(System.Exception,System.String,System.Object[])">
+            <summary>
+            Logs an error message with an exception and a custom message.
+            </summary>
+            <param name="exception">The exception to log.</param>
+            <param name="message">The custom message.</param>
+            <param name="args">The arguments for the message.</param>
+        </member>
+        <member name="M:BoffToolkit.Logging.CentralLogger`1.LogDebug(System.String,System.Object[])">
+            <summary>
+            Logs a debug message.
+            </summary>
+            <param name="message">The message to log.</param>
+            <param name="args">The arguments for the message.</param>
+        </member>
+        <member name="M:BoffToolkit.Logging.CentralLogger`1.LogCritical(System.String,System.Object[])">
+            <summary>
+            Logs a critical or fatal message.
+            </summary>
+            <param name="message">The message to log.</param>
+            <param name="args">The arguments for the message.</param>
+        </member>
+        <member name="M:BoffToolkit.Logging.CentralLogger`1.LogException(System.Exception,System.String,System.Object[])">
+            <summary>
+            Logs an exception with a custom message.
+            </summary>
+            <param name="exception">The exception to log.</param>
+            <param name="message">The custom message.</param>
+            <param name="args">The arguments for the message.</param>
+        </member>
+        <member name="M:BoffToolkit.Logging.CentralLogger`1.LogTrace(System.String,System.Object[])">
+            <summary>
+            Logs a trace message.
+            </summary>
+            <param name="message">The message to log.</param>
+            <param name="args">The arguments for the message.</param>
+        </member>
+        <member name="M:BoffToolkit.Logging.CentralLogger`1.LogWarning(System.Exception,System.String,System.Object[])">
+            <summary>
+            Logs a warning message with an exception and a custom message.
+            </summary>
+            <param name="exception">The exception to log.</param>
+            <param name="message">The custom message.</param>
+            <param name="args">The arguments for the message.</param>
+        </member>
+        <member name="M:BoffToolkit.Logging.CentralLogger`1.LogWarning(System.String,System.Object[])">
+            <summary>
+            Logs a warning message.
+            </summary>
+            <param name="message">The message to log.</param>
+            <param name="args">The arguments for the message.</param>
+        </member>
+        <member name="T:BoffToolkit.Pooling.IPoolable">
+            <summary>
+            Interface for objects that can be managed within a pool, providing methods to activate, validate,
+            deactivate, and clean up the object to ensure efficient and safe reuse.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Pooling.IPoolable.LastUsedTime">
+            <summary>
+            Gets or sets the timestamp of the last usage of the object. Used to track activity and manage
+            the removal of inactive objects from the pool.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Pooling.IPoolable.IsActive">
+            <summary>
+            Indicates whether the object is active. True if active, otherwise False.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Pooling.IPoolable.ActivateAsync(System.Object[])">
+            <summary>
+            Activates the object, preparing it for use. This method may configure the initial state of the object
+            or restore settings to a suitable state for usage.
+            </summary>
+            <param name="activationParams">Optional parameters used to configure the object during activation.</param>
+        </member>
+        <member name="M:BoffToolkit.Pooling.IPoolable.ValidateAsync">
+            <summary>
+            Validates whether the object is in a suitable state for usage. This may include checks on network connections,
+            active sessions, or consistency of internal state.
+            </summary>
+            <returns>True if the object is valid and ready for use, otherwise False.</returns>
+        </member>
+        <member name="M:BoffToolkit.Pooling.IPoolable.DeactivateAsync">
+            <summary>
+            Deactivates the object, resetting or preparing it to be returned to the pool. Cleans up temporary states,
+            sensitive data, and revokes subscriptions or observers to prevent unintended side effects during reuse.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Pooling.PoolableBase`1">
+            <summary>
+            Abstract base class that provides foundational behavior for classes implementing <see cref="T:BoffToolkit.Pooling.IPoolable"/>.
+            Utilizes a pool helper to manage activation, validation, deactivation, and disposal operations.
+            </summary>
+            <typeparam name="TPoolableType">The type of object managed in the pool, which implements <see cref="T:BoffToolkit.Pooling.IPoolable"/>.</typeparam>
+        </member>
+        <member name="F:BoffToolkit.Pooling.PoolableBase`1._poolHelper">
+            <summary>
+            The pool helper used to manage pooling operations.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Pooling.PoolableBase`1.LastUsedTime">
+            <inheritdoc/>
+        </member>
+        <member name="P:BoffToolkit.Pooling.PoolableBase`1.IsActive">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolableBase`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Pooling.PoolableBase`1"/> class.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolableBase`1.CreatePoolHelper">
+            <summary>
+            Creates an instance of <see cref="T:BoffToolkit.Pooling.PoolHelperBase`1"/> specific to the derived class.
+            </summary>
+            <returns>An instance of <see cref="T:BoffToolkit.Pooling.PoolHelperBase`1"/>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolableBase`1.ActivateAsync(System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolableBase`1.ValidateAsync">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolableBase`1.DeactivateAsync">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolableBase`1.DisposeAsync">
+            <inheritdoc/>
+        </member>
+        <member name="T:BoffToolkit.Pooling.PoolCleaner`2">
+            <summary>
+            Manages periodic cleanup of object pools based on the elapsed time since their last usage.
+            </summary>
+            <typeparam name="TKey">The type of the key used to identify each pool.</typeparam>
+            <typeparam name="TValue">The type of objects stored in the pools, which must implement <see cref="T:BoffToolkit.Pooling.IPoolable"/>.</typeparam>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolCleaner`2.#ctor(System.Collections.Concurrent.ConcurrentDictionary{`0,System.Collections.Concurrent.ConcurrentQueue{`1}},System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Pooling.PoolCleaner`2"/> class with the specified settings.
+            </summary>
+            <param name="pool">The dictionary containing the object pools to clean.</param>
+            <param name="cleanupInterval">The interval between periodic cleanup operations.</param>
+            <param name="maxIdleTime">The maximum idle time before an object is removed from the pool.</param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="pool"/>, <paramref name="cleanupInterval"/>, or <paramref name="maxIdleTime"/> is null or zero.
+            </exception>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolCleaner`2.UpdateSettings(System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Updates the cleanup interval and maximum idle time settings.
+            </summary>
+            <param name="newCleanupInterval">The new interval between cleanup operations.</param>
+            <param name="newMaxIdleTime">The new maximum idle time before an object is removed.</param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="newCleanupInterval"/> or <paramref name="newMaxIdleTime"/> is null or zero.
+            </exception>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolCleaner`2.StartCleaning">
+            <summary>
+            Starts the manual cleanup process immediately.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolCleaner`2.StopCleaning">
+            <summary>
+            Stops the manual cleanup process.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolCleaner`2.CleanupPool(System.Object)">
+            <summary>
+            Cleans up the object pool by removing items that have exceeded the maximum idle time.
+            </summary>
+            <param name="state">The state object passed by the timer.</param>
+        </member>
+        <member name="T:BoffToolkit.Pooling.PoolHelperBase`1">
+            <summary>
+            Abstract base class for managing pooling operations of <see cref="T:BoffToolkit.Pooling.IPoolable"/> objects.
+            </summary>
+            <typeparam name="TPoolable">
+            The type of object managed in the pool, which implements <see cref="T:BoffToolkit.Pooling.IPoolable"/>.
+            </typeparam>
+            <remarks>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Pooling.PoolHelperBase`1"/> class.
+            </remarks>
+            <param name="poolable">The object managed in the pool.</param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="poolable"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolHelperBase`1.#ctor(`0)">
+            <summary>
+            Abstract base class for managing pooling operations of <see cref="T:BoffToolkit.Pooling.IPoolable"/> objects.
+            </summary>
+            <typeparam name="TPoolable">
+            The type of object managed in the pool, which implements <see cref="T:BoffToolkit.Pooling.IPoolable"/>.
+            </typeparam>
+            <remarks>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Pooling.PoolHelperBase`1"/> class.
+            </remarks>
+            <param name="poolable">The object managed in the pool.</param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="poolable"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="F:BoffToolkit.Pooling.PoolHelperBase`1._poolable">
+            <summary>
+            The object managed in the pool.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolHelperBase`1.ActivateAsync(System.Object[])">
+            <summary>
+            Activates the object if it is not already active.
+            </summary>
+            <param name="activationParams">Optional parameters for activation.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous activation operation.</returns>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolHelperBase`1.ValidateAsync">
+            <summary>
+            Validates the current state of the object.
+            </summary>
+            <returns>
+            <c>true</c> if the validation succeeds; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolHelperBase`1.DeactivateAsync">
+            <summary>
+            Deactivates the object if it is active.
+            </summary>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous deactivation operation.</returns>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolHelperBase`1.DisposeAsync">
+            <summary>
+            Disposes resources used by the object manager.
+            </summary>
+            <returns>A <see cref="T:System.Threading.Tasks.ValueTask"/> representing the asynchronous disposal operation.</returns>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolHelperBase`1.ActivateSpecificAsync(System.Object[])">
+            <summary>
+            Activates the object in a manner specific to the derived type.
+            </summary>
+            <param name="activationParams">Optional parameters for activation.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolHelperBase`1.ValidateSpecificAsync">
+            <summary>
+            Validates the object's state in a manner specific to the derived type.
+            </summary>
+            <returns>
+            A <see cref="T:System.Threading.Tasks.Task`1"/> representing the asynchronous operation, 
+            with a boolean result indicating whether validation succeeded.
+            </returns>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolHelperBase`1.DeactivateSpecificAsync">
+            <summary>
+            Deactivates the object in a manner specific to the derived type.
+            </summary>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolHelperBase`1.DisposeSpecificAsync">
+            <summary>
+            Disposes resources in a manner specific to the derived type.
+            </summary>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
+        </member>
+        <member name="T:BoffToolkit.Pooling.PoolManager`2">
+            <summary>
+            Manages a pool of objects for each key, reusing objects instead of creating new ones each time.
+            This improves performance and reduces the overhead of object creation.
+            </summary>
+            <typeparam name="TKey">The type of the key used to identify each pool.</typeparam>
+            <typeparam name="TValue">The type of objects stored in the pools, which must implement <see cref="T:BoffToolkit.Pooling.IPoolable"/>.</typeparam>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolManager`2.#ctor(System.Func{`0,`1},System.Int32,System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Pooling.PoolManager`2"/> class with the specified parameters.
+            </summary>
+            <param name="instanceCreator">A function that creates a new instance of the object.</param>
+            <param name="maxInstancesPerKey">The maximum number of instances to maintain in the pool for each key.</param>
+            <param name="cleanupInterval">The interval between periodic cleanups.</param>
+            <param name="maxIdleTime">The maximum idle time before an object is removed.</param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="instanceCreator"/>, <paramref name="cleanupInterval"/>, or <paramref name="maxIdleTime"/> is null or zero.
+            </exception>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolManager`2.GetOrCreateAsync(`0,System.Object[])">
+            <summary>
+            Retrieves an instance of the object for the specified key, or creates a new one if none are available.
+            </summary>
+            <param name="key">The key for which to retrieve or create the object.</param>
+            <param name="activationParams">Optional parameters used to configure the object during activation.</param>
+            <returns>An instance of the object for the specified key, activated and ready for use.</returns>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolManager`2.ReleaseAsync(`0,`1)">
+            <summary>
+            Releases an instance of the object into the pool, preparing it for reuse.
+            </summary>
+            <param name="key">The key associated with the object instance.</param>
+            <param name="instance">The object instance to release.</param>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolManager`2.CreateNewInstanceAsync(`0,System.Object[])">
+            <summary>
+            Creates a new instance of the object and activates it using the provided creation function.
+            </summary>
+            <param name="key">The key for which to create the object.</param>
+            <param name="activationParams">Optional parameters used to configure the object during activation.</param>
+            <returns>A new instance of the object, already activated.</returns>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolManager`2.DisposeAsync">
+            <summary>
+            Releases resources used by the pool manager.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Pooling.PoolManager`2.DisposeAsyncCore">
+            <summary>
+            Disposes of resources in a manner specific to the derived type.
+            </summary>
+            <returns>A <see cref="T:System.Threading.Tasks.ValueTask"/> representing the asynchronous operation.</returns>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IBuildableStep`1">
+            <summary>
+            Defines the final step in building a job scheduler instance, ensuring that all required
+            configurations are set before constructing the scheduler.
+            </summary>
+            <typeparam name="TPeriodRule">
+            The specific type of period rule that defines the scheduling logic for the job scheduler.
+            </typeparam>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.BuilderSteps.IBuildableStep`1.SetCallbackCompleted(System.EventHandler{BoffToolkit.Scheduling.Internal.Callbacks.CallbackCompletedEventArgs})">
+            <summary>
+            Registers an event handler that will be triggered when a scheduled callback completes execution.
+            </summary>
+            <param name="handler">
+            The event handler to invoke when the job scheduler completes a scheduled callback execution.
+            </param>
+            <returns>
+            The current instance of <see cref="T:BoffToolkit.Scheduling.BuilderSteps.IBuildableStep`1"/>,
+            allowing for method chaining to continue the configuration process.
+            </returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.BuilderSteps.IBuildableStep`1.Build">
+            <summary>
+            Constructs a fully configured instance of the job scheduler, applying all previously defined settings.
+            </summary>
+            <returns>
+            A new instance of <see cref="T:BoffToolkit.Scheduling.IJobScheduler`1"/>, configured with the specified
+            start time, end time, scheduling period, callback functions, and optional registry settings.
+            </returns>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IBuildableStepTimeSpan">
+            <summary>
+            Step interface for finalizing the configuration of a job scheduler with a TimeSpan-based period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IBuildableStepDaily">
+            <summary>
+            Step interface for finalizing the configuration of a job scheduler with a daily period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IBuildableStepWeekly">
+            <summary>
+            Step interface for finalizing the configuration of a job scheduler with a weekly period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IBuildableStepMonthly">
+            <summary>
+            Step interface for finalizing the configuration of a job scheduler with a monthly period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IBuildableStepAnnual">
+            <summary>
+            Step interface for finalizing the configuration of a job scheduler with an annual period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.ICallbackStep`1">
+            <summary>
+            Defines the step for configuring the callback to be executed in the job scheduler.
+            </summary>
+            <typeparam name="TPeriodRule">
+            The specific period rule type that defines the scheduling logic for the job scheduler.
+            </typeparam>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.BuilderSteps.ICallbackStep`1.SetCallback(System.Action)">
+            <summary>
+            Sets the callback action to be executed.
+            </summary>
+            <param name="callback">The callback action to execute.</param>
+            <returns>
+            An instance of <see cref="T:BoffToolkit.Scheduling.BuilderSteps.IRegistrationStep`1"/> for further configuration.
+            </returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.BuilderSteps.ICallbackStep`1.SetCallback``1(System.Action{``0},``0)">
+            <summary>
+            Sets a callback action that requires a parameter.
+            </summary>
+            <typeparam name="TParam">The type of the callback parameter.</typeparam>
+            <param name="callback">The callback action to execute.</param>
+            <param name="param">The parameter to pass to the callback.</param>
+            <returns>
+            An instance of <see cref="T:BoffToolkit.Scheduling.BuilderSteps.IRegistrationStep`1"/> for further configuration.
+            </returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.BuilderSteps.ICallbackStep`1.SetCallback``1(System.Func{``0})">
+            <summary>
+            Sets a callback function that returns a result.
+            </summary>
+            <typeparam name="TResult">The return type of the callback function.</typeparam>
+            <param name="func">The function to execute.</param>
+            <returns>
+            An instance of <see cref="T:BoffToolkit.Scheduling.BuilderSteps.IRegistrationStep`1"/> for further configuration.
+            </returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.BuilderSteps.ICallbackStep`1.SetCallback``2(System.Func{``0,``1},``0)">
+            <summary>
+            Sets a callback function that requires a parameter and returns a result.
+            </summary>
+            <typeparam name="TParam">The type of the callback parameter.</typeparam>
+            <typeparam name="TResult">The return type of the callback function.</typeparam>
+            <param name="func">The function to execute.</param>
+            <param name="param">The parameter to pass to the callback function.</param>
+            <returns>
+            An instance of <see cref="T:BoffToolkit.Scheduling.BuilderSteps.IRegistrationStep`1"/> for further configuration.
+            </returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.BuilderSteps.ICallbackStep`1.SetCallback``1(System.Func{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Sets an asynchronous callback function that returns a result.
+            </summary>
+            <typeparam name="TResult">The return type of the asynchronous function.</typeparam>
+            <param name="func">The asynchronous function to execute.</param>
+            <returns>
+            An instance of <see cref="T:BoffToolkit.Scheduling.BuilderSteps.IRegistrationStep`1"/> for further configuration.
+            </returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.BuilderSteps.ICallbackStep`1.SetCallback``2(System.Func{``0,System.Threading.Tasks.Task{``1}},``0)">
+            <summary>
+            Sets an asynchronous callback function that requires a parameter and returns a result.
+            </summary>
+            <typeparam name="TParam">The type of the callback parameter.</typeparam>
+            <typeparam name="TResult">The return type of the asynchronous function.</typeparam>
+            <param name="func">The asynchronous function to execute.</param>
+            <param name="param">The parameter to pass to the function.</param>
+            <returns>
+            An instance of <see cref="T:BoffToolkit.Scheduling.BuilderSteps.IRegistrationStep`1"/> for further configuration.
+            </returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.BuilderSteps.ICallbackStep`1.SetCallback``1(BoffToolkit.Scheduling.ISchedulable{``0})">
+            <summary>
+            Sets a schedulable instance as the callback to be executed.
+            </summary>
+            <typeparam name="TResult">The return type of the schedulable instance.</typeparam>
+            <param name="schedulable">The instance of <see cref="T:BoffToolkit.Scheduling.ISchedulable`1"/> to execute.</param>
+            <returns>
+            An instance of <see cref="T:BoffToolkit.Scheduling.BuilderSteps.IRegistrationStep`1"/> for further configuration.
+            </returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.BuilderSteps.ICallbackStep`1.SetCallback``2(BoffToolkit.Scheduling.ISchedulable{``0,``1},``0)">
+            <summary>
+            Sets a schedulable instance as the callback to be executed with a parameter.
+            </summary>
+            <typeparam name="TParam">The type of the callback parameter.</typeparam>
+            <typeparam name="TResult">The return type of the schedulable instance.</typeparam>
+            <param name="schedulable">The instance of <see cref="T:BoffToolkit.Scheduling.ISchedulable`2"/> to execute.</param>
+            <param name="param">The parameter to pass to the schedulable instance.</param>
+            <returns>
+            An instance of <see cref="T:BoffToolkit.Scheduling.BuilderSteps.IRegistrationStep`1"/> for further configuration.
+            </returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.BuilderSteps.ICallbackStep`1.SetCallback``1(BoffToolkit.Scheduling.HttpCalls.IHttpCall{``0})">
+            <summary>
+            Sets an HTTP call as the callback to be executed.
+            </summary>
+            <typeparam name="TResult">The return type of the HTTP call.</typeparam>
+            <param name="httpCall">The instance of <see cref="T:BoffToolkit.Scheduling.HttpCalls.IHttpCall`1"/> to execute.</param>
+            <returns>
+            An instance of <see cref="T:BoffToolkit.Scheduling.BuilderSteps.IRegistrationStep`1"/> for further configuration.
+            </returns>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.ICallbackStepTimeSpan">
+            <summary>
+            Step interface for configuring the callback of a job scheduler with a TimeSpan-based period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.ICallbackStepDaily">
+            <summary>
+            Step interface for configuring the callback of a job scheduler with a daily period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.ICallbackStepWeekly">
+            <summary>
+            Step interface for configuring the callback of a job scheduler with a weekly period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.ICallbackStepMonthly">
+            <summary>
+            Step interface for configuring the callback of a job scheduler with a monthly period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.ICallbackStepAnnual">
+            <summary>
+            Step interface for configuring the callback of a job scheduler with an annual period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IEndTimeStep`1">
+            <summary>
+            Interface for setting the end time of the job scheduler.
+            </summary>
+            <typeparam name="TPeriodRule">
+            The specific period rule type associated with the job scheduler.
+            </typeparam>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.BuilderSteps.IEndTimeStep`1.SetEnd(System.DateTime)">
+            <summary>
+            Sets the end time of the job scheduler.
+            </summary>
+            <param name="endTime">The end time to set.</param>
+            <returns>
+            An instance of <see cref="T:BoffToolkit.Scheduling.BuilderSteps.IPeriodStep`1"/> to proceed with the configuration.
+            </returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.BuilderSteps.IEndTimeStep`1.SetNoEnd">
+            <summary>
+            Specifies that the job scheduler does not have an end time.
+            </summary>
+            <returns>
+            An instance of <see cref="T:BoffToolkit.Scheduling.BuilderSteps.IPeriodStep`1"/> to proceed with the configuration.
+            </returns>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IEndTimeStepTimeSpan">
+            <summary>
+            Step interface for configuring the end time of a job scheduler with a TimeSpan-based period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IEndTimeStepDaily">
+            <summary>
+            Step interface for configuring the end time of a job scheduler with a daily period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IEndTimeStepWeekly">
+            <summary>
+            Step interface for configuring the end time of a job scheduler with a weekly period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IEndTimeStepMonthly">
+            <summary>
+            Step interface for configuring the end time of a job scheduler with a monthly period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IEndTimeStepAnnual">
+            <summary>
+            Step interface for configuring the end time of a job scheduler with an annual period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IPeriodStep`1">
+            <summary>
+            Generic interface for setting a specific period rule type.
+            </summary>
+            <typeparam name="TPeriodRule">The specific period rule type associated with the job scheduler.</typeparam>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.BuilderSteps.IPeriodStep`1.SetPeriod(`0)">
+            <summary>
+            Sets the execution period rule of type <typeparamref name="TPeriodRule"/>.
+            </summary>
+            <param name="periodRule">The specific period rule to set.</param>
+            <returns>
+            An instance of <see cref="T:BoffToolkit.Scheduling.BuilderSteps.ICallbackStep`1"/> for further configuration.
+            </returns>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IPeriodStepTimeSpan">
+            <summary>
+            Step interface for configuring a job scheduler with a TimeSpan-based period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IPeriodStepDaily">
+            <summary>
+            Step interface for configuring a job scheduler with a daily period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IPeriodStepWeekly">
+            <summary>
+            Step interface for configuring a job scheduler with a weekly period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IPeriodStepMonthly">
+            <summary>
+            Step interface for configuring a job scheduler with a monthly period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IPeriodStepAnnual">
+            <summary>
+            Step interface for configuring a job scheduler with an annual period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IRegistrationStep`1">
+            <summary>
+            Represents the registration step in the job scheduler build process, allowing 
+            the scheduler to be added to a global registry or explicitly skipped.
+            </summary>
+            <typeparam name="TPeriodRule">
+            The specific type of period rule that defines the scheduling logic for the job scheduler.
+            </typeparam>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.BuilderSteps.IRegistrationStep`1.AddToRegistry(System.String,System.Boolean)">
+            <summary>
+            Registers the job scheduler in the global registry using a unique identifier key.
+            </summary>
+            <param name="key">
+            A unique identifier used to store and retrieve the job scheduler from the registry.
+            </param>
+            <param name="overwrite">
+            If set to <c>true</c>, an existing job scheduler with the same key will be replaced.
+            If set to <c>false</c> and the key already exists, an exception may be thrown.
+            The default value is <c>false</c>.
+            </param>
+            <returns>
+            The current instance of <see cref="T:BoffToolkit.Scheduling.BuilderSteps.IBuildableStep`1"/>, 
+            allowing the configuration process to continue.
+            </returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.BuilderSteps.IRegistrationStep`1.SkipRegistry">
+            <summary>
+            Skips adding the job scheduler to the global registry, allowing it to function
+            without being globally tracked.
+            </summary>
+            <returns>
+            The current instance of <see cref="T:BoffToolkit.Scheduling.BuilderSteps.IBuildableStep`1"/>, 
+            allowing the configuration process to continue.
+            </returns>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IRegistrationStepTimeSpan">
+            <summary>
+            Step interface for registering a job scheduler with a TimeSpan-based period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IRegistrationStepDaily">
+            <summary>
+            Step interface for registering a job scheduler with a daily period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IRegistrationStepWeekly">
+            <summary>
+            Step interface for registering a job scheduler with a weekly period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IRegistrationStepMonthly">
+            <summary>
+            Step interface for registering a job scheduler with a monthly period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IRegistrationStepAnnual">
+            <summary>
+            Step interface for registering a job scheduler with an annual period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IStartTimeStep`1">
+            <summary>
+            Defines the step for setting the start time in the job scheduler configuration.
+            </summary>
+            <typeparam name="TPeriodRule">
+            The specific period rule type associated with the job scheduler.
+            </typeparam>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.BuilderSteps.IStartTimeStep`1.SetStart(System.DateTime)">
+            <summary>
+            Specifies the start time of the job scheduler.
+            </summary>
+            <param name="startTime">
+            The date and time when the job scheduler should start executing.
+            </param>
+            <returns>
+            An instance of <see cref="T:BoffToolkit.Scheduling.BuilderSteps.IEndTimeStep`1"/> to proceed with the configuration.
+            </returns>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IStartTimeStepTimeSpan">
+            <summary>
+            Step interface for configuring the start time of a job scheduler with a TimeSpan-based period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IStartTimeStepDaily">
+            <summary>
+            Step interface for configuring the start time of a job scheduler with a daily period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IStartTimeStepWeekly">
+            <summary>
+            Step interface for configuring the start time of a job scheduler with a weekly period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IStartTimeStepMonthly">
+            <summary>
+            Step interface for configuring the start time of a job scheduler with a monthly period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.BuilderSteps.IStartTimeStepAnnual">
+            <summary>
+            Step interface for configuring the start time of a job scheduler with an annual period rule.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Factories.PeriodRuleFactory">
+            <summary>
+            Factory for creating instances of period rules.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Factories.PeriodRuleFactory.CreateAnnualPeriodRule(System.Int32,System.Int32)">
+            <summary>
+            Creates an annual period rule with a default interval of 1 year.
+            </summary>
+            <param name="month">The month of the year (1-12).</param>
+            <param name="day">The day of the month (1-31).</param>
+            <returns>An instance of <see cref="T:BoffToolkit.Scheduling.PeriodRules.IAnnualPeriodRule"/>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Factories.PeriodRuleFactory.CreateAnnualPeriodRule(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Creates an annual period rule with a custom interval in years.
+            </summary>
+            <param name="month">The month of the year (1-12).</param>
+            <param name="day">The day of the month (1-31).</param>
+            <param name="yearsInterval">The interval in years between occurrences.</param>
+            <returns>An instance of <see cref="T:BoffToolkit.Scheduling.PeriodRules.IAnnualPeriodRule"/>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Factories.PeriodRuleFactory.CreateDailyPeriodRule(System.DateTime)">
+            <summary>
+            Creates a daily period rule using a <see cref="T:System.DateTime"/> object for the time of day with a default interval of 1 day.
+            </summary>
+            <param name="timeOfDay">The time of day for the event.</param>
+            <returns>An instance of <see cref="T:BoffToolkit.Scheduling.PeriodRules.IDailyPeriodRule"/>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Factories.PeriodRuleFactory.CreateDailyPeriodRule(System.DateTime,System.Int32)">
+            <summary>
+            Creates a daily period rule using a <see cref="T:System.DateTime"/> object for the time of day and a custom days interval.
+            </summary>
+            <param name="timeOfDay">The time of day for the event.</param>
+            <param name="daysInterval">The interval in days between occurrences.</param>
+            <returns>An instance of <see cref="T:BoffToolkit.Scheduling.PeriodRules.IDailyPeriodRule"/>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Factories.PeriodRuleFactory.CreateWeeklyPeriodRule(System.DayOfWeek)">
+            <summary>
+            Creates a weekly period rule with a default interval of 1 week.
+            </summary>
+            <param name="dayOfWeek">The day of the week.</param>
+            <returns>An instance of <see cref="T:BoffToolkit.Scheduling.PeriodRules.IWeeklyPeriodRule"/>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Factories.PeriodRuleFactory.CreateWeeklyPeriodRule(System.DayOfWeek,System.Int32)">
+            <summary>
+            Creates a weekly period rule with a custom interval in weeks.
+            </summary>
+            <param name="dayOfWeek">The day of the week.</param>
+            <param name="weeksInterval">The interval in weeks between occurrences.</param>
+            <returns>An instance of <see cref="T:BoffToolkit.Scheduling.PeriodRules.IWeeklyPeriodRule"/>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Factories.PeriodRuleFactory.CreateMonthlyPeriodRule(System.Int32)">
+            <summary>
+            Creates a monthly period rule with a default interval of 1 month.
+            </summary>
+            <param name="dayOfMonth">The day of the month (1-31).</param>
+            <returns>An instance of <see cref="T:BoffToolkit.Scheduling.PeriodRules.IMonthlyPeriodRule"/>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Factories.PeriodRuleFactory.CreateMonthlyPeriodRule(System.Int32,System.Int32)">
+            <summary>
+            Creates a monthly period rule with a custom interval in months.
+            </summary>
+            <param name="dayOfMonth">The day of the month (1-31).</param>
+            <param name="monthsInterval">The interval in months between occurrences.</param>
+            <returns>An instance of <see cref="T:BoffToolkit.Scheduling.PeriodRules.IMonthlyPeriodRule"/>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Factories.PeriodRuleFactory.CreateTimeSpanPeriodRule(System.TimeSpan)">
+            <summary>
+            Creates a period rule based on a time span.
+            </summary>
+            <param name="interval">The time span interval between occurrences.</param>
+            <returns>An instance of <see cref="T:BoffToolkit.Scheduling.PeriodRules.ITimeSpanPeriodRule"/>.</returns>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.HttpCalls.HttpCallFactory">
+            <summary>
+            Factory class for creating HTTP call instances.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.HttpCalls.HttpCallFactory.CreateGetCall``1(System.String)">
+            <summary>
+            Creates an instance of <see cref="T:BoffToolkit.Scheduling.Internal.HttpCalls.HttpGetCall`1"/>.
+            </summary>
+            <typeparam name="TResult">The expected result type of the GET request.</typeparam>
+            <param name="url">The API endpoint URL.</param>
+            <returns>An instance of <see cref="T:BoffToolkit.Scheduling.HttpCalls.IHttpCall`1"/> representing the GET request.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown if the URL is null or empty.</exception>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.HttpCalls.HttpCallFactory.CreatePostCall``2(System.String,``0)">
+            <summary>
+            Creates an instance of <see cref="T:BoffToolkit.Scheduling.Internal.HttpCalls.HttpPostCall`2"/>.
+            </summary>
+            <typeparam name="TParam">The type of the data sent in the POST request body.</typeparam>
+            <typeparam name="TResult">The expected result type of the POST request.</typeparam>
+            <param name="url">The API endpoint URL.</param>
+            <param name="data">The data to send in the request body.</param>
+            <returns>An instance of <see cref="T:BoffToolkit.Scheduling.HttpCalls.IHttpCall`1"/> representing the POST request.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown if the URL is null or empty, or if the data is null.</exception>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.HttpCalls.HttpCallFactory.CreatePutCall``2(System.String,``0)">
+            <summary>
+            Creates an instance of <see cref="T:BoffToolkit.Scheduling.Internal.HttpCalls.HttpPutCall`2"/>.
+            </summary>
+            <typeparam name="TParam">The type of the data sent in the PUT request body.</typeparam>
+            <typeparam name="TResult">The expected result type of the PUT request.</typeparam>
+            <param name="url">The API endpoint URL.</param>
+            <param name="data">The data to send in the request body.</param>
+            <returns>An instance of <see cref="T:BoffToolkit.Scheduling.HttpCalls.IHttpCall`1"/> representing the PUT request.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown if the URL is null or empty, or if the data is null.</exception>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.HttpCalls.HttpCallFactory.CreateDeleteCall``1(System.String)">
+            <summary>
+            Creates an instance of <see cref="T:BoffToolkit.Scheduling.Internal.HttpCalls.HttpDeleteCall`1"/>.
+            </summary>
+            <typeparam name="TResult">The expected result type of the DELETE request.</typeparam>
+            <param name="url">The API endpoint URL.</param>
+            <returns>An instance of <see cref="T:BoffToolkit.Scheduling.HttpCalls.IHttpCall`1"/> representing the DELETE request.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown if the URL is null or empty.</exception>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.HttpCalls.IHttpCall`1">
+            <summary>
+            Interface representing a schedulable HTTP call.
+            </summary>
+            <typeparam name="TResult">The type of the result produced by the HTTP call.</typeparam>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.IJobScheduler">
+            <summary>
+            Provides a non-generic interface for managing the execution of scheduled tasks.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.IJobScheduler.Start">
+            <summary>
+            Starts the execution of the scheduled tasks.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.IJobScheduler.Stop">
+            <summary>
+            Stops the execution of the scheduled tasks.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.IJobScheduler.Pause">
+            <summary>
+            Pauses the execution of the scheduled tasks.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.IJobScheduler.Resume">
+            <summary>
+            Resumes the execution of the scheduled tasks.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.IJobScheduler.IsStopped">
+            <summary>
+            Determines whether the scheduler is in the <c>Stopped</c> state.
+            </summary>
+            <returns><c>true</c> if the scheduler is stopped; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.IJobScheduler.IsPaused">
+            <summary>
+            Determines whether the scheduler is in the <c>Paused</c> state.
+            </summary>
+            <returns><c>true</c> if the scheduler is paused; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.IJobScheduler.IsRunning">
+            <summary>
+            Determines whether the scheduler is in the <c>Running</c> state.
+            </summary>
+            <returns><c>true</c> if the scheduler is running; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.IJobScheduler.IsDisposed">
+            <summary>
+            Gets a value indicating whether the scheduler has been disposed.
+            </summary>
+            <returns><c>true</c> if the scheduler is disposed; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.IJobScheduler.StartTime">
+            <summary>
+            Gets the start time of the job scheduler.
+            </summary>
+            <value>The start time of the scheduler.</value>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.IJobScheduler.EndTime">
+            <summary>
+            Gets the end time of the job scheduler, if any.
+            </summary>
+            <value>The end time of the scheduler, or <c>null</c> if the scheduler does not have an end time.</value>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.IJobScheduler`1">
+            <summary>
+            Provides an interface for managing the execution of scheduled tasks with a specific period rule.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.IJobScheduler`1.PeriodRule">
+            <summary>
+            Gets the specific period rule for this job scheduler.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2">
+            <summary>
+            Adapter for managing various types of callbacks, including executing API calls.
+            </summary>
+            <typeparam name="TResult">The type of the callback result.</typeparam>
+            <typeparam name="TParam">The type of the callback parameter.</typeparam>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2.Create(System.Action)">
+            <summary>
+            Creates an instance of <see cref="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2"/> for an action.
+            </summary>
+            <param name="action">The action to be executed.</param>
+            <returns>A new instance of <see cref="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2"/>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2.Create(System.Action{`1},`1)">
+            <summary>
+            Creates an instance of <see cref="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2"/> for an action with a parameter.
+            </summary>
+            <param name="actionWithParam">The action with a parameter to be executed.</param>
+            <param name="param">The parameter for the action.</param>
+            <returns>A new instance of <see cref="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2"/>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2.Create(System.Func{System.Threading.Tasks.Task{`0}})">
+            <summary>
+            Creates an instance of <see cref="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2"/> for an asynchronous function.
+            </summary>
+            <param name="taskFunc">The asynchronous function to be executed.</param>
+            <returns>A new instance of <see cref="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2"/>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2.Create(System.Func{`1,System.Threading.Tasks.Task{`0}},`1)">
+            <summary>
+            Creates an instance of <see cref="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2"/> for an asynchronous function with a parameter.
+            </summary>
+            <param name="taskFuncWithParam">The asynchronous function with a parameter to be executed.</param>
+            <param name="param">The parameter for the function.</param>
+            <returns>A new instance of <see cref="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2"/>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2.Create(System.Func{`0})">
+            <summary>
+            Creates an instance of <see cref="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2"/> for a function.
+            </summary>
+            <param name="func">The function to be executed.</param>
+            <returns>A new instance of <see cref="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2"/>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2.Create(System.Func{`1,`0},`1)">
+            <summary>
+            Creates an instance of <see cref="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2"/> for a function with a parameter.
+            </summary>
+            <param name="funcWithParam">The function with a parameter to be executed.</param>
+            <param name="param">The parameter for the function.</param>
+            <returns>A new instance of <see cref="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2"/>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2.Create(BoffToolkit.Scheduling.ISchedulable{`0})">
+            <summary>
+            Creates an instance of <see cref="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2"/> for a <see cref="T:BoffToolkit.Scheduling.ISchedulable`1"/>.
+            </summary>
+            <param name="schedulable">The <see cref="T:BoffToolkit.Scheduling.ISchedulable`1"/> object to be executed.</param>
+            <returns>A new instance of <see cref="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2"/>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2.Create(BoffToolkit.Scheduling.ISchedulable{`1,`0},`1)">
+            <summary>
+            Creates an instance of <see cref="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2"/> for a <see cref="T:BoffToolkit.Scheduling.ISchedulable`2"/>.
+            </summary>
+            <param name="schedulableWithParam">The <see cref="T:BoffToolkit.Scheduling.ISchedulable`2"/> object to be executed.</param>
+            <param name="param">The parameter for the schedulable object.</param>
+            <returns>A new instance of <see cref="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2"/>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2.Create(BoffToolkit.Scheduling.HttpCalls.IHttpCall{`0})">
+            <summary>
+            Creates an instance of <see cref="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2"/> for an HTTP call.
+            </summary>
+            <param name="httpCall">The <see cref="T:BoffToolkit.Scheduling.HttpCalls.IHttpCall`1"/> representing the HTTP call to be executed.</param>
+            <returns>A new instance of <see cref="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2"/>.</returns>
+        </member>
+        <member name="E:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2.CallbackCompleted">
+            <inheritdoc />
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.Callbacks.CallbackAdapter`2.ExecuteAsync">
+            <inheritdoc />
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackCompletedEventArgs">
+            <summary>
+            Represents the event arguments for a callback completion event.
+            </summary>
+            <remarks>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackCompletedEventArgs"/> class.
+            </remarks>
+            <param name="result">The result of the callback.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.Callbacks.CallbackCompletedEventArgs.#ctor(System.Object)">
+            <summary>
+            Represents the event arguments for a callback completion event.
+            </summary>
+            <remarks>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.Callbacks.CallbackCompletedEventArgs"/> class.
+            </remarks>
+            <param name="result">The result of the callback.</param>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.Internal.Callbacks.CallbackCompletedEventArgs.Result">
+            <summary>
+            Gets the result of the callback, if available.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.Callbacks.ICallbackAdapter">
+            <summary>
+            Interface for a callback adapter that manages the execution of various types of callbacks.
+            </summary>
+        </member>
+        <member name="E:BoffToolkit.Scheduling.Internal.Callbacks.ICallbackAdapter.CallbackCompleted">
+            <summary>
+            Event raised when the callback execution is completed.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.Callbacks.ICallbackAdapter.ExecuteAsync">
+            <summary>
+            Executes the callback asynchronously.
+            </summary>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.Contexts.JobSchedulerContext">
+            <summary>
+            Context for the JobScheduler that holds the necessary information for scheduling.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.Internal.Contexts.JobSchedulerContext.StartTime">
+            <summary>
+            Start time of the job.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.Internal.Contexts.JobSchedulerContext.EndTime">
+            <summary>
+            End time of the job, if any.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.Internal.Contexts.JobSchedulerContext.PeriodRule">
+            <summary>
+            Period rule for the job.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.Internal.Contexts.JobSchedulerContext.CallbackAdapter">
+            <summary>
+            Callback adapter for executing the scheduled actions.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.Contexts.JobSchedulerContext.#ctor(System.DateTime,BoffToolkit.Scheduling.PeriodRules.IPeriodRule,BoffToolkit.Scheduling.Internal.Callbacks.ICallbackAdapter,System.Nullable{System.DateTime})">
+            <summary>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.Contexts.JobSchedulerContext"/> class.
+            </summary>
+            <param name="startTime">The start time of the job.</param>
+            <param name="periodRule">The period rule for the job.</param>
+            <param name="callbackAdapter">The callback adapter.</param>
+            <param name="endTime">The end time of the job, or <c>null</c> for no end time.</param>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="startTime"/> is not a valid date.</exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown when <paramref name="periodRule"/> or <paramref name="callbackAdapter"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.HttpCalls.HttpCallBase`1">
+            <summary>
+            Abstract base class for handling schedulable HTTP calls.
+            </summary>
+            <typeparam name="TResult">The type of the result produced by the HTTP call.</typeparam>
+        </member>
+        <member name="F:BoffToolkit.Scheduling.Internal.HttpCalls.HttpCallBase`1.HttpClient">
+            <summary>
+            The HTTP client used to send the request.
+            </summary>
+        </member>
+        <member name="F:BoffToolkit.Scheduling.Internal.HttpCalls.HttpCallBase`1.Url">
+            <summary>
+            The URL of the API endpoint.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.HttpCalls.HttpCallBase`1.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.HttpCalls.HttpCallBase`1"/> class.
+            </summary>
+            <param name="url">The URL of the API endpoint.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if the URL is null or empty.</exception>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.HttpCalls.HttpCallBase`1.SendRequestAsync">
+            <summary>
+            Abstract method that must be implemented to send the specific HTTP request.
+            </summary>
+            <returns>
+            A <see cref="T:System.Net.Http.HttpResponseMessage"/> representing the HTTP response.
+            </returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.HttpCalls.HttpCallBase`1.HandleResponseAsync(System.Net.Http.HttpResponseMessage)">
+            <summary>
+            Handles the HTTP response, ensures success, and deserializes the response content.
+            </summary>
+            <param name="response">The <see cref="T:System.Net.Http.HttpResponseMessage"/> to process.</param>
+            <returns>
+            The deserialized result from the HTTP response.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the response cannot be deserialized into the specified type or is null.
+            </exception>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.HttpCalls.HttpCallBase`1.Execute">
+            <inheritdoc />
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.HttpCalls.HttpDeleteCall`1">
+            <summary>
+            Represents a schedulable HTTP DELETE call.
+            </summary>
+            <typeparam name="TResult">The expected type of the result from the DELETE call.</typeparam>
+            <remarks>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.HttpCalls.HttpDeleteCall`1"/> class.
+            </remarks>
+            <param name="url">The URL of the API endpoint to call.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.HttpCalls.HttpDeleteCall`1.#ctor(System.String)">
+            <summary>
+            Represents a schedulable HTTP DELETE call.
+            </summary>
+            <typeparam name="TResult">The expected type of the result from the DELETE call.</typeparam>
+            <remarks>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.HttpCalls.HttpDeleteCall`1"/> class.
+            </remarks>
+            <param name="url">The URL of the API endpoint to call.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.HttpCalls.HttpDeleteCall`1.SendRequestAsync">
+            <summary>
+            Sends the HTTP DELETE request asynchronously.
+            </summary>
+            <returns>
+            A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation, 
+            containing the HTTP response message.
+            </returns>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.HttpCalls.HttpGetCall`1">
+            <summary>
+            Represents a schedulable HTTP GET call.
+            </summary>
+            <typeparam name="TResult">The expected type of the result from the GET call.</typeparam>
+            <remarks>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.HttpCalls.HttpGetCall`1"/> class.
+            </remarks>
+            <param name="url">The URL of the API endpoint to call.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.HttpCalls.HttpGetCall`1.#ctor(System.String)">
+            <summary>
+            Represents a schedulable HTTP GET call.
+            </summary>
+            <typeparam name="TResult">The expected type of the result from the GET call.</typeparam>
+            <remarks>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.HttpCalls.HttpGetCall`1"/> class.
+            </remarks>
+            <param name="url">The URL of the API endpoint to call.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.HttpCalls.HttpGetCall`1.SendRequestAsync">
+            <summary>
+            Sends the HTTP GET request asynchronously.
+            </summary>
+            <returns>
+            A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation, 
+            containing the HTTP response message.
+            </returns>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.HttpCalls.HttpPostCall`2">
+            <summary>
+            Represents a schedulable HTTP POST call.
+            </summary>
+            <typeparam name="TResult">The expected type of the result from the POST call.</typeparam>
+            <typeparam name="TParam">The type of the data sent in the body of the POST request.</typeparam>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.HttpCalls.HttpPostCall`2.#ctor(System.String,`0)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.HttpCalls.HttpPostCall`2"/> class.
+            </summary>
+            <param name="url">The URL of the API endpoint to call.</param>
+            <param name="data">The data to send in the body of the POST request.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if the URL or the data is null.</exception>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.HttpCalls.HttpPostCall`2.SendRequestAsync">
+            <inheritdoc />
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.HttpCalls.HttpPutCall`2">
+            <summary>
+            Represents a schedulable HTTP PUT call.
+            </summary>
+            <typeparam name="TResult">The expected type of the result from the PUT call.</typeparam>
+            <typeparam name="TParam">The type of the data sent in the body of the PUT request.</typeparam>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.HttpCalls.HttpPutCall`2.#ctor(System.String,`0)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.HttpCalls.HttpPutCall`2"/> class.
+            </summary>
+            <param name="url">The URL of the API endpoint to call.</param>
+            <param name="data">The data to send in the body of the PUT request.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if the URL or the data is null.</exception>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.HttpCalls.HttpPutCall`2.SendRequestAsync">
+            <inheritdoc />
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.JobScheduler`1">
+            <summary>
+            Represents a scheduler for executing periodic jobs with a specific period rule.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.Internal.JobScheduler`1.StartTime">
+            <inheritdoc />
+        </member>
+        <member name="P:BoffToolkit.Scheduling.Internal.JobScheduler`1.EndTime">
+            <inheritdoc />
+        </member>
+        <member name="P:BoffToolkit.Scheduling.Internal.JobScheduler`1.PeriodRule">
+            <inheritdoc />
+        </member>
+        <member name="E:BoffToolkit.Scheduling.Internal.JobScheduler`1.OnCallbackCompleted">
+            <summary>
+            Occurs when a callback is completed.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.JobScheduler`1.#ctor(System.DateTime,`0,BoffToolkit.Scheduling.Internal.Callbacks.ICallbackAdapter,System.Nullable{System.DateTime})">
+            <summary>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.JobScheduler`1"/> class.
+            </summary>
+            <param name="startTime">The start time of the job.</param>
+            <param name="periodRule">The specific period rule defining the job's execution intervals.</param>
+            <param name="callbackAdapter">The adapter responsible for executing callbacks.</param>
+            <param name="endTime">
+            The end time of the job. If set, it must be a valid date later than <paramref name="startTime"/>.
+            </param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when <paramref name="startTime"/> is not a valid date or <paramref name="endTime"/> is earlier than or equal to <paramref name="startTime"/>.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown when <paramref name="periodRule"/> or <paramref name="callbackAdapter"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.JobScheduler`1.Start">
+            <inheritdoc />
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.JobScheduler`1.Stop">
+            <inheritdoc />
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.JobScheduler`1.Pause">
+            <inheritdoc />
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.JobScheduler`1.Resume">
+            <inheritdoc />
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.JobScheduler`1.IsStopped">
+            <inheritdoc />
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.JobScheduler`1.IsPaused">
+            <inheritdoc />
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.JobScheduler`1.IsRunning">
+            <inheritdoc />
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.JobScheduler`1.IsDisposed">
+            <inheritdoc />
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.JobScheduler`1.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.JobScheduler`1.Dispose(System.Boolean)">
+            <summary>
+            Releases resources used by the <see cref="T:BoffToolkit.Scheduling.Internal.JobScheduler`1"/> instance.
+            </summary>
+            <param name="disposing">Indicates whether the method is being called from <see cref="M:BoffToolkit.Scheduling.Internal.JobScheduler`1.Dispose"/>.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.JobScheduler`1.Finalize">
+            <summary>
+            Finalizer to release unmanaged resources.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.PeriodRules.AnnualPeriodRule">
+            <summary>
+            Implements an annual period rule with the option to specify an interval in years.
+            </summary>
+            <remarks>
+            Represents an event that occurs every specified number of years on a given month and day.
+            </remarks>
+            <remarks>
+            Creates a new instance of <see cref="T:BoffToolkit.Scheduling.Internal.PeriodRules.AnnualPeriodRule"/> for an annual event with a custom interval.
+            </remarks>
+            <param name="month">The month of the year (1-12).</param>
+            <param name="day">The day of the month (1-31).</param>
+            <param name="yearsInterval">The interval in years between occurrences. Default is 1 year.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.PeriodRules.AnnualPeriodRule.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Implements an annual period rule with the option to specify an interval in years.
+            </summary>
+            <remarks>
+            Represents an event that occurs every specified number of years on a given month and day.
+            </remarks>
+            <remarks>
+            Creates a new instance of <see cref="T:BoffToolkit.Scheduling.Internal.PeriodRules.AnnualPeriodRule"/> for an annual event with a custom interval.
+            </remarks>
+            <param name="month">The month of the year (1-12).</param>
+            <param name="day">The day of the month (1-31).</param>
+            <param name="yearsInterval">The interval in years between occurrences. Default is 1 year.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.PeriodRules.AnnualPeriodRule.GetNextOccurrence(System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="P:BoffToolkit.Scheduling.Internal.PeriodRules.AnnualPeriodRule.Month">
+            <inheritdoc />
+        </member>
+        <member name="P:BoffToolkit.Scheduling.Internal.PeriodRules.AnnualPeriodRule.Day">
+            <inheritdoc />
+        </member>
+        <member name="P:BoffToolkit.Scheduling.Internal.PeriodRules.AnnualPeriodRule.YearsInterval">
+            <inheritdoc />
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.PeriodRules.DailyPeriodRule">
+            <summary>
+            Implements a daily period rule with the option to specify an interval in days.
+            </summary>
+            <remarks>
+            Represents an event that occurs every specified number of days at a given time of day.
+            </remarks>
+            <remarks>
+            Creates a new instance of <see cref="T:BoffToolkit.Scheduling.Internal.PeriodRules.DailyPeriodRule"/> for an event that occurs every n days.
+            </remarks>
+            <param name="timeOfDay">The time of day for the event as a <see cref="T:System.DateTime"/>.</param>
+            <param name="daysInterval">The interval in days between occurrences. Default is 1 day.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.PeriodRules.DailyPeriodRule.#ctor(System.DateTime,System.Int32)">
+            <summary>
+            Implements a daily period rule with the option to specify an interval in days.
+            </summary>
+            <remarks>
+            Represents an event that occurs every specified number of days at a given time of day.
+            </remarks>
+            <remarks>
+            Creates a new instance of <see cref="T:BoffToolkit.Scheduling.Internal.PeriodRules.DailyPeriodRule"/> for an event that occurs every n days.
+            </remarks>
+            <param name="timeOfDay">The time of day for the event as a <see cref="T:System.DateTime"/>.</param>
+            <param name="daysInterval">The interval in days between occurrences. Default is 1 day.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.PeriodRules.DailyPeriodRule.GetNextOccurrence(System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="P:BoffToolkit.Scheduling.Internal.PeriodRules.DailyPeriodRule.TimeOfDay">
+            <inheritdoc />
+        </member>
+        <member name="P:BoffToolkit.Scheduling.Internal.PeriodRules.DailyPeriodRule.DaysInterval">
+            <inheritdoc />
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.PeriodRules.MonthlyPeriodRule">
+            <summary>
+            Implements a monthly period rule, allowing for a specified interval in months.
+            </summary>
+            <remarks>
+            Represents an event that occurs every specified number of months on a given day of the month.
+            </remarks>
+            <remarks>
+            Creates a new instance of <see cref="T:BoffToolkit.Scheduling.Internal.PeriodRules.MonthlyPeriodRule"/> for a monthly event.
+            </remarks>
+            <param name="dayOfMonth">The day of the month (1-31).</param>
+            <param name="monthsInterval">The interval in months between occurrences. Default is 1 month.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.PeriodRules.MonthlyPeriodRule.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Implements a monthly period rule, allowing for a specified interval in months.
+            </summary>
+            <remarks>
+            Represents an event that occurs every specified number of months on a given day of the month.
+            </remarks>
+            <remarks>
+            Creates a new instance of <see cref="T:BoffToolkit.Scheduling.Internal.PeriodRules.MonthlyPeriodRule"/> for a monthly event.
+            </remarks>
+            <param name="dayOfMonth">The day of the month (1-31).</param>
+            <param name="monthsInterval">The interval in months between occurrences. Default is 1 month.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.PeriodRules.MonthlyPeriodRule.GetNextOccurrence(System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.PeriodRules.MonthlyPeriodRule.CalculateNextDate(System.DateTime)">
+            <summary>
+            Calculates the next valid date while preserving the DateTimeKind.
+            </summary>
+            <param name="fromTime">The reference date.</param>
+            <returns>A valid next occurrence date.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.PeriodRules.MonthlyPeriodRule.ValidateDayInMonth(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Validates and adjusts the provided day to the maximum number of days in the specified month.
+            </summary>
+            <param name="year">The year of the date.</param>
+            <param name="month">The month of the date.</param>
+            <param name="day">The requested day.</param>
+            <returns>A valid day for the specified month.</returns>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.Internal.PeriodRules.MonthlyPeriodRule.DayOfMonth">
+            <inheritdoc />
+        </member>
+        <member name="P:BoffToolkit.Scheduling.Internal.PeriodRules.MonthlyPeriodRule.MonthsInterval">
+            <inheritdoc />
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.PeriodRules.TimeSpanPeriodRule">
+            <summary>
+            Implements a period rule based on a specified interval of time using <see cref="T:System.TimeSpan"/>.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.PeriodRules.TimeSpanPeriodRule.#ctor(System.TimeSpan)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.PeriodRules.TimeSpanPeriodRule"/> class with a specified interval.
+            </summary>
+            <param name="interval">The time interval between occurrences.</param>
+            <exception cref="T:System.ArgumentException">Thrown if the interval is less than or equal to zero.</exception>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.PeriodRules.TimeSpanPeriodRule.GetNextOccurrence(System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="P:BoffToolkit.Scheduling.Internal.PeriodRules.TimeSpanPeriodRule.Interval">
+            <inheritdoc />
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.PeriodRules.WeeklyPeriodRule">
+            <summary>
+            Implements a weekly period rule with the ability to specify an interval of weeks.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.PeriodRules.WeeklyPeriodRule.#ctor(System.DayOfWeek,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.PeriodRules.WeeklyPeriodRule"/> class for a weekly event.
+            </summary>
+            <param name="dayOfWeek">The day of the week when the event occurs.</param>
+            <param name="weeksInterval">The interval of weeks between occurrences. Default is 1 week.</param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when <paramref name="dayOfWeek"/> is invalid or <paramref name="weeksInterval"/> is less than or equal to zero.
+            </exception>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.PeriodRules.WeeklyPeriodRule.GetNextOccurrence(System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="P:BoffToolkit.Scheduling.Internal.PeriodRules.WeeklyPeriodRule.DayOfWeek">
+            <inheritdoc />
+        </member>
+        <member name="P:BoffToolkit.Scheduling.Internal.PeriodRules.WeeklyPeriodRule.WeeksInterval">
+            <inheritdoc />
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.States.IJobSchedulerState">
+            <summary>
+            Interface defining the state of a task scheduler.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.IJobSchedulerState.IsStopped">
+            <summary>
+            Determines whether the current state is <c>Stopped</c>.
+            </summary>
+            <returns><c>true</c> if the task scheduler is stopped; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.IJobSchedulerState.IsPaused">
+            <summary>
+            Determines whether the current state is <c>Paused</c>.
+            </summary>
+            <returns><c>true</c> if the task scheduler is paused; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.IJobSchedulerState.IsRunning">
+            <summary>
+            Determines whether the current state is <c>Running</c>.
+            </summary>
+            <returns><c>true</c> if the task scheduler is running; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.IJobSchedulerState.ApplyState">
+            <summary>
+            Method called when a state becomes active.
+            Executes state-specific operations such as starting, pausing, or stopping a task.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.IJobSchedulerState.Start(BoffToolkit.Scheduling.Internal.StateContext)">
+            <summary>
+            Starts the task scheduler.
+            </summary>
+            <param name="context">The context of the job scheduler.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.IJobSchedulerState.Pause(BoffToolkit.Scheduling.Internal.StateContext)">
+            <summary>
+            Pauses the task scheduler.
+            </summary>
+            <param name="context">The context of the job scheduler.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.IJobSchedulerState.Resume(BoffToolkit.Scheduling.Internal.StateContext)">
+            <summary>
+            Resumes the execution of the task scheduler.
+            </summary>
+            <param name="context">The context of the job scheduler.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.IJobSchedulerState.Stop(BoffToolkit.Scheduling.Internal.StateContext)">
+            <summary>
+            Stops the task scheduler.
+            </summary>
+            <param name="context">The context of the job scheduler.</param>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.States.PausedState">
+            <summary>
+            Represents the paused state for the task scheduler.
+            </summary>
+            <remarks>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.States.PausedState"/> class with the specified operations.
+            </remarks>
+            <param name="taskManager">The task manager for the job scheduler.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.PausedState.#ctor(BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManager)">
+            <summary>
+            Represents the paused state for the task scheduler.
+            </summary>
+            <remarks>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.States.PausedState"/> class with the specified operations.
+            </remarks>
+            <param name="taskManager">The task manager for the job scheduler.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.PausedState.ApplyState">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.PausedState.Start(BoffToolkit.Scheduling.Internal.StateContext)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.PausedState.Pause(BoffToolkit.Scheduling.Internal.StateContext)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.PausedState.Resume(BoffToolkit.Scheduling.Internal.StateContext)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.PausedState.Stop(BoffToolkit.Scheduling.Internal.StateContext)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.PausedState.IsStopped">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.PausedState.IsPaused">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.PausedState.IsRunning">
+            <inheritdoc/>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.States.RunningState">
+            <summary>
+            Represents the running state of the JobScheduler.
+            </summary>
+            <remarks>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.States.RunningState"/> class.
+            </remarks>
+            <param name="taskManager">The task manager for the JobScheduler.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.RunningState.#ctor(BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManager)">
+            <summary>
+            Represents the running state of the JobScheduler.
+            </summary>
+            <remarks>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.States.RunningState"/> class.
+            </remarks>
+            <param name="taskManager">The task manager for the JobScheduler.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.RunningState.ApplyState">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.RunningState.Start(BoffToolkit.Scheduling.Internal.StateContext)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.RunningState.Resume(BoffToolkit.Scheduling.Internal.StateContext)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.RunningState.Stop(BoffToolkit.Scheduling.Internal.StateContext)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.RunningState.Pause(BoffToolkit.Scheduling.Internal.StateContext)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.RunningState.HandleAlreadyRunning(BoffToolkit.Scheduling.Internal.StateContext)">
+            <summary>
+            Handles the scenario where the task is already running.
+            </summary>
+            <param name="context">The context of the job scheduler.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.RunningState.IsStopped">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.RunningState.IsPaused">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.RunningState.IsRunning">
+            <inheritdoc/>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.States.StoppedState">
+            <summary>
+            Represents the stopped state of the task scheduler.
+            </summary>
+            <remarks>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.States.StoppedState"/> class with the specified task manager.
+            </remarks>
+            <param name="taskManager">The task manager of the job scheduler.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.StoppedState.#ctor(BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManager)">
+            <summary>
+            Represents the stopped state of the task scheduler.
+            </summary>
+            <remarks>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.States.StoppedState"/> class with the specified task manager.
+            </remarks>
+            <param name="taskManager">The task manager of the job scheduler.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.StoppedState.ApplyState">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.StoppedState.Start(BoffToolkit.Scheduling.Internal.StateContext)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.StoppedState.Pause(BoffToolkit.Scheduling.Internal.StateContext)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.StoppedState.Resume(BoffToolkit.Scheduling.Internal.StateContext)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.StoppedState.Stop(BoffToolkit.Scheduling.Internal.StateContext)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.StoppedState.IsStopped">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.StoppedState.IsPaused">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.States.StoppedState.IsRunning">
+            <inheritdoc/>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.StateContext">
+            <summary>
+            Represents the context for managing the states of a JobScheduler.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.Internal.StateContext.CurrentState">
+            <summary>
+            Gets the current state of the JobScheduler.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.StateContext.#ctor(BoffToolkit.Scheduling.Internal.States.IJobSchedulerState)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.StateContext"/> class.
+            </summary>
+            <param name="initialState">The initial state of the JobScheduler.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when the initial state is null.</exception>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.StateContext.SetState(BoffToolkit.Scheduling.Internal.States.IJobSchedulerState)">
+            <summary>
+            Sets a new state for the JobScheduler.
+            </summary>
+            <param name="newState">The new state to set.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when the new state is null.</exception>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.StateContext.Start">
+            <summary>
+            Starts the JobScheduler.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Thrown when the current state is null.</exception>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.StateContext.Stop">
+            <summary>
+            Stops the JobScheduler.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Thrown when the current state is null.</exception>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.StateContext.Pause">
+            <summary>
+            Pauses the JobScheduler.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Thrown when the current state is null.</exception>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.StateContext.Resume">
+            <summary>
+            Resumes the JobScheduler if it has been paused.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Thrown when the current state is null.</exception>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManager">
+            <summary>
+            Manages the scheduling task, including starting, stopping, pausing, and resuming operations.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManager.#ctor(BoffToolkit.Scheduling.Internal.Contexts.JobSchedulerContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManager"/> class.
+            </summary>
+            <param name="context">The JobScheduler context containing configurations and the current state.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="context"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManager.Start">
+            <summary>
+            Starts the execution of the scheduling task.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManager.RunSchedulingTaskAsync">
+            <summary>
+            Asynchronously runs the scheduling task and handles its completion.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManager.HandleTaskCompletion(System.Boolean)">
+            <summary>
+            Handles the completion of the scheduling task.
+            </summary>
+            <param name="wasCanceled">Indicates whether the task was canceled.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManager.Stop">
+            <summary>
+            Stops the execution of the scheduling task.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManager.Pause">
+            <summary>
+            Pauses the execution of the scheduling task.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManager.Resume">
+            <summary>
+            Resumes the execution of the scheduling task.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManager.IsStopped">
+            <summary>
+            Determines whether the scheduler is stopped.
+            </summary>
+            <returns><c>true</c> if the scheduler is stopped; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManager.IsPaused">
+            <summary>
+            Determines whether the scheduler is paused.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManager.ResetCancellationToken(System.Boolean)">
+            <summary>
+            Resets the cancellation token source, canceling and disposing the previous one if necessary.
+            </summary>
+            <param name="createNew">Indicates whether to create a new <see cref="T:System.Threading.CancellationTokenSource"/> after resetting.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManager.StopAsync">
+            <summary>
+            Handles the asynchronous stop operation.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManager.PauseAsync">
+            <summary>
+            Handles the asynchronous pause operation.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManager.ResumeAsync">
+            <summary>
+            Handles the asynchronous resume operation.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManagerStateHelper">
+            <summary>
+            Helper class to manage the state of the JobSchedulerTaskManager in a thread-safe manner.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManagerStateHelper.TrySetRunning">
+            <summary>
+            Attempts to set the scheduler as running.
+            </summary>
+            <returns><c>true</c> if successfully set to running; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManagerStateHelper.SetStopped">
+            <summary>
+            Sets the scheduler as stopped.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManagerStateHelper.TryPause">
+            <summary>
+            Attempts to pause the scheduler.
+            </summary>
+            <returns><c>true</c> if successfully paused; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManagerStateHelper.TryResume">
+            <summary>
+            Attempts to resume the scheduler.
+            </summary>
+            <returns><c>true</c> if successfully resumed; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManagerStateHelper.IsRunning">
+            <summary>
+            Determines whether the scheduler is currently running.
+            </summary>
+            <returns><c>true</c> if running; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulerTaskManagerStateHelper.IsPaused">
+            <summary>
+            Determines whether the scheduler is currently paused.
+            </summary>
+            <returns><c>true</c> if paused; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulingTaskRunner">
+            <summary>
+            Manages the execution of scheduled tasks, handling timing and callback execution.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulingTaskRunner.RunAsync(BoffToolkit.Scheduling.Internal.Contexts.JobSchedulerContext,System.Threading.CancellationToken,System.Func{System.Boolean})">
+            <summary>
+            Executes the scheduling task asynchronously.
+            </summary>
+            <param name="context">The scheduler context containing scheduling details.</param>
+            <param name="token">The cancellation token to monitor for cancellation requests.</param>
+            <param name="isPaused">A delegate to check if the scheduler is paused.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulingTaskRunner.WaitUntilNextExecutionAsync(System.DateTime,System.Threading.CancellationToken)">
+            <summary>
+            Attende fino all'orario di esecuzione pianificato, rispettando eventuali cancellazioni.
+            </summary>
+            <param name="nextExecution">Il prossimo orario pianificato.</param>
+            <param name="token">Il token di cancellazione.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulingTaskRunner.PerformScheduledTaskAsync(BoffToolkit.Scheduling.Internal.Contexts.JobSchedulerContext)">
+            <summary>
+            Esegue il callback pianificato in modo asincrono.
+            </summary>
+            <param name="context">Il contesto del job scheduler contenente il callback da eseguire.</param>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.Internal.TaskManagers.JobSchedulingTaskRunner.CalculateNextExecutionTime(BoffToolkit.Scheduling.Internal.Contexts.JobSchedulerContext,System.DateTime)">
+            <summary>
+            Calcola il prossimo orario di esecuzione in base alle regole di schedulazione.
+            </summary>
+            <param name="context">Il contesto contenente le regole di schedulazione.</param>
+            <param name="fromTime">L'orario da cui calcolare la prossima esecuzione.</param>
+            <returns>Il prossimo orario di esecuzione calcolato.</returns>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.ISchedulable`1">
+            <summary>
+            Defines an interface for a schedulable object that can perform a specific action and return a result.
+            </summary>
+            <typeparam name="TResult">The type of the result produced by the scheduled operation.</typeparam>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.ISchedulable`1.Execute">
+            <summary>
+            Executes the defined action and returns the result.
+            </summary>
+            <returns>The result of the operation.</returns>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.ISchedulable`2">
+            <summary>
+            Defines an interface for a schedulable object that can perform a specific action with a parameter and return a result.
+            </summary>
+            <typeparam name="TParam">The type of the parameter passed to the scheduled operation.</typeparam>
+            <typeparam name="TResult">The type of the result produced by the scheduled operation.</typeparam>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.ISchedulable`2.Execute(`0)">
+            <summary>
+            Executes the defined action using the provided parameter and returns the result.
+            </summary>
+            <param name="param">The parameter passed to the scheduled operation.</param>
+            <returns>The result of the operation.</returns>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.JobSchedulerBuilder`1">
+            <summary>
+            Builds an instance of <see cref="T:BoffToolkit.Scheduling.IJobScheduler`1"/> with the provided specifications.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerBuilder`1.SetStartTime(System.DateTime)">
+            <summary>
+            Starts building a <see cref="T:BoffToolkit.Scheduling.IJobScheduler`1"/> by setting the start time.
+            </summary>
+            <param name="startTime">The start time for the job scheduler.</param>
+            <returns>An instance of <see cref="T:BoffToolkit.Scheduling.BuilderSteps.IEndTimeStep`1"/> to continue the configuration.</returns>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.JobSchedulerBuilder`1.BuilderSteps">
+            <summary>
+            Internal class implementing interfaces for building the JobScheduler.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerBuilder`1.BuilderSteps.#ctor(BoffToolkit.Scheduling.JobSchedulerBuilder{`0})">
+            <summary>
+            Internal class implementing interfaces for building the JobScheduler.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerBuilder`1.BuilderSteps.SetStart(System.DateTime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerBuilder`1.BuilderSteps.SetEnd(System.DateTime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerBuilder`1.BuilderSteps.SetNoEnd">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerBuilder`1.BuilderSteps.SetPeriod(`0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerBuilder`1.BuilderSteps.SetCallback(System.Action)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerBuilder`1.BuilderSteps.SetCallback``1(System.Action{``0},``0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerBuilder`1.BuilderSteps.SetCallback``1(System.Func{``0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerBuilder`1.BuilderSteps.SetCallback``2(System.Func{``0,``1},``0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerBuilder`1.BuilderSteps.SetCallback``1(System.Func{System.Threading.Tasks.Task{``0}})">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerBuilder`1.BuilderSteps.SetCallback``2(System.Func{``0,System.Threading.Tasks.Task{``1}},``0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerBuilder`1.BuilderSteps.SetCallback``1(BoffToolkit.Scheduling.ISchedulable{``0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerBuilder`1.BuilderSteps.SetCallback``2(BoffToolkit.Scheduling.ISchedulable{``0,``1},``0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerBuilder`1.BuilderSteps.SetCallback``1(BoffToolkit.Scheduling.HttpCalls.IHttpCall{``0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerBuilder`1.BuilderSteps.AddToRegistry(System.String,System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerBuilder`1.BuilderSteps.SkipRegistry">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerBuilder`1.BuilderSteps.SetCallbackCompleted(System.EventHandler{BoffToolkit.Scheduling.Internal.Callbacks.CallbackCompletedEventArgs})">
+            <inheritdoc/>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerBuilder`1.BuilderSteps.Build">
+            <inheritdoc/>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.JobSchedulerBuilder">
+            <summary>
+            Builder for job schedulers using IPeriodRule period rules.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.JobSchedulerBuilderTimeSpan">
+            <summary>
+            Builder for job schedulers using TimeSpan-based period rules.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.JobSchedulerBuilderDaily">
+            <summary>
+            Builder for job schedulers using daily period rules.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.JobSchedulerBuilderWeekly">
+            <summary>
+            Builder for job schedulers using weekly period rules.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.JobSchedulerBuilderMonthly">
+            <summary>
+            Builder for job schedulers using monthly period rules.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.JobSchedulerBuilderAnnual">
+            <summary>
+            Builder for job schedulers using annual period rules.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.JobSchedulerRegistry">
+            <summary>
+            Global registry for managing centralized instances of <see cref="T:BoffToolkit.Scheduling.IJobScheduler"/>.
+            </summary>
+        </member>
+        <member name="F:BoffToolkit.Scheduling.JobSchedulerRegistry._schedulers">
+            <summary>
+            Static dictionary to hold all instances of <see cref="T:BoffToolkit.Scheduling.IJobScheduler"/>.
+            The key is a unique identifier for each job scheduler.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerRegistry.Add(System.String,BoffToolkit.Scheduling.IJobScheduler,System.Boolean)">
+            <summary>
+            Adds a job scheduler to the registry.
+            </summary>
+            <param name="id">The unique identifier for the job scheduler.</param>
+            <param name="scheduler">The instance of <see cref="T:BoffToolkit.Scheduling.IJobScheduler"/> to add.</param>
+            <param name="overwrite">If true, overwrites an existing job scheduler with the same identifier. Default: false.</param>
+            <returns>True if the addition or replacement is successful; otherwise, false.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerRegistry.Remove(System.String,System.Boolean)">
+            <summary>
+            Removes a job scheduler from the registry.
+            </summary>
+            <param name="id">The unique identifier of the job scheduler to remove.</param>
+            <param name="dispose">If true, calls <see cref="M:System.IDisposable.Dispose"/> on the removed instance.</param>
+            <returns><c>true</c> if the job scheduler was successfully removed; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerRegistry.Get(System.String)">
+            <summary>
+            Retrieves a job scheduler from the registry.
+            </summary>
+            <param name="id">The unique identifier of the job scheduler.</param>
+            <returns>The <see cref="T:BoffToolkit.Scheduling.IJobScheduler"/> instance, or null if it doesn't exist or has been released.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerRegistry.GetAll">
+            <summary>
+            Returns all job scheduler instances currently in the registry.
+            </summary>
+            <returns>A collection of all <see cref="T:BoffToolkit.Scheduling.IJobScheduler"/> instances that have not been released.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerRegistry.Contains(System.String)">
+            <summary>
+            Checks if a job scheduler exists in the registry.
+            </summary>
+            <param name="id">The unique identifier of the job scheduler.</param>
+            <returns>True if it exists and has not been released; otherwise, false.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerRegistry.Clean">
+            <summary>
+            Removes all released job schedulers from the registry.
+            </summary>
+            <returns>The number of job schedulers removed.</returns>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.JobSchedulerRegistry.EnsureNotDisposed(BoffToolkit.Scheduling.IJobScheduler)">
+            <summary>
+            Ensures that a scheduler has not been released.
+            </summary>
+            <param name="scheduler">The scheduler to check.</param>
+            <exception cref="T:System.ObjectDisposedException">Thrown if the scheduler has been released.</exception>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.PeriodRules.IAnnualPeriodRule">
+            <summary>
+            Interface defining an annual period rule with a specific interval.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.PeriodRules.IAnnualPeriodRule.Month">
+            <summary>
+            Gets the month of the year (1-12) when the event occurs.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.PeriodRules.IAnnualPeriodRule.Day">
+            <summary>
+            Gets the day of the month (1-31) when the event occurs.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.PeriodRules.IAnnualPeriodRule.YearsInterval">
+            <summary>
+            Gets the interval in years between occurrences.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.PeriodRules.IDailyPeriodRule">
+            <summary>
+            Interface defining a daily period rule with a specific interval.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.PeriodRules.IDailyPeriodRule.TimeOfDay">
+            <summary>
+            Gets the time of day when the event occurs.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.PeriodRules.IDailyPeriodRule.DaysInterval">
+            <summary>
+            Gets the interval in days between occurrences.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.PeriodRules.IMonthlyPeriodRule">
+            <summary>
+            Interface defining a monthly period rule with a specific interval.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.PeriodRules.IMonthlyPeriodRule.DayOfMonth">
+            <summary>
+            Gets the day of the month (1-31) when the event occurs.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.PeriodRules.IMonthlyPeriodRule.MonthsInterval">
+            <summary>
+            Gets the interval in months between occurrences.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.PeriodRules.IPeriodRule">
+            <summary>
+            Interface that defines a rule for determining the next occurrence of a period.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.Scheduling.PeriodRules.IPeriodRule.GetNextOccurrence(System.DateTime)">
+            <summary>
+            Returns the next occurrence of the period starting from a specified time.
+            </summary>
+            <param name="fromTime">The starting point from which to calculate the next occurrence.</param>
+            <returns>The next occurrence of the period.</returns>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.PeriodRules.ITimeSpanPeriodRule">
+            <summary>
+            Interface that defines a time-based period rule using a specific TimeSpan interval.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.PeriodRules.ITimeSpanPeriodRule.Interval">
+            <summary>
+            Gets the time interval between one occurrence and the next.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.Scheduling.PeriodRules.IWeeklyPeriodRule">
+            <summary>
+            Interface that defines a rule for scheduling weekly occurrences with a specific interval.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.PeriodRules.IWeeklyPeriodRule.DayOfWeek">
+            <summary>
+            Gets the day of the week on which the event occurs.
+            </summary>
+        </member>
+        <member name="P:BoffToolkit.Scheduling.PeriodRules.IWeeklyPeriodRule.WeeksInterval">
+            <summary>
+            Gets the number of weeks between consecutive occurrences.
+            </summary>
+        </member>
+        <member name="T:BoffToolkit.TypeLoading.DynamicTypeLoader">
+            <summary>
+            Provides a mechanism for loading and manipulating types from assemblies.
+            </summary>
+        </member>
+        <member name="M:BoffToolkit.TypeLoading.DynamicTypeLoader.LoadType(System.String,System.String)">
+            <summary>
+            Loads a type by its fully qualified name.
+            </summary>
+            <param name="fullyQualifiedName">The fully qualified name of the type to load.</param>
+            <param name="assemblyPath">
+            An optional path to an external assembly from which to load the type. 
+            If not specified, the current assembly will be used.
+            </param>
+            <returns>The type loaded from the specified assembly.</returns>
+            <exception cref="T:System.ArgumentException">Thrown if the fully qualified name of the type is null or empty.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown if the type cannot be found in the specified assembly.</exception>
+        </member>
+    </members>
+</doc>

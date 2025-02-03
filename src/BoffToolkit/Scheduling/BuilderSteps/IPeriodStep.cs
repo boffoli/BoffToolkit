@@ -5,37 +5,42 @@ namespace BoffToolkit.Scheduling.BuilderSteps {
     /// <summary>
     /// Generic interface for setting a specific period rule type.
     /// </summary>
-    public interface IPeriodStep<TPeriodRule> where TPeriodRule : IPeriodRule {
+    /// <typeparam name="TPeriodRule">The specific period rule type associated with the job scheduler.</typeparam>
+    public interface IPeriodStep<TPeriodRule>
+        where TPeriodRule : IPeriodRule {
+
         /// <summary>
         /// Sets the execution period rule of type <typeparamref name="TPeriodRule"/>.
         /// </summary>
         /// <param name="periodRule">The specific period rule to set.</param>
-        /// <returns>An instance of <see cref="ICallbackStep{TPeriodRule}"/> for further configuration.</returns>
+        /// <returns>
+        /// An instance of <see cref="ICallbackStep{TPeriodRule}"/> for further configuration.
+        /// </returns>
         ICallbackStep<TPeriodRule> SetPeriod(TPeriodRule periodRule);
     }
 
     /// <summary>
-    /// Step interface for configuring a TimeSpan-based period rule.
+    /// Step interface for configuring a job scheduler with a TimeSpan-based period rule.
     /// </summary>
-    public interface ITimeSpanPeriodStep : IPeriodStep<ITimeSpanPeriodRule> { }
+    public interface IPeriodStepTimeSpan : IPeriodStep<ITimeSpanPeriodRule> { }
 
     /// <summary>
-    /// Step interface for configuring a daily period rule.
+    /// Step interface for configuring a job scheduler with a daily period rule.
     /// </summary>
-    public interface IDailyPeriodStep : IPeriodStep<IDailyPeriodRule> { }
+    public interface IPeriodStepDaily : IPeriodStep<IDailyPeriodRule> { }
 
     /// <summary>
-    /// Step interface for configuring a weekly period rule.
+    /// Step interface for configuring a job scheduler with a weekly period rule.
     /// </summary>
-    public interface IWeeklyPeriodStep : IPeriodStep<IWeeklyPeriodRule> { }
+    public interface IPeriodStepWeekly : IPeriodStep<IWeeklyPeriodRule> { }
 
     /// <summary>
-    /// Step interface for configuring a monthly period rule.
+    /// Step interface for configuring a job scheduler with a monthly period rule.
     /// </summary>
-    public interface IMonthlyPeriodStep : IPeriodStep<IMonthlyPeriodRule> { }
+    public interface IPeriodStepMonthly : IPeriodStep<IMonthlyPeriodRule> { }
 
     /// <summary>
-    /// Step interface for configuring an annual period rule.
+    /// Step interface for configuring a job scheduler with an annual period rule.
     /// </summary>
-    public interface IAnnualPeriodStep : IPeriodStep<IAnnualPeriodRule> { }
+    public interface IPeriodStepAnnual : IPeriodStep<IAnnualPeriodRule> { }
 }

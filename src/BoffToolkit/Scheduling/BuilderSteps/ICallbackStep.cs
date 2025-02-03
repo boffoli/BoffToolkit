@@ -1,17 +1,26 @@
+using System;
+using System.Threading.Tasks;
 using BoffToolkit.Scheduling.HttpCalls;
 using BoffToolkit.Scheduling.PeriodRules;
 
 namespace BoffToolkit.Scheduling.BuilderSteps {
+
     /// <summary>
-    /// Interface for configuring the callback to be executed in the job scheduler.
+    /// Defines the step for configuring the callback to be executed in the job scheduler.
     /// </summary>
-    /// <typeparam name="TPeriodRule">The specific period rule type associated with the job scheduler.</typeparam>
-    public interface ICallbackStep<TPeriodRule> where TPeriodRule : IPeriodRule {
+    /// <typeparam name="TPeriodRule">
+    /// The specific period rule type that defines the scheduling logic for the job scheduler.
+    /// </typeparam>
+    public interface ICallbackStep<TPeriodRule>
+        where TPeriodRule : IPeriodRule {
+
         /// <summary>
         /// Sets the callback action to be executed.
         /// </summary>
         /// <param name="callback">The callback action to execute.</param>
-        /// <returns>An instance of <see cref="IRegistrationStep{TPeriodRule}"/> for further configuration.</returns>
+        /// <returns>
+        /// An instance of <see cref="IRegistrationStep{TPeriodRule}"/> for further configuration.
+        /// </returns>
         IRegistrationStep<TPeriodRule> SetCallback(Action callback);
 
         /// <summary>
@@ -20,7 +29,9 @@ namespace BoffToolkit.Scheduling.BuilderSteps {
         /// <typeparam name="TParam">The type of the callback parameter.</typeparam>
         /// <param name="callback">The callback action to execute.</param>
         /// <param name="param">The parameter to pass to the callback.</param>
-        /// <returns>An instance of <see cref="IRegistrationStep{TPeriodRule}"/> for further configuration.</returns>
+        /// <returns>
+        /// An instance of <see cref="IRegistrationStep{TPeriodRule}"/> for further configuration.
+        /// </returns>
         IRegistrationStep<TPeriodRule> SetCallback<TParam>(Action<TParam> callback, TParam param);
 
         /// <summary>
@@ -28,7 +39,9 @@ namespace BoffToolkit.Scheduling.BuilderSteps {
         /// </summary>
         /// <typeparam name="TResult">The return type of the callback function.</typeparam>
         /// <param name="func">The function to execute.</param>
-        /// <returns>An instance of <see cref="IRegistrationStep{TPeriodRule}"/> for further configuration.</returns>
+        /// <returns>
+        /// An instance of <see cref="IRegistrationStep{TPeriodRule}"/> for further configuration.
+        /// </returns>
         IRegistrationStep<TPeriodRule> SetCallback<TResult>(Func<TResult> func);
 
         /// <summary>
@@ -38,7 +51,9 @@ namespace BoffToolkit.Scheduling.BuilderSteps {
         /// <typeparam name="TResult">The return type of the callback function.</typeparam>
         /// <param name="func">The function to execute.</param>
         /// <param name="param">The parameter to pass to the callback function.</param>
-        /// <returns>An instance of <see cref="IRegistrationStep{TPeriodRule}"/> for further configuration.</returns>
+        /// <returns>
+        /// An instance of <see cref="IRegistrationStep{TPeriodRule}"/> for further configuration.
+        /// </returns>
         IRegistrationStep<TPeriodRule> SetCallback<TParam, TResult>(Func<TParam, TResult> func, TParam param);
 
         /// <summary>
@@ -46,7 +61,9 @@ namespace BoffToolkit.Scheduling.BuilderSteps {
         /// </summary>
         /// <typeparam name="TResult">The return type of the asynchronous function.</typeparam>
         /// <param name="func">The asynchronous function to execute.</param>
-        /// <returns>An instance of <see cref="IRegistrationStep{TPeriodRule}"/> for further configuration.</returns>
+        /// <returns>
+        /// An instance of <see cref="IRegistrationStep{TPeriodRule}"/> for further configuration.
+        /// </returns>
         IRegistrationStep<TPeriodRule> SetCallback<TResult>(Func<Task<TResult>> func);
 
         /// <summary>
@@ -56,7 +73,9 @@ namespace BoffToolkit.Scheduling.BuilderSteps {
         /// <typeparam name="TResult">The return type of the asynchronous function.</typeparam>
         /// <param name="func">The asynchronous function to execute.</param>
         /// <param name="param">The parameter to pass to the function.</param>
-        /// <returns>An instance of <see cref="IRegistrationStep{TPeriodRule}"/> for further configuration.</returns>
+        /// <returns>
+        /// An instance of <see cref="IRegistrationStep{TPeriodRule}"/> for further configuration.
+        /// </returns>
         IRegistrationStep<TPeriodRule> SetCallback<TParam, TResult>(Func<TParam, Task<TResult>> func, TParam param);
 
         /// <summary>
@@ -64,7 +83,9 @@ namespace BoffToolkit.Scheduling.BuilderSteps {
         /// </summary>
         /// <typeparam name="TResult">The return type of the schedulable instance.</typeparam>
         /// <param name="schedulable">The instance of <see cref="ISchedulable{TResult}"/> to execute.</param>
-        /// <returns>An instance of <see cref="IRegistrationStep{TPeriodRule}"/> for further configuration.</returns>
+        /// <returns>
+        /// An instance of <see cref="IRegistrationStep{TPeriodRule}"/> for further configuration.
+        /// </returns>
         IRegistrationStep<TPeriodRule> SetCallback<TResult>(ISchedulable<TResult> schedulable);
 
         /// <summary>
@@ -74,7 +95,9 @@ namespace BoffToolkit.Scheduling.BuilderSteps {
         /// <typeparam name="TResult">The return type of the schedulable instance.</typeparam>
         /// <param name="schedulable">The instance of <see cref="ISchedulable{TParam, TResult}"/> to execute.</param>
         /// <param name="param">The parameter to pass to the schedulable instance.</param>
-        /// <returns>An instance of <see cref="IRegistrationStep{TPeriodRule}"/> for further configuration.</returns>
+        /// <returns>
+        /// An instance of <see cref="IRegistrationStep{TPeriodRule}"/> for further configuration.
+        /// </returns>
         IRegistrationStep<TPeriodRule> SetCallback<TParam, TResult>(ISchedulable<TParam, TResult> schedulable, TParam param);
 
         /// <summary>
@@ -82,7 +105,34 @@ namespace BoffToolkit.Scheduling.BuilderSteps {
         /// </summary>
         /// <typeparam name="TResult">The return type of the HTTP call.</typeparam>
         /// <param name="httpCall">The instance of <see cref="IHttpCall{TResult}"/> to execute.</param>
-        /// <returns>An instance of <see cref="IRegistrationStep{TPeriodRule}"/> for further configuration.</returns>
+        /// <returns>
+        /// An instance of <see cref="IRegistrationStep{TPeriodRule}"/> for further configuration.
+        /// </returns>
         IRegistrationStep<TPeriodRule> SetCallback<TResult>(IHttpCall<TResult> httpCall);
     }
+
+    /// <summary>
+    /// Step interface for configuring the callback of a job scheduler with a TimeSpan-based period rule.
+    /// </summary>
+    public interface ICallbackStepTimeSpan : ICallbackStep<ITimeSpanPeriodRule> { }
+
+    /// <summary>
+    /// Step interface for configuring the callback of a job scheduler with a daily period rule.
+    /// </summary>
+    public interface ICallbackStepDaily : ICallbackStep<IDailyPeriodRule> { }
+
+    /// <summary>
+    /// Step interface for configuring the callback of a job scheduler with a weekly period rule.
+    /// </summary>
+    public interface ICallbackStepWeekly : ICallbackStep<IWeeklyPeriodRule> { }
+
+    /// <summary>
+    /// Step interface for configuring the callback of a job scheduler with a monthly period rule.
+    /// </summary>
+    public interface ICallbackStepMonthly : ICallbackStep<IMonthlyPeriodRule> { }
+
+    /// <summary>
+    /// Step interface for configuring the callback of a job scheduler with an annual period rule.
+    /// </summary>
+    public interface ICallbackStepAnnual : ICallbackStep<IAnnualPeriodRule> { }
 }
